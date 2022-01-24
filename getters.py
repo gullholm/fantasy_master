@@ -10,6 +10,7 @@ import json
 """
 Get all data for the current season in allsvenskan
 """
+
 def get_data():
     """ Retrieve the fpl player data from the hard-coded url
     """
@@ -33,4 +34,11 @@ def get_players_feature(full_data, list_feature = ['id', 'element_type', 'now_co
         players_feature.append(case)
     return players_feature        
     
+def get_diff_pos(players_data):
     
+    goalkeepers = [x for x in players_data if x['element_type']==1]
+    defenders = [x for x in players_data if x['element_type']==1]
+    midfielders = [x for x in players_data if x['element_type']==1]
+    forwards = [x for x in players_data if x['element_type']==1]
+    
+    return goalkeepers, defenders, midfielders, forwards
