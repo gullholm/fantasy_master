@@ -26,12 +26,12 @@ def get_data():
 Get given feature for all players for the current season
 """
 
-def get_players_feature(full_data, list_feature = ['id', 'element_type', 'now_cost', 'total_points']):
+def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', 'total_points']):
     players_list = full_data["elements"]
-    players_feature = []
+    players_feature = {}
     for player in players_list:
         case = {x: player[x] for x in list_feature}
-        players_feature.append(case)
+        players_feature[player['id']] = case
     return players_feature        
     
 def get_diff_pos(players_data):
