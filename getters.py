@@ -8,13 +8,13 @@ import requests
 import json
 
 """
-Get all data for the current season
+Get all data for the current season in allsvenskan
 """
-def get_data(league = "allsvenskan"):
+def get_data():
     """ Retrieve the fpl player data from the hard-coded url
     """
         ### Fixa så det kan bli PL också
-    response = requests.get("https://fantasy." + league + ".se/api/bootstrap-static/")
+    response = requests.get("https://fantasy.allsvenskan.se/api/bootstrap-static/")
     if response.status_code != 200:
         raise Exception("Response was code " + str(response.status_code))
     responseStr = response.text
