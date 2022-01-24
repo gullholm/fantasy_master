@@ -7,7 +7,9 @@ Created on Thu Jan 20 14:06:26 2022
 import requests
 import json
 
-
+"""
+Get all data for the current season
+"""
 def get_data(league = "allsvenskan"):
     """ Retrieve the fpl player data from the hard-coded url
     """
@@ -18,9 +20,10 @@ def get_data(league = "allsvenskan"):
     responseStr = response.text
     data = json.loads(responseStr)
     return data
-ssss = get_data()
-response = requests.get("https://fantasy.allsvenskan.se/api/element-summary/523/")
-data_pl = json.loads(response.text)
+
+"""
+Get given feature for all players for the current season
+"""
 
 def get_players_feature(full_data, list_feature = ['id', 'element_type', 'now_cost', 'total_points']):
     players_list = full_data["elements"]
