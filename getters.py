@@ -37,8 +37,8 @@ def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', '
 def get_diff_pos(players_data):
     
     goalkeepers = [x for x in players_data if x['element_type']==1]
-    defenders = [x for x in players_data if x['element_type']==1]
-    midfielders = [x for x in players_data if x['element_type']==1]
-    forwards = [x for x in players_data if x['element_type']==1]
+    defenders = [x for x in players_data if x['element_type']==2]
+    midfielders = [x for x in players_data if x['element_type']==3]
+    forwards = [x for x in players_data if x['element_type']==4]
     
     return goalkeepers, defenders, midfielders, forwards
