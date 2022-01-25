@@ -32,27 +32,15 @@ def calcindex(indexlist, dat, nr, length):
         returnlist.append(temp)
     return returnlist
 
-def pointsPerTeam3(team):
-    teampoints = 0
-    for key in team: 
-        teampoints = teampoints + players[key]["total_points"]
-     
-    return teampoints
 
 def pointsPerTeam4(team, pointsList):
-    #teampoints = 0
-    teampoints = np.sum(pointsList[team])
-    #for key in team: 
-    #    teampoints = teampoints + pointsList[key-1]
+    teampoints = 0
+    #teampoints = np.sum(pointsList[team])
+    for key in team: 
+        teampoints = teampoints + pointsList[key-1]
      
     return teampoints
 
-
-def costPerTeam(team):
-    teamcost = 0
-    for key in team:
-        teamcost = teamcost + players[key]["now_cost"]
-    return teamcost  
 
 def costPerTeam4(team, costList):
     teamcost = 0
