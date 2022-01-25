@@ -39,8 +39,7 @@ def pointsPerTeam3(team):
      
     return teampoints
 
-def pointsPerTeam4(team):
-    pointsList=createPointsList()
+def pointsPerTeam4(team, pointsList):
     teampoints = 0
     for key in team: 
         teampoints = teampoints + pointsList[key-1]
@@ -54,8 +53,7 @@ def costPerTeam(team):
         teamcost = teamcost + players[key]["now_cost"]
     return teamcost  
 
-def costPerTeam4(team):
-    costList=createCostList()
+def costPerTeam4(team, costList):
     teamcost = 0
     for key in team:
         teamcost = teamcost + costList[key-1]
