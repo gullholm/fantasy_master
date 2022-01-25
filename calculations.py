@@ -6,6 +6,10 @@ Created on Tue Jan 25 10:55:46 2022
 """
 
 import numpy as np
+import getters
+
+data2 = getters.get_data()
+players = getters.get_players_feature(data2)
 
 def nump2(n, k):
     a = np.ones((k, n-k+1), dtype=int)
@@ -36,6 +40,7 @@ def pointsPerTeam3(team):
     return teampoints
 
 def pointsPerTeam4(team):
+    pointsList=createPointsList()
     teampoints = 0
     for key in team: 
         teampoints = teampoints + pointsList[key-1]
@@ -50,6 +55,7 @@ def costPerTeam(team):
     return teamcost  
 
 def costPerTeam4(team):
+    costList=createCostList()
     teamcost = 0
     for key in team:
         teamcost = teamcost + costList[key-1]
@@ -72,6 +78,8 @@ def createPointsList():
     return pointsList
 
 def createFormation(d = 4, m = 4, f = 2, n = 100):
+    
+    gk, df, mf, fw = getters.get_diff_pos(players)
     
     defe = np.transpose(nump2(len(df),d))
     midf = np.transpose(nump2(len(mf),m))

@@ -5,35 +5,22 @@ Created on Mon Jan 24 18:12:50 2022
 @author: jonat
 """
 # In[ ]:
+
 import getters
 import numpy as np
 import time
 import matplotlib.pyplot as plt
+import calculations as calc
 
 # Import the data 
 
 data2 = getters.get_data()
-
 players = getters.get_players_feature(data2)
-
 gk, df, mf, fw = getters.get_diff_pos(players)
 
 # In[]
 
 # Functions
-
-def nump2(n, k):
-    a = np.ones((k, n-k+1), dtype=int)
-    a[0] = np.arange(n-k+1)
-    for j in range(1, k):
-        reps = (n-k+j) - a[j-1]
-        a = np.repeat(a, reps, axis=1)
-        ind = np.add.accumulate(reps)
-        a[j, ind[:-1]] = 1-reps[1:]
-        a[j, 0] = j
-        a[j] = np.add.accumulate(a[j])
-    return a
-
 def calcindex(indexlist, dat, nr, length):
     returnlist=[]
     for i in range(length):
@@ -50,35 +37,81 @@ def pointsPerTeam3(team):
      
     return teampoints
 
+def pointsPerTeam4(team):
+    teampoints = 0
+    for key in team: 
+        teampoints = teampoints + pointsList[key-1]
+     
+    return teampoints
+
+
 def costPerTeam(team):
     teamcost = 0
     for key in team:
         teamcost = teamcost + players[key]["now_cost"]
     return teamcost  
 
+def costPerTeam4(team):
+    teamcost = 0
+    for key in team:
+        teamcost = teamcost + costList[key-1]
+    return teamcost  
+
+def createCostList():
+    costList = []
+    for i in range(len(players)):
+        costList.append(players[i+1]["now_cost"])
+    #for player in players:
+    #    costList.append(player["now_cost"])    
+    return costList
+
+def createPointsList():
+    pointsList=[]
+    for i in range(len(players)):
+        pointsList.append(players[i+1]["total_points"])
+    #for player in players:
+     #   pointsList.append(player["total_points"])
+    return pointsList
+
+def createFormation(d = 4, m = 4, f = 2, n = 100):
+    
+    defe = np.transpose(nump2(len(df),d))
+    midf = np.transpose(nump2(len(mf),m))
+    forw = np.transpose(nump2(len(fw),f))    
+        
+    forwards = calcindex(forw, fw, f, n) 
+    defenders = calcindex(defe, df, d, n )
+    midfielders = calcindex(midf, mf, m, n)
+    
+    return defenders, midfielders, forwards
+
+def printSummary(teamPoints, teamCosts):
+    
+    index_max = np.argmax(teamPoints)
+    meanCost = round(sum(teamCosts)/len(teamCosts)) 
+    meanPoints = round(sum(teamPoints)/len(teamPoints))
+
+    print("Nr of teams: " + str(len(teamPoints)))
+    print("Best index: " + str(index_max))
+    #print("Indexes for the best team: " + str(teams[index_max]))
+    print("Best score: "+ str(teamPoints[index_max]))
+    print("Total cost for the best team: " + str(teamCosts[index_max]))
+    print("Mean cost: " + str(meanCost))
+    print("Mean points: " + str(meanPoints))
+    
+    #return None
+
 # In[]
-# Create combinations of positions for teams (Time inefficient)
-
-forwards2 = np.transpose(nump2(len(fw),2))
-defenders4 = np.transpose(nump2(len(df),4))
-midfielders4 = np.transpose(nump2(len(mf),4))
-
-n = 100    
-forw2 = calcindex(forwards2, fw, 2, n) 
-def4 = calcindex(defenders4, df, 4, n )
-mid4 = calcindex(midfielders4, mf, 4, n)
+def4, mid4, forw2 = calc.createFormation(4, 4, 2, 100)
 
 
 # In[ ]:
 
 # Calculate points and cost for all different teams (Time inefficient)    
 
-# n=50 takes ~130s
+# n = 50 takes ~130s, n = 30 ~40s
 
-# Initiate variables
-
-
-n = 50 # number of players used on each position
+n = 10 # number of players used on each position
 teamPointsList=[]
 teamCostList=[]
 teams=[]
@@ -92,7 +125,8 @@ for i in gk:
     for j in range(n):
         team0 = np.append(i, forw2[j])
         for k in range(n):
-            team1 = np.append(team0, def4[k])          
+            team1 = np.append(team0, def4[k]) 
+            #team1 = team0.append(def4[k])
             for l in range(n):
                 team2 = np.append(team1, mid4[l])
                 teams.append(team2)
@@ -103,6 +137,12 @@ print("--- %s seconds ---" % (time.time() - start_time))
 #runtime = (time.time() - start_time)
 #timeList.append(runtime)
 
+printSummary(teamPointsList, teamCostList)
+index_max = np.argmax(teamPointsList)
+print("Indexes for the best team: " + str(teams[index_max]))
+
+
+
 # In[]
 
 
@@ -112,7 +152,7 @@ print("--- %s seconds ---" % (time.time() - start_time))
 
 # n=100 takes ~140s
 
-n = 100 # number of players used on each position
+n = 10 # number of players used on each position
 teamPointsList2=[]
 teamCostList2=[]
 teams2=[]
@@ -135,34 +175,46 @@ for i in gk:
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
-index_max2 = np.argmax(teamPointsList2)
-meanCost2 = round(sum(teamCostList2)/len(teamCostList2)) 
-meanPoints2 = round(sum(teamPointsList2)/len(teamPointsList2))
 
-print("Nr of teams: " + str(len(teamPointsList2)))
-print("Best index: " + str(index_max2))
-#print("Indexes for the best team: " + str(teams[index_max]))
-print("Best score: "+ str(teamPointsList2[index_max2]))
-print("Total cost for the best team: " + str(teamCostList2[index_max2]))
-print("Mean cost: " + str(meanCost2))
-print("Mean points: " + str(meanPoints2))
+printSummary(teamPointsList2, teamCostList2)
+# In[]
+# Trying with list instead of dictionary
+
+# n= 50 ~12s
+
+n = 10 # number of players used on each position
+teamPointsList3=[]
+teamCostList3=[]
+teams3=[]
+
+costList = createCostList()
+pointsList = createPointsList()
+
+start_time = time.time()
+for i in gk:
+    totalPoints0 = pointsList[i-1]
+    totalCost0 = costList[i-1]
+    for j in range(n):
+        totalPoints1 = totalPoints0 + pointsPerTeam4(forw2[j])
+        totalCost1 = totalCost0 + costPerTeam4(forw2[j])
+        for k in range(n):
+            totalPoints2 = totalPoints1 + pointsPerTeam4(def4[k])
+            totalCost2 = totalCost1 + costPerTeam4(def4[k])
+            for l in range(n):
+                totalPoints3 = totalPoints2 + pointsPerTeam4(mid4[l])
+                totalCost3 = totalCost2 + costPerTeam4(mid4[l])
+                teamPointsList3.append(totalPoints3)
+                teamCostList3.append(totalCost3)
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
+printSummary(teamPointsList3, teamCostList3)
 
 
 # In[]
 
-#Printing out results from points and cost of all teams
- 
-index_max = np.argmax(teamPointsList)
-meanCost = round(sum(teamCostList)/len(teamCostList)) 
-meanPoints = round(sum(teamPointsList)/len(teamPointsList))
-
-print("Nr of teams: " + str(len(teams)))
-print("Best index: " + str(index_max))
-print("Indexes for the best team: " + str(teams[index_max]))
-print("Best score: "+ str(teamPointsList[index_max]))
-print("Total cost for the best team: " + str(teamCostList[index_max]))
-print("Mean cost: " + str(meanCost))
-print("Mean points: " + str(meanPoints))
+print(players[12]["now_cost"])
+print(costList[11])
 
 
 # In[]
