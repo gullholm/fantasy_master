@@ -40,9 +40,10 @@ def pointsPerTeam3(team):
     return teampoints
 
 def pointsPerTeam4(team, pointsList):
-    teampoints = 0
-    for key in team: 
-        teampoints = teampoints + pointsList[key-1]
+    #teampoints = 0
+    teampoints = np.sum(pointsList[team])
+    #for key in team: 
+    #    teampoints = teampoints + pointsList[key-1]
      
     return teampoints
 
