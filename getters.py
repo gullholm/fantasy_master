@@ -34,7 +34,13 @@ def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', '
         players_feature[player['id']] = case
     return players_feature        
     
-def get_diff_pos(players_data):
+
+"""
+Split players by position
+
+"""
+
+def get_diff_pos(players_data): 
     
     goalkeepers = {k:v for (k,v) in players_data.items() if v['element_type']==1}
     defenders = {k:v for (k,v) in players_data.items() if v['element_type']==2}
@@ -42,3 +48,11 @@ def get_diff_pos(players_data):
     forwards = {k:v for (k,v) in players_data.items() if v['element_type']==4}
     
     return goalkeepers, defenders, midfielders, forwards
+
+def get_full_name(full_data, corr_id): # Get full name for a single player
+    players = full_data["elements"] 
+    
+    for player in players:
+        if (player['id'] == corr_id):
+            return player['first_name'] + " " + player['second_name']
+    return 0
