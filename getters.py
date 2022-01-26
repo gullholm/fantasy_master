@@ -50,86 +50,6 @@ def get_diff_pos(players_data):
     
     return goalkeepers, defenders, midfielders, forwards
 
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 """
  Parsers
 """
@@ -180,7 +100,8 @@ def clean_players(filename, base_filename):
         else:
             print("Oh boy")
         writer.writerow(line)
-=======
+        
+    
 def get_full_name(full_data, corr_id): # Get full name for a single player
     players = full_data["elements"] 
     
@@ -204,4 +125,3 @@ def get_cost_player(full_data, corr_id):
 def get_cost_team(full_data, team_id): # Team is list with id's
     team_cost = [get_cost_player(full_data, player_id) for player_id in team_id]
     return team_cost
->>>>>>> b57fdd83c044a42b27634f258272031187414e04
