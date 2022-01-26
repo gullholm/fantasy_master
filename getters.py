@@ -6,16 +6,17 @@ Created on Thu Jan 20 14:06:26 2022
 
 import requests
 import json
-
+import os
+import csv
 """
 Get all data for the current season in allsvenskan
 """
 
-def get_data():
+def get_data(serie = "allsvenskan", landskod = "se"):
     """ Retrieve the fpl player data from the hard-coded url
     """
         ### Fixa så det kan bli PL också
-    response = requests.get("https://fantasy.allsvenskan.se/api/bootstrap-static/")
+    response = requests.get("https://fantasy." + serie + "." + landskod + "/api/bootstrap-static/")
     if response.status_code != 200:
         raise Exception("Response was code " + str(response.status_code))
     responseStr = response.text
@@ -42,3 +43,56 @@ def get_diff_pos(players_data):
     forwards = {k:v for (k,v) in players_data.items() if v['element_type']==4}
     
     return goalkeepers, defenders, midfielders, forwards
+
+
+
+"""
+ Parsers
+"""
+
+
+def extract_stat_names(dict_of_stats):
+    """ Extracts all the names of the statistics
+    Args:
+        dict_of_stats (dict): Dictionary containing key-alue pair of stats
+    """
+    stat_names = []
+    for key, val in dict_of_stats.items():
+        stat_names += [key]
+    return stat_names
+
+def parse_players(list_of_players, base_filename):
+    stat_names = extract_stat_names(list_of_players[0])
+    filename = base_filename + 'players_raw.csv'
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    f = open(filename, 'w+', encoding='utf8', newline='')
+    w = csv.DictWriter(f, sorted(stat_names))
+    w.writeheader()
+    for player in list_of_players:
+            w.writerow({k:str(v).encode('utf-8').decode('utf-8') for k, v in player.items()})
+            
+def clean_players(filename, base_filename):
+    """ Creates a file with only important data columns for each player
+    Args:
+        filename (str): Name of the file that contains the full data for each player
+    """
+    headers = ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent', 'now_cost', 'element_type']
+    fin = open(filename, 'r+', encoding='utf-8')
+    outname = base_filename + 'cleaned_players.csv'
+    os.makedirs(os.path.dirname(outname), exist_ok=True)
+    fout = open(outname, 'w+', encoding='utf-8', newline='')
+    reader = csv.DictReader(fin)
+    writer = csv.DictWriter(fout, headers, extrasaction='ignore')
+    writer.writeheader()
+    for line in reader:
+        if line['element_type'] == '1':
+            line['element_type'] = 'GK'
+        elif line['element_type'] == '2':
+            line['element_type'] = 'DEF'
+        elif line['element_type'] == '3':
+            line['element_type'] = 'MID'
+        elif line['element_type'] == '4':
+            line['element_type'] = 'FWD'
+        else:
+            print("Oh boy")
+        writer.writerow(line)

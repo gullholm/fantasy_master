@@ -17,3 +17,5 @@ team = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 #ddd = getters.get_diff_pos(players)
 
 gk, d, mf, fwd = getters.get_diff_pos(players)
+
+getters.parse_players(data['elements'], "as21_")
