@@ -54,7 +54,7 @@ def createCostList():
         costList.append(players[i+1]["now_cost"])
     #for player in players:
     #    costList.append(player["now_cost"])    
-    return costList
+    return tuple(costList)
 
 def createPointsList():
     pointsList=[]
@@ -62,7 +62,7 @@ def createPointsList():
         pointsList.append(players[i+1]["total_points"])
     #for player in players:
      #   pointsList.append(player["total_points"])
-    return pointsList
+    return tuple(pointsList)
 
 def createFormation(d = 4, m = 4, f = 2, n = 100):
     
