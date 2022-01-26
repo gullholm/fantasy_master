@@ -35,7 +35,13 @@ def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', '
         players_feature[player['id']] = case
     return players_feature        
     
-def get_diff_pos(players_data):
+
+"""
+Split players by position
+
+"""
+
+def get_diff_pos(players_data): 
     
     goalkeepers = {k:v for (k,v) in players_data.items() if v['element_type']==1}
     defenders = {k:v for (k,v) in players_data.items() if v['element_type']==2}
@@ -43,6 +49,84 @@ def get_diff_pos(players_data):
     forwards = {k:v for (k,v) in players_data.items() if v['element_type']==4}
     
     return goalkeepers, defenders, midfielders, forwards
+
+<<<<<<< HEAD
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -96,3 +180,28 @@ def clean_players(filename, base_filename):
         else:
             print("Oh boy")
         writer.writerow(line)
+=======
+def get_full_name(full_data, corr_id): # Get full name for a single player
+    players = full_data["elements"] 
+    
+    for player in players:
+        if (player['id'] == corr_id):
+            return player['first_name'] + " " + player['second_name']
+    return 0
+
+def get_full_name_team(full_data, team_id): # Team is list with id's
+    team_names = [get_full_name(full_data, player_id) for player_id in team_id]
+    return team_names
+
+def get_cost_player(full_data, corr_id):
+    players = full_data["elements"] 
+    
+    for player in players:
+        if (player['id'] == corr_id):
+            return player['now_cost']
+    return 0
+
+def get_cost_team(full_data, team_id): # Team is list with id's
+    team_cost = [get_cost_player(full_data, player_id) for player_id in team_id]
+    return team_cost
+>>>>>>> b57fdd83c044a42b27634f258272031187414e04
