@@ -82,8 +82,8 @@ print("Indexes for the best team: " + str(teams[index_max]))
 n = 100 # number of players used on each position
 teamPointsList3 , teamCostList3 = [], []
 
-forPoints, defPoints, midPoints = [], [], []
-forCost, defCost, midCost = [], [], []
+forPoints, defPoints, midPoints, gkPoints = [], [], [], []
+forCost, defCost, midCost, gkCost = [], [], [], []
 
 tpl3app = teamPointsList3.append
 tcl3app = teamCostList3.append
@@ -125,6 +125,9 @@ for j in range(n):
 for i in gk:
     g = pointsList[i-1] 
     h = costList[i-1]
+    gkPoints.append(g)
+    gkCost.append(h)
+    
     totalTeamPoints = [x+g for x in tempPointsList]
     totalTeamCost = [x+h for x in tempCostList]
 
@@ -161,8 +164,8 @@ calc.printSummary(teamPointsList3, teamCostList3)
 n = 100 # number of players used on each position
 teamPointsList3 , teamCostList3 = [], []
 
-forPoints, defPoints, midPoints = [], [], []
-forCost, defCost, midCost = [], [], []
+forPoints, defPoints, midPoints, gkPoints = [], [], [], []
+forCost, defCost, midCost, gkPoints = [], [], [], []
 
 tpl3app = teamPointsList3.append
 tcl3app = teamCostList3.append
@@ -178,7 +181,7 @@ start_time = time.time()
 for i in range(n): 
     forPoints.append(pointsPerTeam4(forw2[i],pointsList))
     midPoints.append(pointsPerTeam4(mid4[i],pointsList))        
-    defPoints.append(pointsPerTeam4(def4[i],pointsList))
+    defPoints.append(pointsPerTeam4(def4[i],pointsList))    
     
     forCost.append(costPerTeam4(forw2[i], costList))
     midCost.append(costPerTeam4(mid4[i], costList))
@@ -213,6 +216,9 @@ for k in range(n):
 for i in gk:
     g = pointsList[i-1] 
     h = costList[i-1]
+    gkPoints.append(g)
+    gk
+
     totalTeamPoints = [x+g for x in fdmPointsList]
     totalTeamCost = [x+h for x in fdmCostList]
 
@@ -277,3 +283,27 @@ print("Time for 88201170 is ca: " +str(round(p(88201170))) + " sec")
 #things tried to spped up the loop 
 # sum, np.sum , tuple, list, importing the function from calculations
 # not nestling loops
+import time
+start_time = time.time()
+                
+for i in range(n): 
+    forPoints.append(pointsPerTeam4(forw2[i],pointsList))
+    midPoints.append(pointsPerTeam4(mid4[i],pointsList))        
+    defPoints.append(pointsPerTeam4(def4[i],pointsList))
+    
+    forCost.append(costPerTeam4(forw2[i], costList))
+    midCost.append(costPerTeam4(mid4[i], costList))
+    defCost.append(costPerTeam4(def4[i], costList))
+
+forPoints_np = np.asarray(forPoints)
+midPoints_np = np.asarray(midPoints)
+defPoints_np = np.asarray(defPoints)
+gkPoints_np = np.asarray(gkPoints)
+
+
+fm = np.add.outer(forPoints_np, midPoints_np)
+fmd = np.add.outer(fm, defPoints_np)
+fmdg = np.add.outer(fmd, gkPoints_np)
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
