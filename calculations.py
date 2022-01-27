@@ -23,8 +23,9 @@ def nump2(n, k):
         a[j] = np.add.accumulate(a[j])
     return a
 
-def calcindex(indexlist, dat, nr, length): # Returns indexes of (length) amount of diff random players combinations
+def calcindex(indexlist, dat, nr, length, seed = 123): # Returns indexes of (length) amount of diff random players combinations
     returnlist=[]
+    np.random.seed(seed)
     rand_x = np.random.randint(indexlist.shape[0], size = length)
     for i in range(length):
         temp = []
