@@ -23,15 +23,28 @@ def nump2(n, k):
         a[j] = np.add.accumulate(a[j])
     return a
 
-def calcindex(indexlist, dat, nr, length):
+def calcindex(indexlist, dat, nr, length): # Returns indexes of (length) amount of diff random players combinations
     returnlist=[]
+    rand_x = np.random.randint(indexlist.shape[0], size = length)
     for i in range(length):
         temp = []
-        for j in range(nr):    
-            temp.append(list(dat)[indexlist[i][j]])
+        for j in range(nr):
+            temp.append(list(dat)[indexlist[rand_x[i],j]])
         returnlist.append(temp)
     return returnlist
 
+def createFormation(d = 4, m = 4, f = 2, n = 100): # standard 4-4-2
+    
+    gk, df, mf, fw = getters.get_diff_pos(players)
+    
+    defe = np.transpose(nump2(len(df),d))
+    midf = np.transpose(nump2(len(mf),m))
+    forw = np.transpose(nump2(len(fw),f))    
+    forwards = calcindex(forw, fw, f, n) 
+    defenders = calcindex(defe, df, d, n )
+    midfielders = calcindex(midf, mf, m, n)
+    
+    return defenders, midfielders, forwards
 
 def pointsPerTeam4(team, pointsList):
     teampoints = 0
@@ -64,19 +77,7 @@ def createPointsList():
      #   pointsList.append(player["total_points"])
     return tuple(pointsList)
 
-def createFormation(d = 4, m = 4, f = 2, n = 100):
-    
-    gk, df, mf, fw = getters.get_diff_pos(players)
-    
-    defe = np.transpose(nump2(len(df),d))
-    midf = np.transpose(nump2(len(mf),m))
-    forw = np.transpose(nump2(len(fw),f))    
-        
-    forwards = calcindex(forw, fw, f, n) 
-    defenders = calcindex(defe, df, d, n )
-    midfielders = calcindex(midf, mf, m, n)
-    
-    return defenders, midfielders, forwards
+
 
 def printSummary(teamPoints, teamCosts):
     

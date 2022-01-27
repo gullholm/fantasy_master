@@ -17,7 +17,7 @@ import calculations as calc
 data2 = getters.get_data()
 players = getters.get_players_feature(data2)
 gk, df, mf, fw = getters.get_diff_pos(players)
-def4, mid4, forw2 = calc.createFormation(4, 4, 2, 100)
+def4, mid4, forw2 = calc.createFormation(4, 4, 2, 200)
 
 # In[ ]:
 ## Create teams
@@ -217,7 +217,6 @@ for i in gk:
     g = pointsList[i-1] 
     h = costList[i-1]
     gkPoints.append(g)
-    gk
 
     totalTeamPoints = [x+g for x in fdmPointsList]
     totalTeamCost = [x+h for x in fdmCostList]
@@ -286,7 +285,9 @@ print("Time for 88201170 is ca: " +str(round(p(88201170))) + " sec")
 import time
 start_time = time.time()
                 
-for i in range(n): 
+forPoints, midPoints, defPoints, forCost, midCost, defCost = [],[], [], [], [],[]
+
+for i in range(200): 
     forPoints.append(pointsPerTeam4(forw2[i],pointsList))
     midPoints.append(pointsPerTeam4(mid4[i],pointsList))        
     defPoints.append(pointsPerTeam4(def4[i],pointsList))
