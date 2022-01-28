@@ -23,29 +23,38 @@ def nump2(n, k):
         a[j] = np.add.accumulate(a[j])
     return a
 
-def calcindex(indexlist, dat, nr, length, seed = 123): # Returns indexes of (length) amount of diff random players combinations
+def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) amount of diff random players combinations
     returnlist=[]
     np.random.seed(seed)
     rand_x = np.random.randint(indexlist.shape[0], size = length)
     for i in range(length):
-        temp = []
-        for j in range(nr):
-            temp.append(list(dat)[indexlist[rand_x[i],j]])
+
+        if(len(indexlist.shape) == 1):
+            print(rand_x[i])
+            print(indexlist[rand_x[i]])
+            temp = list(dat)[indexlist[rand_x[i]]]
+        else:
+            temp = [list(dat)[indexlist[rand_x[i],j]] for j in range(nr)]
         returnlist.append(temp)
+        
     return returnlist
 
-def createFormation(d = 4, m = 4, f = 2, n = 100): # standard 4-4-2
+def createFormation(d = 4, m = 4, f = 2, n = 100, seed = 123): # standard 4-4-2
     
     gk, df, mf, fw = getters.get_diff_pos(players)
+    print(len(d))
+    print(df)
+    defe = np.transpose(nump2(len(df), d))
+    midf = np.transpose(nump2(len(mf), m))
+    forw = np.transpose(nump2(len(fw), f))    
+    glk = np.transpose(nump2(len(gk), 1))
+
+    forwards = calcindex(forw, fw, f, n, seed) 
+    defenders = calcindex(defe, df, d, n, seed )
+    midfielders = calcindex(midf, mf, m, n, seed)
+    goalkeepers = calcindex(glk, gk, 1, len(gk), seed)
     
-    defe = np.transpose(nump2(len(df),d))
-    midf = np.transpose(nump2(len(mf),m))
-    forw = np.transpose(nump2(len(fw),f))    
-    forwards = calcindex(forw, fw, f, n) 
-    defenders = calcindex(defe, df, d, n )
-    midfielders = calcindex(midf, mf, m, n)
-    
-    return defenders, midfielders, forwards
+    return goalkeepers, defenders, midfielders, forwards
 
 def pointsPerTeam4(team, pointsList):
     teampoints = 0

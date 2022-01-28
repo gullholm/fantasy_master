@@ -1,0 +1,113 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jan 28 08:30:18 2022
+
+@author: jgull
+"""
+
+import numpy as np
+import calculations as calc
+import getters
+
+def parse_formations_points_or_cost(gk, df, mf, fw): # Arguments is cost/points for each formation part
+    """
+    Adds together the cost and points of different formation parts into 
+    all possible whole teams
+
+    """
+    
+    gk = np.array(gk)
+    df = np.array(df)
+    mf = np.array(mf)
+    fw = np.array(fw)
+
+    gk_df = np.add.outer(gk, df)
+    gk_df_mf = np.add.outer(mf, gk_df)
+    gk_df_mf_fw = np.add.outer(fw, gk_df_mf)
+
+    return gk_df_mf_fw
+
+# (fw:mf:df:gk) index
+
+def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
+
+
+    """
+    Calculate points and cost for the different combinations of the 
+    formation parts
+    """
+    
+    
+    forPoints, midPoints, defPoints, gkPoints, forCosts, midCosts, defCosts, gkCosts = [],[],[],[],[],[], [], []
+    
+    costList = calc.createCostList()
+    pointsList = calc.createPointsList()
+    
+    for i in range(len(fw_comb)):
+        forPoints.append(calc.pointsPerTeam4(fw_comb[i],pointsList))
+        midPoints.append(calc.pointsPerTeam4(mf_comb[i],pointsList))        
+        defPoints.append(calc.pointsPerTeam4(def_comb[i],pointsList))
+        gkPoints.append(calc.pointsPerTeam4(gk_comb[i], pointsList))
+        
+        forCosts.append(calc.costPerTeam4(fw_comb[i], costList))
+        midCosts.append(calc.costPerTeam4(mf_comb[i], costList))
+        defCosts.append(calc.costPerTeam4(def_comb[i], costList))
+        gkCosts.append(calc.costPerTeam4(gk_comb[i], costList))
+        
+    points = [gkPoints, defPoints, midPoints, forPoints]
+    costs = [gkCosts, defCosts, midCosts, forCosts]
+    return points, costs
+
+def find_best_team(under_cost, points):
+    """
+    Finds best team index amongst team under cost limit
+    """
+    cost_f = np.zeros(under_cost.shape[0])
+    for i in range(under_cost.shape[0]):
+        print("hej")
+        cost_f[i] = points[under_cost[i][0],
+                           under_cost[i][1], under_cost[i][2], under_cost[i][3]]
+        
+    return(np.argmax(cost_f))
+    
+def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 700, seed = 123):
+    
+    gk_combs, df_combs, mf_combs, fw_combs = calc.createFormation(formation[0], 
+                                                                  formation[1], 
+                                                                  formation[2], 
+                                                                  n =n)
+
+    points_comb, costs_comb = calc_p_c_per_part(gk_combs,
+                                                df_combs, mf_combs, fw_combs)
+
+    points_full = parse_formations_points_or_cost(points_comb[0],
+                                                     points_comb[1], 
+                                                     points_comb[2], points_comb[3])
+    costs_full = parse_formations_points_or_cost(costs_comb[0],
+                                                     costs_comb[1], 
+                                                     costs_comb[2], costs_comb[3])
+    
+    data2 = getters.get_data()
+    players = getters.get_players_feature(data2)
+    gk, df, mf, fw = getters.get_diff_pos(players)
+    
+    defe = np.transpose(calc.nump2(len(df),4))
+    midf = np.transpose(calc.nump2(len(mf),4))
+    forw = np.transpose(calc.nump2(len(fw),2))    
+    glk = np.transpose(calc.nump2(len(gk),1))
+
+
+    forwards = calc.calcindex(forw, fw, formation[2], n, seed) 
+    defenders = calc.calcindex(defe, df, formation[0], n, seed )
+    midfielders = calc.calcindex(midf, mf, formation[1], n, seed)
+    goalkeepers = calc.calcindex(glk, gk, 1, len(gk), seed)
+
+    under_cost =  np.argwhere(costs_full < cost_limit)
+    print("hej")
+    best = find_best_team(under_cost, points_full)
+
+    sep_ids = [forwards, midfielders, defenders, goalkeepers]
+
+    best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+    
+    return best_team_ids # FW-MF-DF-GK
