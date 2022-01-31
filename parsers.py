@@ -47,13 +47,16 @@ def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb):
         forPoints.append(calc.pointsPerTeam4(fw_comb[i],pointsList))
         midPoints.append(calc.pointsPerTeam4(mf_comb[i],pointsList))        
         defPoints.append(calc.pointsPerTeam4(def_comb[i],pointsList))
-        gkPoints.append(calc.pointsPerTeam4(gk_comb[i], pointsList))
+
         
         forCosts.append(calc.costPerTeam4(fw_comb[i], costList))
         midCosts.append(calc.costPerTeam4(mf_comb[i], costList))
         defCosts.append(calc.costPerTeam4(def_comb[i], costList))
-        gkCosts.append(calc.costPerTeam4(gk_comb[i], costList))
-        
+    
+    for i in range(len(gk_comb)):
+        gkCosts.append(calc.costPerTeam4(gk_comb[i], costList))    
+        gkPoints.append(calc.pointsPerTeam4(gk_comb[i], pointsList))
+    
     points = [gkPoints, defPoints, midPoints, forPoints]
     costs = [gkCosts, defCosts, midCosts, forCosts]
     return points, costs
