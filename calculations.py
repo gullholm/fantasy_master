@@ -30,8 +30,6 @@ def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) a
     for i in range(length):
 
         if(len(indexlist.shape) == 1):
-            print(rand_x[i])
-            print(indexlist[rand_x[i]])
             temp = list(dat)[indexlist[rand_x[i]]]
         else:
             temp = [list(dat)[indexlist[rand_x[i],j]] for j in range(nr)]
@@ -39,10 +37,8 @@ def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) a
         
     return returnlist
 
-def createFormation(d = 4, m = 4, f = 2, n = 100, seed = 123): # standard 4-4-2
+def createFormation(gk, df, mf, fw, d = 4, m = 4, f = 2, n = 100, seed = 123): # standard 4-4-2
     
-    gk, df, mf, fw = getters.get_diff_pos(players)
-
     defe = np.transpose(nump2(len(df), d))
     midf = np.transpose(nump2(len(mf), m))
     forw = np.transpose(nump2(len(fw), f))    

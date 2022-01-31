@@ -27,13 +27,13 @@ dfPoints, dfCost = [], []
 
 dfPoints = [d.get('total_points') for d in df.values()]
 
-#best_team_under_75 = parsers.get_best_team_from_random(n = 100) 
+#random_team = parsers.get_best_team_from_random(n = 100, cost_limit = 700) 
 
-best_team_under_75 = [300, 8, 76, 174, 407, 72, 150, 180, 390, 462, 416]
+random_team = [462, 416, 72, 150, 180, 390, 460, 67, 113, 174, 374] # 700
 
-names = getters.get_full_name_team(data_as, team)
+names = getters.get_full_name_team(data_as, random_team)
 
-random_team_values = [players[ids] for ids in team]
+random_team_values = [players[ids] for ids in random_team]
 
 random_sum_cost = [player['now_cost'] for player in random_team_values] #653
 random_sum_points = [player['total_points'] for player in random_team_values] #941
