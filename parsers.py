@@ -110,3 +110,10 @@ def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 700, seed =
     best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
     
     return best_team_ids # FW-MF-DF-GK
+
+def change_dict_to_2darray(dictt, value):
+    dfPoints = {k:v.get(value) for (k,v) in dictt.items()}
+    dfPointz = np.array(list(dfPoints.items()))
+    
+    return dfPointz
+    
