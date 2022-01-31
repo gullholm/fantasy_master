@@ -42,8 +42,7 @@ def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) a
 def createFormation(d = 4, m = 4, f = 2, n = 100, seed = 123): # standard 4-4-2
     
     gk, df, mf, fw = getters.get_diff_pos(players)
-    print(len(d))
-    print(df)
+
     defe = np.transpose(nump2(len(df), d))
     midf = np.transpose(nump2(len(mf), m))
     forw = np.transpose(nump2(len(fw), f))    

@@ -64,7 +64,6 @@ def find_best_team(under_cost, points):
     """
     cost_f = np.zeros(under_cost.shape[0])
     for i in range(under_cost.shape[0]):
-        print("hej")
         cost_f[i] = points[under_cost[i][0],
                            under_cost[i][1], under_cost[i][2], under_cost[i][3]]
         
