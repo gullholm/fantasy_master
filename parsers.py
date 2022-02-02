@@ -8,6 +8,7 @@ Created on Fri Jan 28 08:30:18 2022
 import numpy as np
 import calculations as calc
 import getters
+import pandas as pd
 
 def parse_formations_points_or_cost(gk, df, mf, fw): # Arguments is cost/points for each formation part
     """
@@ -29,13 +30,15 @@ def parse_formations_points_or_cost(gk, df, mf, fw): # Arguments is cost/points 
 
 # (fw:mf:df:gk) index
 
+
+"""
 def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
 
 
-    """
-    Calculate points and cost for the different combinations of the 
-    formation parts
-    """
+   
+  #   Calculate points and cost for the different combinations of the 
+  #   formation parts
+ #   
     
     
     forPoints, midPoints, defPoints, gkPoints, forCosts, midCosts, defCosts, gkCosts = [],[],[],[],[],[], [], []
@@ -60,10 +63,11 @@ def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb):
     costs = [gkCosts, defCosts, midCosts, forCosts]
     return points, costs
 
+
 def find_best_team(under_cost, points):
-    """
+    
     Finds best team (wrt points) index amongst team under cost limit
-    """
+    
     point_f = np.zeros(under_cost.shape[0])
     for i in range(under_cost.shape[0]):
         point_f[i] = points[under_cost[i][0],
@@ -78,14 +82,17 @@ def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 750, seed =
 
 
 #  Create n combinations of different formation  (max at goalies)
-    gk_combs, df_combs, mf_combs, fw_combs = calc.createFormation(gk, df, mf, fw, formation[0], 
-                                                                  formation[1], 
-                                                                  formation[2], 
-                                                                  n = n)
+#    gk_combs, df_combs, mf_combs, fw_combs = calc.createFormation(gk, df, mf, fw, formation[0], 
+ #                                                                 formation[1], 
+ #                                                                 formation[2], 
+#                                                                  n = n)
 #   print(gk_combs)
-    points_comb, costs_comb = calc_p_c_per_part(gk_combs,
-                                                df_combs, mf_combs, fw_combs)
 
+#    points_comb, costs_comb = calc_p_c_per_part(gk_combs,
+#                                                df_combs, mf_combs, fw_combs)
+
+    gk =?
+    
     points_full = parse_formations_points_or_cost(points_comb[0],
                                                      points_comb[1], 
                                                      points_comb[2], points_comb[3])
@@ -96,10 +103,10 @@ def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 750, seed =
 
 
     
-    defe = np.transpose(calc.nump2(len(df),4))
-    midf = np.transpose(calc.nump2(len(mf),4))
-    forw = np.transpose(calc.nump2(len(fw),2))    
-    glk = np.transpose(calc.nump2(len(gk),1))
+#    defe = np.transpose(calc.nump2(len(df),4))
+#    midf = np.transpose(calc.nump2(len(mf),4))
+#    forw = np.transpose(calc.nump2(len(fw),2))    
+#    glk = np.transpose(calc.nump2(len(gk),1))
 
 
     forwards = calc.calcindex(forw, fw, formation[2], n, seed) 
@@ -113,7 +120,7 @@ def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 750, seed =
     sep_ids = [forwards, midfielders, defenders, goalkeepers]
 #   print(sep_ids)
 #   print(best)
-#    print(under_cost)
+#   print(under_cost)
 #   print(under_cost.shape)
 #   print(len(sep_ids[2]))
 #    print(sep_ids)
@@ -127,4 +134,4 @@ def change_dict_to_2darray(dictt, value):
     dfPointz = np.array(list(dfPoints.items()))
     
     return dfPointz
-    
+    """
