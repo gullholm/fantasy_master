@@ -275,19 +275,16 @@ print("Time for 88201170 is ca: " +str(round(p(88201170))) + " sec")
 
 dfPoints = [d.get('total_points') for d in df.values()]
 dfCost = [d.get('now_cost') for d in df.values()]
-
 N=5
 Nmaxelements(dfPoints, N) 
 
 mfPoints = [d.get('total_points') for d in mf.values()]
 mfCost = [d.get('now_cost') for d in mf.values()]
-
 N=5
 Nmaxelements(mfPoints, N)
 
 fwPoints = [d.get('total_points') for d in fw.values()]
 fwCost = [d.get('now_cost') for d in fw.values()]
-
 N=3
 Nmaxelements(fwPoints, N)  
 
@@ -295,42 +292,24 @@ gkPoints = [d.get('total_points') for d in gk.values()]
 gkCost = [d.get('now_cost') for d in gk.values()]
     
 print((np.max(gkPoints)))
-print(len(gkPoints))
-
     
 # In[]
 
-deleteIndexList = []
 dfGK = pd.DataFrame.from_dict(gk, orient='index')  
 sorteddfGK = dfGK.sort_values(by=['total_points', 'now_cost'])
-
-gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
-deleteIndexList.extend(gkDelete)
+#gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
 
 dfDF = pd.DataFrame.from_dict(df, orient='index')  
 sorteddfDF = dfDF.sort_values(by=['total_points', 'now_cost'])
-
-dfDelete=list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
-deleteIndexList.extend(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
-
+dfDelete = list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
 
 dfMF = pd.DataFrame.from_dict(mf, orient='index')  
 sorteddfMF = dfMF.sort_values(by=['total_points', 'now_cost'])
-
 mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:] )
-deleteIndexList.extend(list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:]))
-
 
 dfFW = pd.DataFrame.from_dict(fw, orient='index')  
 sorteddfFW = dfFW.sort_values(by=['total_points', 'now_cost'])
-
-fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0) ][2:])
-deleteIndexList.extend(list(sorteddfFW.index[(sorteddfFW['total_points'] == 0) ][2:]))
-
-print(deleteIndexList)
-deleteIndexList442 = deleteIndexList
-print(len(deleteIndexList))
-
+#fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0)][2:])
 
 # In[]
 
@@ -338,26 +317,25 @@ def dropRows(df, indexes):
     df = df.drop(indexes, axis=0)
     return df
 
-gkDropZero = dropRows(dfGK, gkDelete)
+#gkDropZero = dropRows(dfGK, gkDelete)
 dfDropZero = dropRows(dfDF, dfDelete)
 mfDropZero = dropRows(dfMF, mfDelete)
-fwDropZero = dropRows(dfFW, fwDelete)
+#fwDropZero = dropRows(dfFW, fwDelete)
 
 # In[]    
-#Forwards
-
+#Goalkeepers
 #First delete all values that generates zero points and are more expensive than
 #cheaper ones that generate 0 points
 # then just keep the ones that are best for each salary
 # then just keep the ones that have less score but higer cost than best one.
 # then just keep them who have better points when increasing cost
     
-idx = gkDropZero.groupby(['now_cost'])['total_points'].transform(max) == gkDropZero['total_points']
-gkBestPerSalary = gkDropZero[idx]
+idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
+gkBestPerSalary= sorteddfGK[idx]
 
-column = gkDropZero["total_points"]
+column = sorteddfGK['total_points']
 max_index = column.idxmax() 
-costForMostPoints = gkDropZero.loc[max_index]['now_cost']
+costForMostPoints = sorteddfGK.loc[max_index]['now_cost']
     
 gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= costForMostPoints]     
     
@@ -375,20 +353,20 @@ bestGK['Goalkeeper'] = saveIndexes
 print(bestGK)
 
 # In[]
+#Forwards
 
 # Gör så vi bara har två per poäng kvar, tredje på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
-sortedfwDropZero= fwDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
+
 deleteIndexes=[]
-for i in range(max(sortedfwDropZero['total_points'])+1):
-    if((sortedfwDropZero['total_points'] == i).sum() > 2):
+for i in range(max(sorteddfFW['total_points'])+1):
+    if((sorteddfFW['total_points'] == i).sum() > 2):
        # print(i)
         
-        fwDelete = list(sortedfwDropZero.index[(sortedfwDropZero['total_points'] == i) ][2:])
+        fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == i) ][2:])
         deleteIndexes.extend(fwDelete)
 
-fwSave2PerPoints = dropRows(sortedfwDropZero,deleteIndexes)        
-    
+fwSave2PerPoints = dropRows(sorteddfFW,deleteIndexes)        
  
 deleteIndexes=[]    
 sortedfw2Points = fwSave2PerPoints.sort_values(by=['now_cost',"total_points"])    
@@ -397,7 +375,7 @@ for i in range(max(fwSave2PerPoints['now_cost'])):
         fwDelete = list(sortedfw2Points.index[(sortedfw2Points['now_cost'] == i) ][:-2])
         deleteIndexes.extend(fwDelete)
     
-fwFinal = dropRows(sortedfw2Points,deleteIndexes)  
+fwFinal = dropRows(sortedfw2Points,deleteIndexes) 
   
 # In[]
 
@@ -438,8 +416,6 @@ sortedmfDropZero= mfDropZero.sort_values(by=[ 'total_points', 'now_cost'])
 deleteIndexes=[]
 for i in range(max(sortedmfDropZero['total_points'])+1):
     if((sortedmfDropZero['total_points'] == i).sum() > 4):
-        #print(i)
-        
         mfDelete = list(sortedmfDropZero.index[(sortedmfDropZero['total_points'] == i) ][4:])
         deleteIndexes.extend(mfDelete)
 
@@ -488,9 +464,7 @@ manmfFinal = dropRows(mfFinal, manDelIndexes)
 # In[]
 # calculate all possible combinations 
 midf = np.transpose(calc.nump2(len(manmfFinal), 4))
-
 n=len(midf)
-
 midfielders = calcIndexOld(midf, manmfFinal.index, 4, n)
 
 midPoints, midCost = [], []
@@ -574,14 +548,10 @@ mandfFinal = dropRows(dfFinal, manDelIndexes)
 # In[]
 # Calculate all possible combinations 
 defe = np.transpose(calc.nump2(len(mandfFinal), 4))
-
 n=len(defe)
-
 defenders = calcIndexOld(defe, mandfFinal.index, 4, n)
 
 defPoints, defCost= [], []
-
-
 
 for i in range(n): 
     defPoints.append(pointsPerTeam4(defenders[i],pointsList))
@@ -598,7 +568,7 @@ for i in range(sortedCostdfPanda.shape[0]):
     if (sortedCostdfPanda.iloc[i]['total_points']) > pointsmax:
         pointsmax =  (sortedCostdfPanda.iloc[i]['total_points'])       
         saveIndexes.append(sortedCostdfPanda.iloc[i].name)
-        print(sortedCostdfPanda.iloc[i].name)
+        #print(sortedCostdfPanda.iloc[i].name)
 #Use only these forward combinations: 
 bestDF = sortedCostdfPanda.loc[saveIndexes]
 print(bestDF)
