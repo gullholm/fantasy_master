@@ -511,8 +511,10 @@ for i in range(gkFinal.shape[0]):
         pointsmax =  (gkFinal.sort_values(by=['now_cost']).iloc[i]['total_points'])       
         saveIndexes.append(gkFinal.sort_values(by=['now_cost']).iloc[i].name)
 
-#Use only these goalkeepers: 
+#Use only these goalkeepers:
 bestGK = gkFinal.loc[saveIndexes]
+bestGK = bestGK.drop(columns = ['element_type'])
+bestGK['Goalkeeper'] = saveIndexes
 print(bestGK)
 
 # In[]
@@ -573,7 +575,7 @@ for i in range(n):
 fwPanda = pd.DataFrame(list(zip(forPoints, forCost, forwards)),
                columns =['total_points', 'now_cost', '2forw'])
 
-sortedCostfwPanda= fwPanda.sort_values(by=['now_cost'])
+sortedCostfwPanda= fwPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
 pointsmax=0  
 saveIndexes=[]   
@@ -621,26 +623,177 @@ for i in range(max(mfSave4PerPoints['now_cost'])):
 mfFinal = dropRows(sortedmf4Points,deleteIndexes) 
 
 
-
-midf = np.transpose(calc.nump2(len(mfFinal), 4))
-
-n=len(midf)
-# In[]
-start_time = time.time()
-midfielders = calcIndexOld(midf, mfFinal.index, 4, 200000)
-print("--- %s seconds ---" % (time.time() - start_time))
-
 # In[]
 print(mfFinal.sort_values(by=['total_points', 'now_cost']))
 
+mfFinalSort = mfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
 manDelIndexes = []
 
 # index på de som inte ens är top 4 om man har obegränsat med pengar, 
 # dvs kommer aldrig bli valda
-manDelIndexes.extend([310,241,15,106])
+#manDelIndexes.extend([310,241,15,106])
 
-# 
+# Index på de som inte är tillräckligt bra att välja om man får en miljon till
+# det är bättre att behålla en billigare som ger mer poäng
+# om det kommer ett värde som är lägre än det fjärde högsta värdet kan man ta bort den
+
+fourthBest=0
+Best=[0, 0,15,33]
+for i in range(4,len(mfFinalSort)):
+
+    if mfFinalSort.iloc[i]['total_points'] > min(Best):
+        Best.remove(min(Best))
+        Best.append(mfFinalSort.iloc[i]['total_points'])
+        #print(Best)
+    else: 
+        #print(mfFinalSort.iloc[i].name)
+        manDelIndexes.append(mfFinalSort.iloc[i].name)
+    #print(mfFinal.iloc[i]['total_points'])
+    
+#manDelIndexes.extend([269, 279, 451, 337, 207, 293, 96, 124, ])
 
 
 manmfFinal = dropRows(mfFinal, manDelIndexes)
 
+
+# In[]
+# calculate all possible combinations 
+midf = np.transpose(calc.nump2(len(manmfFinal), 4))
+
+n=len(midf)
+
+midfielders = calcIndexOld(midf, manmfFinal.index, 4, n)
+
+midPoints = []
+midCost = []
+
+costList = createCostList()
+pointsList = createPointsList()
+
+for i in range(n): 
+    midPoints.append(pointsPerTeam4(midfielders[i],pointsList))
+    midCost.append(costPerTeam4(midfielders[i], costList)) 
+    
+mfPanda = pd.DataFrame(list(zip(midPoints, midCost, midfielders)),
+               columns =['total_points', 'now_cost', '4mid'])
+
+sortedCostmfPanda= mfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+
+pointsmax=0  
+saveIndexes=[]   
+for i in range(sortedCostmfPanda.shape[0]):
+    if (sortedCostmfPanda.iloc[i]['total_points']) > pointsmax:
+        pointsmax =  (sortedCostmfPanda.iloc[i]['total_points'])       
+        saveIndexes.append(sortedCostmfPanda.iloc[i].name)
+        #print(sortedCostmfPanda.iloc[i].name)
+#Use only these forward combinations: 
+bestMF = sortedCostmfPanda.loc[saveIndexes]
+print(bestMF)
+print(len(bestMF))
+
+
+# bästa fyrmannalaget man kan skapa har summa 335 i kostnad
+
+
+# In[]
+
+# Defenders
+
+
+# Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
+#Som är dyrare kommer man aldrig välja
+sorteddfDropZero= dfDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
+deleteIndexes=[]
+for i in range(max(sorteddfDropZero['total_points'])+1):
+    if((sorteddfDropZero['total_points'] == i).sum() > 4):
+        #print(i)
+        
+        dfDelete = list(sorteddfDropZero.index[(sorteddfDropZero['total_points'] == i) ][4:])
+        deleteIndexes.extend(dfDelete)
+
+#tar bort den med minuspoäng också 
+deleteIndexes.append(276)
+dfSave4PerPoints = dropRows(sorteddfDropZero,deleteIndexes)        
+
+
+#endast 4 bästa per kostnad
+deleteIndexes=[]    
+sorteddf4Points = dfSave4PerPoints.sort_values(by=['now_cost',"total_points"])    
+for i in range(max(dfSave4PerPoints['now_cost'])):
+     if((sorteddf4Points['now_cost'] == i).sum()>4):
+         dfDelete = list(sorteddf4Points.index[(sorteddf4Points['now_cost'] == i)][:-4])
+         print(dfDelete)
+         deleteIndexes.extend(dfDelete)
+    
+dfFinal = dropRows(sorteddf4Points,deleteIndexes) 
+
+# In[]
+print(dfFinal.sort_values(by=['total_points', 'now_cost']))
+
+dfFinalSort = dfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
+manDelIndexes = []
+
+# index på de som inte ens är top 4 om man har obegränsat med pengar, 
+# dvs kommer aldrig bli valda
+#manDelIndexes.extend([310,241,15,106])
+
+# Index på de som inte är tillräckligt bra att välja om man får en miljon till
+# det är bättre att behålla en billigare som ger mer poäng
+# om det kommer ett värde som är lägre än det fjärde högsta värdet kan man ta bort den
+
+fourthBest=0
+Best=[0, 34,12,12]
+for i in range(4,len(dfFinalSort)):
+
+    if dfFinalSort.iloc[i]['total_points'] > min(Best):
+        Best.remove(min(Best))
+        Best.append(dfFinalSort.iloc[i]['total_points'])
+        #print(Best)
+    else: 
+        #print(dfFinalSort.iloc[i].name)
+        manDelIndexes.append(dfFinalSort.iloc[i].name)
+    
+
+mandfFinal = dropRows(dfFinal, manDelIndexes)
+
+
+# In[]
+# calculate all possible combinations 
+defe = np.transpose(calc.nump2(len(mandfFinal), 4))
+
+n=len(defe)
+
+defenders = calcIndexOld(defe, mandfFinal.index, 4, n)
+
+defPoints = []
+defCost = []
+
+costList = createCostList()
+pointsList = createPointsList()
+
+for i in range(n): 
+    defPoints.append(pointsPerTeam4(defenders[i],pointsList))
+    defCost.append(costPerTeam4(defenders[i], costList)) 
+    
+dfPanda = pd.DataFrame(list(zip(defPoints, defCost, defenders)),
+               columns =['total_points', 'now_cost', '4def'])
+
+sortedCostdfPanda= dfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+
+pointsmax=0  
+saveIndexes=[]   
+for i in range(sortedCostdfPanda.shape[0]):
+    if (sortedCostdfPanda.iloc[i]['total_points']) > pointsmax:
+        pointsmax =  (sortedCostdfPanda.iloc[i]['total_points'])       
+        saveIndexes.append(sortedCostdfPanda.iloc[i].name)
+        print(sortedCostdfPanda.iloc[i].name)
+#Use only these forward combinations: 
+bestDF = sortedCostdfPanda.loc[saveIndexes]
+print(bestDF)
+print(len(bestDF))
+
+
+# bästa fyrmannalaget man kan skapa har summa 260 i kostnad
+
+# inte sparat om de har samma kostnad , samma bästa... kanske man borde
+# isf >= istället för > när man jämför  
