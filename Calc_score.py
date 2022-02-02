@@ -338,18 +338,23 @@ max_index = column.idxmax()
 costForMostPoints = sorteddfGK.loc[max_index]['now_cost']
     
 gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= costForMostPoints]     
-    
-pointsmax=0  
-saveIndexes=[]   
-for i in range(gkFinal.shape[0]):
-    if (gkFinal.sort_values(by=['now_cost']).iloc[i]['total_points']) > pointsmax:
-        pointsmax =  (gkFinal.sort_values(by=['now_cost']).iloc[i]['total_points'])       
-        saveIndexes.append(gkFinal.sort_values(by=['now_cost']).iloc[i].name)
+
+gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+
+def saveBetterPointsWhenIncreasingCost(df):
+    pointsmax=0  
+    saveIndexes=[]   
+    for i in range(df.shape[0]):
+        if (df.iloc[i]['total_points']) > pointsmax:
+            pointsmax =  (df.iloc[i]['total_points'])       
+            saveIndexes.append(df.iloc[i].name)
+  
+    return df.loc[saveIndexes], saveIndexes
 
 #Use only these goalkeepers:
-bestGK = gkFinal.loc[saveIndexes]
+bestGK, gkIndexes = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
 bestGK = bestGK.drop(columns = ['element_type'])
-bestGK['Goalkeeper'] = saveIndexes
+bestGK['Goalkeeper'] = gkIndexes
 print(bestGK)
 
 # In[]
@@ -394,15 +399,8 @@ fwPanda = pd.DataFrame(list(zip(forPoints, forCost, forwards)),
 
 sortedCostfwPanda= fwPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
-pointsmax=0  
-saveIndexes=[]   
-for i in range(sortedCostfwPanda.shape[0]):
-    if (sortedCostfwPanda.iloc[i]['total_points']) > pointsmax:
-        pointsmax =  (sortedCostfwPanda.iloc[i]['total_points'])       
-        saveIndexes.append(sortedCostfwPanda.iloc[i].name)
-        #print(sortedCostfwPanda.iloc[i].name)
-#Use only these forward combinations: 
-bestFW = sortedCostfwPanda.loc[saveIndexes]
+bestFW, fwIndexes= saveBetterPointsWhenIncreasingCost(sortedCostfwPanda)
+
 print(bestFW)
 print(len(bestFW))
 
@@ -478,15 +476,7 @@ mfPanda = pd.DataFrame(list(zip(midPoints, midCost, midfielders)),
 
 sortedCostmfPanda= mfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
-pointsmax=0  
-saveIndexes=[]   
-for i in range(sortedCostmfPanda.shape[0]):
-    if (sortedCostmfPanda.iloc[i]['total_points']) > pointsmax:
-        pointsmax =  (sortedCostmfPanda.iloc[i]['total_points'])       
-        saveIndexes.append(sortedCostmfPanda.iloc[i].name)
-        #print(sortedCostmfPanda.iloc[i].name)
-#Use only these forward combinations: 
-bestMF = sortedCostmfPanda.loc[saveIndexes]
+bestMF, mfIndexes= saveBetterPointsWhenIncreasingCost(sortedCostmfPanda)
 print(bestMF)
 print(len(bestMF))
 
@@ -562,17 +552,22 @@ dfPanda = pd.DataFrame(list(zip(defPoints, defCost, defenders)),
 
 sortedCostdfPanda= dfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
-pointsmax=0  
-saveIndexes=[]   
-for i in range(sortedCostdfPanda.shape[0]):
-    if (sortedCostdfPanda.iloc[i]['total_points']) > pointsmax:
-        pointsmax =  (sortedCostdfPanda.iloc[i]['total_points'])       
-        saveIndexes.append(sortedCostdfPanda.iloc[i].name)
-        #print(sortedCostdfPanda.iloc[i].name)
-#Use only these forward combinations: 
-bestDF = sortedCostdfPanda.loc[saveIndexes]
+bestDF, dfIndexes = saveBetterPointsWhenIncreasingCost(sortedCostdfPanda)
+
 print(bestDF)
 print(len(bestDF))
 
 # inte sparat om de har samma kostnad , samma bästa... kanske man borde
 # isf >= istället för > när man jämför  
+
+
+# In[]
+#ändra så det är lika i alla
+bestGK=bestGK[['total_points', 'now_cost', 'Goalkeeper']]
+
+# In[]
+
+bestGK.to_csv('1_goalkeeper.csv', index=False)
+bestDF.to_csv('4_defenders.csv', index=False)
+bestMF.to_csv('4_midfielders.csv', index=False)
+bestFW.to_csv('2_forwards.csv', index=False)
