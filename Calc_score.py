@@ -23,22 +23,19 @@ gk, df, mf, fw = getters.get_diff_pos(players)
 gk1, def4, mid4, forw2 = calc.createFormation(gk,df,mf,fw, 4, 4, 2, 100)
 
  
+# In[]
+# Create cost and points list
+costList = createCostList()
+pointsList = createPointsList()
 
 # In[ ]:
 ## Create teams
 # Calculate points and cost for all different teams (Time inefficient)    
-from calculations import pointsPerTeam4, createCostList, createPointsList, costPerTeam4
 
 # n = 50 takes ~130s, n = 30 ~40s
 
 n = 30 # number of players used on each position
-teamPointsList=[]
-teamCostList=[]
-teams=[]
-
-costList = calc.createCostList()
-pointsList = calc.createPointsList()
-
+teamPointsList, teamCostList, teams =[], [],[]
 
 # Uncomment to test time 
 #timeList=[]
@@ -93,9 +90,6 @@ tcl3app = teamCostList3.append
 
 tpl3ext = teamPointsList3.extend
 tcl3ext = teamCostList3.extend
-
-costList = createCostList()
-pointsList = createPointsList()
 
 start_time = time.time()
                 
@@ -156,15 +150,10 @@ calc.printSummary(teamPointsList3, teamCostList3)
 # In[]
 # TEST, Little faster but a little off in index? same result...
 
-# importing the functions from calculations
-#from calculations import pointsPerTeam4, createCostList, createPointsList, costPerTeam4
-
-#n=100 ~21s
-
 # timeList=[] 
 # for i in range(10):
 
-n = 100 # number of players used on each position
+n = 100 # number of players used on each position ~21s
 teamPointsList3 , teamCostList3 = [], []
 
 forPoints, defPoints, midPoints, gkPoints = [], [], [], []
@@ -175,9 +164,6 @@ tcl3app = teamCostList3.append
 
 tpl3ext = teamPointsList3.extend
 tcl3ext = teamCostList3.extend
-
-costList = createCostList()
-pointsList = createPointsList()
 
 start_time = time.time()
                 
@@ -421,9 +407,6 @@ forwards = calcIndexOld(forw, fwFinal.index, 2, n)
 
 forPoints, forCost = [], []
 
-costList = createCostList()
-pointsList = createPointsList()
-
 for i in range(n): 
     forPoints.append(pointsPerTeam4(forwards[i],pointsList))
     forCost.append(costPerTeam4(forwards[i], costList)) 
@@ -510,11 +493,7 @@ n=len(midf)
 
 midfielders = calcIndexOld(midf, manmfFinal.index, 4, n)
 
-midPoints = []
-midCost = []
-
-costList = createCostList()
-pointsList = createPointsList()
+midPoints, midCost = [], []
 
 for i in range(n): 
     midPoints.append(pointsPerTeam4(midfielders[i],pointsList))
@@ -600,11 +579,9 @@ n=len(defe)
 
 defenders = calcIndexOld(defe, mandfFinal.index, 4, n)
 
-defPoints = []
-defCost = []
+defPoints, defCost= [], []
 
-costList = createCostList()
-pointsList = createPointsList()
+
 
 for i in range(n): 
     defPoints.append(pointsPerTeam4(defenders[i],pointsList))
