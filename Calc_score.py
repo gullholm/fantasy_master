@@ -327,7 +327,7 @@ mfDropZero = dropRows(dfMF, mfDelete)
 #First delete all values that generates zero points and are more expensive than
 #cheaper ones that generate 0 points
 # then just keep the ones that are best for each salary
-# then just keep the ones that have less score but higer cost than best one.
+# then just keep the ones that have less cost but higer points than best one.
 # then just keep them who have better points when increasing cost
     
 idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
