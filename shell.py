@@ -43,4 +43,28 @@ dfPointz = parsers.change_dict_to_2darray(df, "total_points")
 mfPointz = parsers.change_dict_to_2darray(mf, "total_points")
 fwdPointz = parsers.change_dict_to_2darray(fwd, "total_points")
 gkPointz = parsers.change_dict_to_2darray(df, "total_points")
+#%%
+import pandas as pd
+import parsers
+gk_combs = pd.read_csv("data_cleaned/1_goalkeeper.csv")
+fw_combs = pd.read_csv("data_cleaned/2_forwards.csv")
+df_combs = pd.read_csv("data_cleaned/4_defenders.csv")
+mf_combs = pd.read_csv("data_cleaned/4_midfielders.csv")
 
+gk_points = gk_combs['total_points'].values
+df_points = df_combs['total_points'].values
+mf_points = mf_combs['total_points'].values
+fw_points = fw_combs['total_points'].values
+
+points_full = parsers.parse_formations_points_or_cost(gk_points, 
+                                                      df_points, mf_points, fw_points)
+
+gk_costs = gk_combs['now_cost'].values
+df_costs = df_combs['now_cost'].values
+mf_costs = mf_combs['now_cost'].values
+fw_costs = fw_combs['now_cost'].values
+
+
+costs_full = parsers.parse_formations_points_or_cost(costs_comb[0],
+                                                     costs_comb[1], 
+                                                     costs_comb[2], costs_comb[3])
