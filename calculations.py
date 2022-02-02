@@ -99,3 +99,31 @@ def printSummary(teamPoints, teamCosts):
     print("Mean points: " + str(meanPoints))
     
     #return None
+    
+# calculate n max numbers of a list and append tehm to a list and print  
+def Nmaxelements(list1, N):
+    final_list = []
+  
+    for i in range(0, N): 
+        max1 = 0
+          
+        for j in range(len(list1)):     
+            if list1[j] > max1:
+                max1 = list1[j];
+                  
+        list1.remove(max1);
+        final_list.append(max1)
+          
+    print(final_list)  
+    
+#save this, the old way to calculate all indexes without randomization
+# so that all combinations occur    
+    
+def calcIndexOld(indexlist, dat, nr, length):
+    returnlist=[]
+    for i in range(length):
+        temp = []
+        for j in range(nr):    
+            temp.append(list(dat)[indexlist[i][j]])
+        returnlist.append(temp)
+    return returnlist    

@@ -11,7 +11,8 @@ import numpy as np
 import time
 import matplotlib.pyplot as plt
 import calculations as calc
-from calculations import pointsPerTeam4, createCostList, createPointsList, costPerTeam4
+from calculations import *
+import pandas as pd
 
 
 # Import the data 
@@ -19,7 +20,7 @@ from calculations import pointsPerTeam4, createCostList, createPointsList, costP
 data2 = getters.get_data()
 players = getters.get_players_feature(data2)
 gk, df, mf, fw = getters.get_diff_pos(players)
-gk1, def4, mid4, forw2 = calc.createFormation(4, 4, 2, 3005)
+gk1, def4, mid4, forw2 = calc.createFormation(gk,df,mf,fw, 4, 4, 2, 100)
 
  
 
@@ -75,8 +76,6 @@ print("Indexes for the best team: " + str(teams[index_max]))
 
 
 # In[]
-# importing the functions from calculations
-#from calculations import pointsPerTeam4, createCostList, createPointsList, costPerTeam4
 
 #n=100 ~23
 
@@ -258,8 +257,6 @@ plt.hist(teamPointsList)
 plt.show()
 
 # In[]
-
-
 # Can be used for testing how much time it will take to run 
 
 xs = list(range(50))
@@ -274,62 +271,8 @@ plt.plot(timeList)
 plt.plot(xs, p(xs))
 
 print("Time for 50 is ca: " +str(round(p(50))) + " sec")
-# 50~2s
 
 print("Time for 88201170 is ca: " +str(round(p(88201170))) + " sec")
-# for the moment 15.6 million years...
-# update, 1.6 million years...
-# update 200 000 - 300 000 years
-
-# In[]
-
-#things tried to spped up the loop 
-# sum, np.sum , tuple, list, importing the function from calculations
-# not nestling loops
-import time
-start_time = time.time()
-                
-forPoints, midPoints, defPoints, forCost, midCost, defCost = [],[], [], [], [],[]
-
-for i in range(200): 
-    forPoints.append(pointsPerTeam4(forw2[i],pointsList))
-    midPoints.append(pointsPerTeam4(mid4[i],pointsList))        
-    defPoints.append(pointsPerTeam4(def4[i],pointsList))
-    
-    forCost.append(costPerTeam4(forw2[i], costList))
-    midCost.append(costPerTeam4(mid4[i], costList))
-    defCost.append(costPerTeam4(def4[i], costList))
-
-forPoints_np = np.asarray(forPoints)
-midPoints_np = np.asarray(midPoints)
-defPoints_np = np.asarray(defPoints)
-gkPoints_np = np.asarray(gkPoints)
-
-
-fm = np.add.outer(forPoints_np, midPoints_np)
-fmd = np.add.outer(fm, defPoints_np)
-fmdg = np.add.outer(fmd, gkPoints_np)
-
-print("--- %s seconds ---" % (time.time() - start_time))
-
-# In[]
-#Best keeper in points and points per cost is index: 374
-# for i in gk:
-#     g = pointsList[i-1] 
-#     h = costList[i-1]
-#     print(str(i) + "has score: " + str(g) +" and cost: " + str(h))
-#     print(g/h)
-    
-#     totalTeamPoints = [x+g for x in fdmPointsList]
-#     totalTeamCost = [x+h for x in fdmCostList]
-
-#     tpl3ext(totalTeamPoints)
-#     tcl3ext(totalTeamCost)
-    
-#totalTeamPoints = [x+pointsList[374-1] for x in fdmPointsList]
-#totalTeamCost = [x+costList[374-1] for x in fdmCostList]  
-#tpl3ext(totalTeamPoints)
-#tcl3ext(totalTeamCost)
 
 
 # In[]
@@ -342,29 +285,8 @@ print("--- %s seconds ---" % (time.time() - start_time))
 #going 4-4-2 starting with goalkeeper-defenders-midfielfers-forwards
 #Max value when choosing 11, 10, 9,... 1 more player
 # Max value: [1745, 1591, 1445, 1296, 1135, 969, 818, 666, 499, 307, 153]
+       
 
-def Nmaxelements(list1, N):
-    final_list = []
-  
-    for i in range(0, N): 
-        max1 = 0
-          
-        for j in range(len(list1)):     
-            if list1[j] > max1:
-                max1 = list1[j];
-                  
-        list1.remove(max1);
-        final_list.append(max1)
-          
-    print(final_list)
-    
-   
-
-#dfPoints=[]
-#dfCost=[]
-#for player in df.values() :
-#    dfPoints.append(player['total_points'])
-#    dfCost.append(player['now_cost'])
 dfPoints = [d.get('total_points') for d in df.values()]
 dfCost = [d.get('now_cost') for d in df.values()]
 
@@ -389,62 +311,20 @@ gkCost = [d.get('now_cost') for d in gk.values()]
 print((np.max(gkPoints)))
 print(len(gkPoints))
 
-# In[]
-dfPoints = {k:v.get('total_points') for (k,v) in df.items()}
-dfPointz = np.array(list(dfPoints.items()))
-
-dfPoints = [d.get('total_points') for d in df.values()]
-
-# In[]
-# Pseudocode
-# data cleaning 
-# gk ,def,def,def,def,...
-
-
-# if satser
-# for i in alla mlvalkte
-#     for ... alla försvarare:
-#         for alla försvarare som är kvar(-1):
-#             for alla försv som ör kvar(-2): 
-#                 if värde < best-nuvarande värde:
-#                     break
-#                 else: fortsätt
-                
-# for i gk
-#     for combination av def4 :
-#         if värde < best-nuvarande värde:
-#             break
-#         else: fortsätt
-#             for combination av 4 midf:
-#                 if värde < best-nuvarande värde:
-#                     break
-#                 else: fortsätt
-#                 for combination 2 forw
-               
-
-# ? - budget 750
-# 300+307=607
-
-# [23,234...] -
-# starta från den och byt ut? ...
     
 # In[]
-import pandas as pd
 
 deleteIndexList = []
 dfGK = pd.DataFrame.from_dict(gk, orient='index')  
 sorteddfGK = dfGK.sort_values(by=['total_points', 'now_cost'])
 
 gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
-print(gkDelete)
 deleteIndexList.extend(gkDelete)
-
 
 dfDF = pd.DataFrame.from_dict(df, orient='index')  
 sorteddfDF = dfDF.sort_values(by=['total_points', 'now_cost'])
 
 dfDelete=list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
-print(dfDelete)
 deleteIndexList.extend(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
 
 
@@ -452,7 +332,6 @@ dfMF = pd.DataFrame.from_dict(mf, orient='index')
 sorteddfMF = dfMF.sort_values(by=['total_points', 'now_cost'])
 
 mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:] )
-print(mfDelete)
 deleteIndexList.extend(list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:]))
 
 
@@ -460,15 +339,12 @@ dfFW = pd.DataFrame.from_dict(fw, orient='index')
 sorteddfFW = dfFW.sort_values(by=['total_points', 'now_cost'])
 
 fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0) ][2:])
-print(fwDelete)
 deleteIndexList.extend(list(sorteddfFW.index[(sorteddfFW['total_points'] == 0) ][2:]))
 
 print(deleteIndexList)
 deleteIndexList442 = deleteIndexList
 print(len(deleteIndexList))
 
-# Start 4-4-2, 5.001283427967741222*10^20 
-# now 6.4678340676557608 * 10^19
 
 # In[]
 
@@ -482,19 +358,16 @@ mfDropZero = dropRows(dfMF, mfDelete)
 fwDropZero = dropRows(dfFW, fwDelete)
 
 # In[]    
+#Forwards
 
 #First delete all values that generates zero points and are more expensive than
 #cheaper ones that generate 0 points
 # then just keep the ones that are best for each salary
 # then just keep the ones that have less score but higer cost than best one.
 # then just keep them who have better points when increasing cost
-
-#print(gkDropZero.sort_values(by=[ 'now_cost','total_points']))
     
 idx = gkDropZero.groupby(['now_cost'])['total_points'].transform(max) == gkDropZero['total_points']
 gkBestPerSalary = gkDropZero[idx]
-
-#print(gkBestPerSalary.sort_values(by= ['now_cost']))
 
 column = gkDropZero["total_points"]
 max_index = column.idxmax() 
@@ -502,8 +375,6 @@ costForMostPoints = gkDropZero.loc[max_index]['now_cost']
     
 gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= costForMostPoints]     
     
-#print(gkFinal.sort_values(by=['now_cost']))
-
 pointsmax=0  
 saveIndexes=[]   
 for i in range(gkFinal.shape[0]):
@@ -541,29 +412,14 @@ for i in range(max(fwSave2PerPoints['now_cost'])):
         deleteIndexes.extend(fwDelete)
     
 fwFinal = dropRows(sortedfw2Points,deleteIndexes)  
-    
-    
   
-    # In[]
-
-def calcIndexOld(indexlist, dat, nr, length):
-    returnlist=[]
-    for i in range(length):
-        temp = []
-        for j in range(nr):    
-            temp.append(list(dat)[indexlist[i][j]])
-        returnlist.append(temp)
-    return returnlist
-
+# In[]
 
 forw = np.transpose(calc.nump2(len(fwFinal), 2))
-
 n=len(forw)
-
 forwards = calcIndexOld(forw, fwFinal.index, 2, n)  
 
-forPoints = []
-forCost = []
+forPoints, forCost = [], []
 
 costList = createCostList()
 pointsList = createPointsList()
@@ -589,14 +445,9 @@ bestFW = sortedCostfwPanda.loc[saveIndexes]
 print(bestFW)
 print(len(bestFW))
 
-
-# bästa tvåmannalaget man kan skapa har summa 158 i kostnad
-
-
 # In[]
 
 # Midfielders
-
 
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
@@ -629,15 +480,12 @@ print(mfFinal.sort_values(by=['total_points', 'now_cost']))
 mfFinalSort = mfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
 manDelIndexes = []
 
-# index på de som inte ens är top 4 om man har obegränsat med pengar, 
-# dvs kommer aldrig bli valda
-#manDelIndexes.extend([310,241,15,106])
-
 # Index på de som inte är tillräckligt bra att välja om man får en miljon till
 # det är bättre att behålla en billigare som ger mer poäng
 # om det kommer ett värde som är lägre än det fjärde högsta värdet kan man ta bort den
 
 fourthBest=0
+# Poäng för de fyra billigaste:
 Best=[0, 0,15,33]
 for i in range(4,len(mfFinalSort)):
 
@@ -651,8 +499,6 @@ for i in range(4,len(mfFinalSort)):
     #print(mfFinal.iloc[i]['total_points'])
     
 #manDelIndexes.extend([269, 279, 451, 337, 207, 293, 96, 124, ])
-
-
 manmfFinal = dropRows(mfFinal, manDelIndexes)
 
 
@@ -692,13 +538,9 @@ print(bestMF)
 print(len(bestMF))
 
 
-# bästa fyrmannalaget man kan skapa har summa 335 i kostnad
-
-
 # In[]
 
 # Defenders
-
 
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
@@ -711,10 +553,9 @@ for i in range(max(sorteddfDropZero['total_points'])+1):
         dfDelete = list(sorteddfDropZero.index[(sorteddfDropZero['total_points'] == i) ][4:])
         deleteIndexes.extend(dfDelete)
 
-#tar bort den med minuspoäng också 
+#Tar manuellt bort den med minuspoäng också 
 deleteIndexes.append(276)
 dfSave4PerPoints = dropRows(sorteddfDropZero,deleteIndexes)        
-
 
 #endast 4 bästa per kostnad
 deleteIndexes=[]    
@@ -733,10 +574,6 @@ print(dfFinal.sort_values(by=['total_points', 'now_cost']))
 dfFinalSort = dfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
 manDelIndexes = []
 
-# index på de som inte ens är top 4 om man har obegränsat med pengar, 
-# dvs kommer aldrig bli valda
-#manDelIndexes.extend([310,241,15,106])
-
 # Index på de som inte är tillräckligt bra att välja om man får en miljon till
 # det är bättre att behålla en billigare som ger mer poäng
 # om det kommer ett värde som är lägre än det fjärde högsta värdet kan man ta bort den
@@ -753,12 +590,10 @@ for i in range(4,len(dfFinalSort)):
         #print(dfFinalSort.iloc[i].name)
         manDelIndexes.append(dfFinalSort.iloc[i].name)
     
-
 mandfFinal = dropRows(dfFinal, manDelIndexes)
 
-
 # In[]
-# calculate all possible combinations 
+# Calculate all possible combinations 
 defe = np.transpose(calc.nump2(len(mandfFinal), 4))
 
 n=len(defe)
@@ -791,9 +626,6 @@ for i in range(sortedCostdfPanda.shape[0]):
 bestDF = sortedCostdfPanda.loc[saveIndexes]
 print(bestDF)
 print(len(bestDF))
-
-
-# bästa fyrmannalaget man kan skapa har summa 260 i kostnad
 
 # inte sparat om de har samma kostnad , samma bästa... kanske man borde
 # isf >= istället för > när man jämför  
