@@ -294,32 +294,49 @@ gkCost = [d.get('now_cost') for d in gk.values()]
 print((np.max(gkPoints)))
     
 # In[]
-
-dfGK = pd.DataFrame.from_dict(gk, orient='index')  
-sorteddfGK = dfGK.sort_values(by=['total_points', 'now_cost'])
-#gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
-
-dfDF = pd.DataFrame.from_dict(df, orient='index')  
-sorteddfDF = dfDF.sort_values(by=['total_points', 'now_cost'])
-dfDelete = list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
-
-dfMF = pd.DataFrame.from_dict(mf, orient='index')  
-sorteddfMF = dfMF.sort_values(by=['total_points', 'now_cost'])
-mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:] )
-
-dfFW = pd.DataFrame.from_dict(fw, orient='index')  
-sorteddfFW = dfFW.sort_values(by=['total_points', 'now_cost'])
-#fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0)][2:])
-
-# In[]
+import getters 
+import pandas as pd
+import cleaners
 
 def dropRows(df, indexes):
     df = df.drop(indexes, axis=0)
     return df
 
+def del_zeros(sorted_dfs, formation): # Delete #n_part zeros from formation df
+    del_sorted_dfs = []
+    for (i,df) in enumerate(sorted_dfs):
+        dele = list(df.index[(df['total_points'] == 0)][formation[i]:])
+        print(dele)
+        del_sorted_dfs.append(dropRows(df, dele))
+    return(del_sorted_dfs)
+
+sorted_dfs = cleaners.all_forms_as_df_cleaned() # does all cleaning of the whole dataset
+bestGK = cleaners.clean_gk(sorted_dfs[0]) # cleans gk so ready for csv
+
+
+#dfGK = pd.DataFrame.from_dict(gk, orient='index')  
+#sorteddfGK = dfGK.sort_values(by=['total_points', 'now_cost'])
+#gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
+
+#dfDF = pd.DataFrame.from_dict(df, orient='index')  
+#sorteddfDF = dfDF.sort_values(by=['total_points', 'now_cost'])
+#dfDelete = list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
+
+#dfMF = pd.DataFrame.from_dict(mf, orient='index')  
+#sorteddfMF = dfMF.sort_values(by=['total_points', 'now_cost'])
+#mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:] )
+
+#fFW = pd.DataFrame.from_dict(fw, orient='index')  
+#sorteddfFW = dfFW.sort_values(by=['total_points', 'now_cost'])
+#fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0)][2:])
+
+# In[]
+
+
+
 #gkDropZero = dropRows(dfGK, gkDelete)
-dfDropZero = dropRows(dfDF, dfDelete)
-mfDropZero = dropRows(dfMF, mfDelete)
+#dfDropZero = dropRows(dfDF, dfDelete)
+#mfDropZero = dropRows(dfMF, mfDelete)
 #fwDropZero = dropRows(dfFW, fwDelete)
 
 # In[]    
@@ -329,32 +346,51 @@ mfDropZero = dropRows(dfMF, mfDelete)
 # then just keep the ones that are best for each salary
 # then just keep the ones that have less cost but higer points than best one.
 # then just keep them who have better points when increasing cost
-    
-idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
-gkBestPerSalary= sorteddfGK[idx]
-
-column = sorteddfGK['total_points']
-max_index = column.idxmax() 
-costForMostPoints = sorteddfGK.loc[max_index]['now_cost']
-    
-gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= costForMostPoints]     
-
-gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-
 def saveBetterPointsWhenIncreasingCost(df):
     pointsmax=0  
-    saveIndexes=[]   
+    saveIndexes=[]
     for i in range(df.shape[0]):
         if (df.iloc[i]['total_points']) > pointsmax:
             pointsmax =  (df.iloc[i]['total_points']) 
             saveIndexes.append(df.iloc[i].name)
+            print(df.iloc[i])
+    df = df.loc[saveIndexes]
+    return df
 
-    return df.loc[saveIndexes], saveIndexes
+
+def clean_gk(sorted_df_gk):
+    
+    idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
+    gkBestPerSalary = sorteddfGK[idx] # Remove the ones that costs the same but less points
+
+    cost_best_gk = sorteddfGK.loc[sorteddfGK['total_points'].idxmax()]['now_cost']
+    # Remove all that are more expansive than the best gk 
+    gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= cost_best_gk]      
+
+    gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+    bestGK = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
+    return bestGK 
+    
+    
+    
+sorteddfGK = sorted_dfs_del_0[0]
+best_GK= clean_gk(sorted_dfs_del_0[0])
+#idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
+#gkBestPerSalary = sorteddfGK[idx]
+
+#column = sorteddfGK['total_points']
+#max_index = column.idxmax() 
+#costForMostPoints = sorteddfGK.loc[max_index]['now_cost']
+    
+#gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= costForMostPoints]     
+
+#gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+
 
 #Use only these goalkeepers:
-bestGK, gkIndexes = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
-bestGK = bestGK.drop(columns = ['element_type'])
-bestGK['indexes'] = gkIndexes
+#bestGK = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
+#bestGK = bestGK.drop(columns = ['element_type'])
+#bestGK['indexes'] = gkIndexes
 print(bestGK)
 
 # In[]

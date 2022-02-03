@@ -54,12 +54,14 @@ import calculations as calc
 all_combs = get.get_cleaned_combs()
 under_70 = calc.calc_best_team(all_combs, 700)
 
+data = getters.get_data()
+best_team_i = [item for sublist in best_team_ids for item in sublist]
+best_team_names = getters.get_full_name_team(data, best_team_i)
 
+best_team_ids_values = [players[ids] for ids in best_team_i]
 
-
-
-
-
+best_sum_cost = [player['now_cost'] for player in best_team_ids_values] #653
+best_sum_points = [player['total_points'] for player in best_team_ids_values] #941
 
 
 
