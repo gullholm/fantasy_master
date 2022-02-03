@@ -346,9 +346,9 @@ def saveBetterPointsWhenIncreasingCost(df):
     saveIndexes=[]   
     for i in range(df.shape[0]):
         if (df.iloc[i]['total_points']) > pointsmax:
-            pointsmax =  (df.iloc[i]['total_points'])       
+            pointsmax =  (df.iloc[i]['total_points']) 
             saveIndexes.append(df.iloc[i].name)
-  
+
     return df.loc[saveIndexes], saveIndexes
 
 #Use only these goalkeepers:

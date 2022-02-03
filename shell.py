@@ -27,16 +27,16 @@ dfPoints, dfCost = [], []
 
 dfPoints = [d.get('total_points') for d in df.values()]
 
-#random_team = parsers.get_best_team_from_random(n = 100, cost_limit = 700) 
+#best_team_ids = parsers.get_best_team_from_random(n = 100, cost_limit = 700) 
 
-random_team = [462, 416, 72, 150, 180, 390, 460, 67, 113, 174, 374] # 700
+best_team_ids = [462, 416, 72, 150, 180, 390, 460, 67, 113, 174, 374] # 700
 
-names = getters.get_full_name_team(data_as, random_team)
+names = getters.get_full_name_team(data_as, best_team_ids)
 
-random_team_values = [players[ids] for ids in random_team]
+best_team_ids_values = [players[ids] for ids in best_team_ids]
 
-random_sum_cost = [player['now_cost'] for player in random_team_values] #653
-random_sum_points = [player['total_points'] for player in random_team_values] #941
+random_sum_cost = [player['now_cost'] for player in best_team_ids_values] #653
+random_sum_points = [player['total_points'] for player in best_team_ids_values] #941
 
 
 dfPointz = parsers.change_dict_to_2darray(df, "total_points")
@@ -48,13 +48,17 @@ import pandas as pd
 import parsers
 import ast
 generic = lambda x: ast.literal_eval(x)
+
 conv = {'indexes': generic}
 
 gk_combs = pd.read_csv("data_cleaned/1_goalkeeper.csv", converters = conv)
 fw_combs = pd.read_csv("data_cleaned/2_forwards.csv", converters = conv)
 df_combs = pd.read_csv("data_cleaned/4_defenders.csv", converters = conv)
 mf_combs = pd.read_csv("data_cleaned/4_midfielders.csv", converters = conv)
+gk_combs['indexes'] = gk_combs['indexes'].apply(lambda x: [x])
 #%%
+
+
 gk_points = gk_combs['total_points'].values
 df_points = df_combs['total_points'].values
 mf_points = mf_combs['total_points'].values
@@ -69,6 +73,22 @@ mf_costs = mf_combs['now_cost'].values
 fw_costs = fw_combs['now_cost'].values
 
 
-costs_full = parsers.parse_formations_points_or_cost(costs_comb[0],
-                                                     costs_comb[1], 
-                                                     costs_comb[2], costs_comb[3])
+costs_full = parsers.parse_formations_points_or_cost(gk_costs, df_costs, 
+                                                     mf_costs, fw_costs)
+
+under_cost =  np.argwhere(costs_full < 500) 
+best = parsers.find_best_team(under_cost, points_full)
+sep_ids = [fw_combs['indexes'].values.tolist(),mf_combs['indexes'].values.tolist() 
+           , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]
+best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+
+
+#%%
+data = getters.get_data()
+best_team_i = [item for sublist in best_team_ids for item in sublist]
+best_team_names = getters.get_full_name_team(data, best_team_i)
+
+best_team_ids_values = [players[ids] for ids in best_team_i]
+
+best_sum_cost = [player['now_cost'] for player in best_team_ids_values] #653
+best_sum_points = [player['total_points'] for player in best_team_ids_values] #941

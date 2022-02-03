@@ -31,6 +31,20 @@ def parse_formations_points_or_cost(gk, df, mf, fw): # Arguments is cost/points 
 # (fw:mf:df:gk) index
 
 
+def find_best_team(under_cost, points):
+    """   
+    Finds best team (wrt points) index amongst team under cost limit
+
+    """   
+    point_f = np.zeros(under_cost.shape[0])
+  
+    for i in range(under_cost.shape[0]):
+        point_f[i] = points[under_cost[i][0],
+                           under_cost[i][1], under_cost[i][2], under_cost[i][3]]
+        
+    return(np.argmax(point_f))
+
+
 """
 def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
 
@@ -64,16 +78,6 @@ def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb):
     return points, costs
 
 
-def find_best_team(under_cost, points):
-    
-    Finds best team (wrt points) index amongst team under cost limit
-    
-    point_f = np.zeros(under_cost.shape[0])
-    for i in range(under_cost.shape[0]):
-        point_f[i] = points[under_cost[i][0],
-                           under_cost[i][1], under_cost[i][2], under_cost[i][3]]
-        
-    return(np.argmax(point_f))
     
 def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 750, seed = 123):
     data2 = getters.get_data()
