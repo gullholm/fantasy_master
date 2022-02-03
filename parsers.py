@@ -10,17 +10,17 @@ import calculations as calc
 import getters
 import pandas as pd
 
-def parse_formations_points_or_cost(gk, df, mf, fw): # Arguments is cost/points for each formation part
+def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for each formation part
     """
     Adds together the cost and points of different formation parts into 
     all possible whole teams
 
     """
     
-    gk = np.array(gk)
-    df = np.array(df)
-    mf = np.array(mf)
-    fw = np.array(fw)
+    gk = np.array(all_combs[0])
+    df = np.array(all_combs[1])
+    mf = np.array(all_combs[2])
+    fw = np.array(all_combs[3])
 
     gk_df = np.add.outer(df, gk)
     gk_df_mf = np.add.outer(mf, gk_df)
@@ -107,10 +107,10 @@ def get_best_team_from_random(n, formation = [4, 4, 2], cost_limit = 750, seed =
 
 
     
-#    defe = np.transpose(calc.nump2(len(df),4))
-#    midf = np.transpose(calc.nump2(len(mf),4))
-#    forw = np.transpose(calc.nump2(len(fw),2))    
-#    glk = np.transpose(calc.nump2(len(gk),1))
+    defe = np.transpose(calc.nump2(len(df),4))
+    midf = np.transpose(calc.nump2(len(mf),4))
+    forw = np.transpose(calc.nump2(len(fw),2))    
+    glk = np.transpose(calc.nump2(len(gk),1))
 
 
     forwards = calc.calcindex(forw, fw, formation[2], n, seed) 

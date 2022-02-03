@@ -8,6 +8,9 @@ import requests
 import json
 import os
 import csv
+import pandas as pd
+import ast
+
 """
 Get all data for the current season in allsvenskan
 """
@@ -125,3 +128,21 @@ def get_cost_player(full_data, corr_id):
 def get_cost_team(full_data, team_id): # Team is list with id's
     team_cost = [get_cost_player(full_data, player_id) for player_id in team_id]
     return team_cost
+
+def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
+    # create empty list
+    dataframes_list = []
+    generic = lambda x: ast.literal_eval(x)
+    conv = {'indexes': generic}
+ 
+    # append datasets into teh list
+    for f in files:
+        temp_df = pd.read_csv(base + "/" + f + ".csv", converters = conv)
+        if (f == "gk"): #Convert so also gk has indexes as lists
+            temp_df['indexes'] = temp_df['indexes'].apply(lambda x: [x]) 
+        dataframes_list.append(temp_df)
+        
+    return dataframes_list
+    
+    
+    

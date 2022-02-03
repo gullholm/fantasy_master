@@ -7,6 +7,7 @@ Created on Tue Jan 25 10:55:46 2022
 
 import numpy as np
 import getters
+import parsers
 
 data2 = getters.get_data()
 players = getters.get_players_feature(data2)
@@ -27,6 +28,7 @@ def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) a
     returnlist=[]
     np.random.seed(seed)
     rand_x = np.random.randint(indexlist.shape[0], size = length)
+    
     for i in range(length):
 
         if(len(indexlist.shape) == 1):
@@ -127,3 +129,29 @@ def calcIndexOld(indexlist, dat, nr, length):
             temp.append(list(dat)[indexlist[i][j]])
         returnlist.append(temp)
     return returnlist    
+
+def calc_from_combs(all_combs, column):
+    return [comb[column].values for comb in all_combs]
+
+def calc_best_team(all_combs, cost_limit):
+    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+
+    all_points = calc_from_combs(all_combs, "total_points")
+    all_costs = calc_from_combs(all_combs, "now_cost" )
+
+    points_full = parsers.parse_formations_points_or_cost(all_points)
+
+    costs_full = parsers.parse_formations_points_or_cost(all_costs)
+
+    under_cost =  np.argwhere(costs_full < cost_limit)
+    
+    best = parsers.find_best_team(under_cost, points_full)
+
+    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+    
+    return sep_ids, under_cost, best
+    
+    #best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+    
+    #return best_team_ids
+    
