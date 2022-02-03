@@ -354,7 +354,7 @@ def saveBetterPointsWhenIncreasingCost(df):
 #Use only these goalkeepers:
 bestGK, gkIndexes = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
 bestGK = bestGK.drop(columns = ['element_type'])
-bestGK['Goalkeeper'] = gkIndexes
+bestGK['indexes'] = gkIndexes
 print(bestGK)
 
 # In[]
@@ -395,7 +395,7 @@ for i in range(n):
     forCost.append(costPerTeam4(forwards[i], costList)) 
     
 fwPanda = pd.DataFrame(list(zip(forPoints, forCost, forwards)),
-               columns =['total_points', 'now_cost', '2forw'])
+               columns =['total_points', 'now_cost', 'indexes'])
 
 sortedCostfwPanda= fwPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
@@ -472,7 +472,7 @@ for i in range(n):
     midCost.append(costPerTeam4(midfielders[i], costList)) 
     
 mfPanda = pd.DataFrame(list(zip(midPoints, midCost, midfielders)),
-               columns =['total_points', 'now_cost', '4mid'])
+               columns =['total_points', 'now_cost', 'indexes'])
 
 sortedCostmfPanda= mfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
@@ -548,7 +548,7 @@ for i in range(n):
     defCost.append(costPerTeam4(defenders[i], costList)) 
     
 dfPanda = pd.DataFrame(list(zip(defPoints, defCost, defenders)),
-               columns =['total_points', 'now_cost', '4def'])
+               columns =['total_points', 'now_cost', 'indexes'])
 
 sortedCostdfPanda= dfPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 

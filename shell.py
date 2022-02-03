@@ -46,8 +46,12 @@ gkPointz = parsers.change_dict_to_2darray(df, "total_points")
 #%%
 import pandas as pd
 import parsers
+import ast
+generic = lambda x: ast.literal_eval(x)
+conv = {'2forw': generic}
+
 gk_combs = pd.read_csv("data_cleaned/1_goalkeeper.csv")
-fw_combs = pd.read_csv("data_cleaned/2_forwards.csv")
+fw_combs = pd.read_csv("data_cleaned/2_forwards.csv", converters = conv)
 df_combs = pd.read_csv("data_cleaned/4_defenders.csv")
 mf_combs = pd.read_csv("data_cleaned/4_midfielders.csv")
 
