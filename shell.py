@@ -48,13 +48,13 @@ import pandas as pd
 import parsers
 import ast
 generic = lambda x: ast.literal_eval(x)
-conv = {'2forw': generic}
+conv = {'indexes': generic}
 
-gk_combs = pd.read_csv("data_cleaned/1_goalkeeper.csv")
+gk_combs = pd.read_csv("data_cleaned/1_goalkeeper.csv", converters = conv)
 fw_combs = pd.read_csv("data_cleaned/2_forwards.csv", converters = conv)
-df_combs = pd.read_csv("data_cleaned/4_defenders.csv")
-mf_combs = pd.read_csv("data_cleaned/4_midfielders.csv")
-
+df_combs = pd.read_csv("data_cleaned/4_defenders.csv", converters = conv)
+mf_combs = pd.read_csv("data_cleaned/4_midfielders.csv", converters = conv)
+#%%
 gk_points = gk_combs['total_points'].values
 df_points = df_combs['total_points'].values
 mf_points = mf_combs['total_points'].values
