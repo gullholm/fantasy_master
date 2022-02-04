@@ -380,13 +380,15 @@ def clean_gk(sorted_df_gk):
     gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= cost_best_gk]      
 
     gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-    bestGK = saveBetterPointsWhenIncreasingCost(gkFinalSorted)
-    return bestGK 
+    bestGK = delete_worse_points_when_increasing_cost(gkFinalSorted, 1)
+    return bestGK
     
     
     
-sorteddfGK = sorted_dfs_del_0[0]
-best_GK= clean_gk(sorted_dfs_del_0[0])
+#sorteddfGK = sorted_dfs_del_0[0]
+best_GK , bgk_new = clean_gk(sorted_dfs[0])
+
+
 #idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
 #gkBestPerSalary = sorteddfGK[idx]
 
@@ -416,13 +418,16 @@ def del_multiple_cost_per_point(sorted_df_part, n):
     delete if there are more than 
     n players that have the same total points
     """
+    sorted_df_part = sorted_df_part.sort_values(by=["total_points", "now_cost"])    
+    deleteIndexes=[]    
+
     for i in range(max(sorteddfFW['total_points'])+1):
         if((sorted_df_part['total_points'] == i).sum() > n):
             
             delete = list(sorted_df_part.index[(sorted_df_part['total_points'] == i) ][n:])
             deleteIndexes.extend(delete)
-
-    return(dropRows(sorteddfFW,deleteIndexes))
+        
+    return(dropRows(sorted_df_part,deleteIndexes))
 
 def del_multiple_point_per_cost(sorted_df_part, n):
     """
@@ -434,11 +439,11 @@ def del_multiple_point_per_cost(sorted_df_part, n):
     sorted_df_part = sorted_df_part.sort_values(by=['now_cost',"total_points"])    
     
     for i in range(max(sorted_df_part['now_cost'])):
-        if((sorted_df_part['now_cost'] == i).sum()>n):
+        if((sorted_df_part['now_cost'] == i).sum() > n):
             
-            fwDelete = list(sorted_df_part.index[(sorted_df_part['now_cost'] == i) ][:-n])
+            fwDelete = list(sorted_df_part.index[(sorted_df_part['now_cost'] == i) ][n:])
             deleteIndexes.extend(fwDelete)
-    
+            
     return(dropRows(sorted_df_part,deleteIndexes))
 
 #deleteIndexes=[]
@@ -468,36 +473,49 @@ sssfw2 = del_multiple_point_per_cost(fwSave2PerPoints, formation[3])
 #fwFinal = dropRows(sortedfw2Points,deleteIndexes) 
   
 # In[]
+import numpy as np
+from calculations import *
+import calculations as calc
 
 def create_all_combs_from_cleaned_df(df_part, form_n):
     
-    forw = np.transpose(calc.nump2(len(fwFinal), form_n))
-    forwards = calcIndexOld(forw, fwFinal.index, form_n, len(forw))  
+    combs = np.transpose(calc.nump2(len(df_part), form_n))
+    combs_indexes = calcIndexOld(combs, df_part.index, form_n, len(combs))  
     pointsList = createPointsList()
     costList = createCostList()
-    forPoints, forCost = [], []
+    combsPoints, combsCost = [], []
 
-    for i in range(len(forw)): 
-        forPoints.append(pointsPerTeam4(forwards[i],pointsList))
-        forCost.append(costPerTeam4(forwards[i], costList)) 
+    for i in range(len(combs)): 
+        combsPoints.append(pointsPerTeam4(combs_indexes[i],pointsList))
+        combsCost.append(costPerTeam4(combs_indexes[i], costList)) 
 
-    fwPanda = pd.DataFrame(list(zip(forPoints, forCost, forwards)),
+    combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
                            columns =['total_points', 'now_cost', 'indexes'])
 
-    sortedCostfwPanda= fwPanda.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+    sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
 
-    return(saveBetterPointsWhenIncreasingCost(sortedCostfwPanda))
+    return(delete_worse_points_when_increasing_cost(sortedCombs_parts, 1), sortedCombs_parts)
 
-best_fw = create_all_combs_from_cleaned_df(sssfw2, formation[3])
+#best_fw = create_all_combs_from_cleaned_df(sssfw2, formation[3])
 
 # In[]
 
+def delete_worse_points_when_increasing_cost(df_part, n_form):
+    
+    df_part.sort_values(by=['now_cost','total_points'], ascending=[True, False])
+    best = df_part.head(n_form)['total_points'].to_list()
+    ind_to_del = []
+    for i in range(n_form,len(df_part)):
+        if df_part.iloc[i]['total_points'] > min(best):
+            best.remove(min(best))
+            best.append(df_part.iloc[i]['total_points'])
+        else: 
+            ind_to_del.append(df_part.iloc[i].name)
+    return(dropRows(df_part, ind_to_del))
 # Midfielders
-
+import cleaners
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
-mfDropZero = sorted_dfs[2]
-mfSave4PerPoints = mfDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
 
 #for i in range(max(sortedmfDropZero['total_points'])+1):
 #    if((sortedmfDropZero['total_points'] == i).sum() > 4):
@@ -514,41 +532,69 @@ mfSave4PerPoints = mfDropZero.sort_values(by=[ 'total_points', 'now_cost'])
 #         mfDelete = list(sortedmf4Points.index[(sortedmf4Points['now_cost'] == i)][:-4])
 #         print(mfDelete)
 #         deleteIndexes.extend(mfDelete)
- 
-   
-mfFinals = del_multiple_point_per_cost(mfSave4PerPoints, formation[2])
+#mfFinals2 = del_multiple_cost_per_point(, formation[2])
+
+mfFinals = sorted_dfs[2].sort_values(by=['now_cost','total_points'], ascending=[True, False])
+
+mfFinals1 = del_multiple_point_per_cost(mfFinals, formation[2])
+
+mfFinals2 = del_multiple_cost_per_point(mfFinals1, formation[2])
+
+mffff_final = delete_worse_points_when_increasing_cost(mfFinals2, formation[2])
+
+mf_combs = create_all_combs_from_cleaned_df(mffff_final, formation[2])
 
 
 # In[]
-print(mfFinal.sort_values(by=['total_points', 'now_cost']))
-
-mfFinalSort = mfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
+import cleaners
+sorted_dfs = cleaners.all_forms_as_df_cleaned()
+mfFinalSort = sorted_dfs[2].sort_values(by=['now_cost','total_points'], ascending=[True, False])
 manDelIndexes = []
 
+
+    
+mffff_final = delete_worse_points_when_increasing_cost(mfFinalSort, formation[2])
+            
 # Index på de som inte är tillräckligt bra att välja om man får en miljon till
 # det är bättre att behålla en billigare som ger mer poäng
 # om det kommer ett värde som är lägre än det fjärde högsta värdet kan man ta bort den
 
-fourthBest=0
+# fourthBest=0
 # Poäng för de fyra billigaste:
-Best=[0, 0,15,33]
-for i in range(4,len(mfFinalSort)):
-
-    if mfFinalSort.iloc[i]['total_points'] > min(Best):
-        Best.remove(min(Best))
-        Best.append(mfFinalSort.iloc[i]['total_points'])
-        #print(Best)
-    else: 
-        #print(mfFinalSort.iloc[i].name)
-        manDelIndexes.append(mfFinalSort.iloc[i].name)
-    #print(mfFinal.iloc[i]['total_points'])
-    
-#manDelIndexes.extend([269, 279, 451, 337, 207, 293, 96, 124, ])
-manmfFinal = dropRows(mfFinal, manDelIndexes)
+#Best=[0, 0,0,0]
+#for i in range(4,len(mfFinalSort)):
+#    if mfFinalSort.iloc[i]['total_points'] > min(Best):
+#        Best.remove(min(Best))
+#        Best.append(mfFinalSort.iloc[i]['total_points'])
+#    else: 
+#        manDelIndexes.append(mfFinalSort.iloc[i].name)
+#manmfFinal = dropRows(mfFinalSort, manDelIndexes)
 
 
-# In[]
+
+mf_combs = create_all_combs_from_cleaned_df(mffff_final, formation[2])
+
+#%%
+"""
+DEFENDERS:
+"""
+dfFinals = cleaners.all_forms_as_df_cleaned()[1]
+
+dfFinals = del_multiple_point_per_cost(mfFinals, formation[1])
+
+dfFinals = del_multiple_cost_per_point(mfFinals, formation[1])
+
+dffff_final = delete_worse_points_when_increasing_cost(mfFinalSort, formation[2])
+
+df_combs = create_all_combs_from_cleaned_df(mffff_final, formation[2])
+
+
+
+
+# In[] OOOOOOOOOLD
 # calculate all possible combinations 
+
+"""
 midf = np.transpose(calc.nump2(len(manmfFinal), 4))
 n=len(midf)
 midfielders = calcIndexOld(midf, manmfFinal.index, 4, n)
@@ -566,7 +612,7 @@ sortedCostmfPanda= mfPanda.sort_values(by=['now_cost', 'total_points'], ascendin
 bestMF, mfIndexes= saveBetterPointsWhenIncreasingCost(sortedCostmfPanda)
 print(bestMF)
 print(len(bestMF))
-
+"""
 
 # In[]
 
@@ -574,6 +620,8 @@ print(len(bestMF))
 
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
+
+"""
 sorteddfDropZero= dfDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
 deleteIndexes=[]
 for i in range(max(sorteddfDropZero['total_points'])+1):
@@ -597,7 +645,7 @@ for i in range(max(dfSave4PerPoints['now_cost'])):
          deleteIndexes.extend(dfDelete)
     
 dfFinal = dropRows(sorteddf4Points,deleteIndexes) 
-
+"""
 # In[]
 print(dfFinal.sort_values(by=['total_points', 'now_cost']))
 
