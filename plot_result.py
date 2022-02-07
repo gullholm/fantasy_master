@@ -15,7 +15,7 @@ generic = lambda x: ast.literal_eval(x)
 import matplotlib.pyplot as plt 
 
 
-def plot_values(max_cost):
+def calc_best_team_under_budget(max_cost):
     
     under_cost =  np.argwhere(costs_full < max_cost) 
 
@@ -52,7 +52,6 @@ for i in range(len(formations)):
     fw_csv = "data_cleaned/as/fw/" + str(fw) + ".csv"
     
     if df == 4:
-        print(df)
         df_csv= "data_cleaned/df.csv"
 
     gk_combs = pd.read_csv("data_cleaned/gk.csv", converters = conv)
@@ -80,8 +79,8 @@ for i in range(len(formations)):
     best_costs, best_points = [],[]
     best_total_costs, best_total_points =[],[]
     
-    for i in range(500, 900, 50):
-        costs, points = plot_values(i)
+    for j in range(500, 900, 50):
+        costs, points = calc_best_team_under_budget(j)
         best_costs.append(sorted(costs))
         best_points.append(sorted(points))
         best_total_costs.append(sum(costs))
@@ -93,12 +92,29 @@ for i in range(len(formations)):
     dataframe['Best total cost'] = best_total_costs 
     dataframe['Best total points'] = best_total_points
     dataframe['Individual costs'] = best_costs
-    print (dataframe)
+    #print (dataframe)
+    if i == 0:
+        best_dataframe = dataframe
+        df_form= []
+        for l in range(len(best_dataframe)):
+            df_form.append(formations[0])
+        best_dataframe['Formation'] = df_form 
+    else:
+        for j in range(len(dataframe)):
+            if dataframe.loc[j]['Best total points'] > best_dataframe.loc[j]['Best total points']:
+                best_dataframe.loc[j]=dataframe.loc[j]
+                df_form[j]=formations[i]
+                best_dataframe['Formation'] = df_form
+
+    # Uncomment to save as csv
     
-    formation= str(df) + '-' + str(mf) + '-' + str(fw)
-    csv_output ='results/as/' + formation + '.csv'
-    dataframe.to_csv(csv_output, index=False)
+    #formation= str(df) + '-' + str(mf) + '-' + str(fw)
+    #csv_output ='results/as/' + formation + '.csv'
+    #dataframe.to_csv(csv_output, index=False)
          
+# In[]
+
+best_dataframe.to_csv('results/as/best.csv', index=False)
 
 # In[]
 sum_best_costs = list(map(sum, best_costs))
