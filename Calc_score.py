@@ -370,19 +370,6 @@ def saveBetterPointsWhenIncreasingCost(df_part):
     return df_part
 
 
-def clean_gk(sorted_df_gk):
-    
-    idx = sorteddfGK.groupby(['now_cost'])['total_points'].transform(max) == sorteddfGK['total_points']
-    gkBestPerSalary = sorteddfGK[idx] # Remove the ones that costs the same but less points
-
-    cost_best_gk = sorteddfGK.loc[sorteddfGK['total_points'].idxmax()]['now_cost']
-    # Remove all that are more expansive than the best gk 
-    gkFinal = gkBestPerSalary[gkBestPerSalary['now_cost'] <= cost_best_gk]      
-
-    gkFinalSorted = gkFinal.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-    bestGK = delete_worse_points_when_increasing_cost(gkFinalSorted, 1)
-    return bestGK
-    
     
     
 #sorteddfGK = sorted_dfs_del_0[0]
@@ -486,14 +473,18 @@ def create_all_combs_from_cleaned_df(df_part, form_n):
     combsPoints, combsCost = [], []
 
     for i in range(len(combs)): 
-        combsPoints.append(pointsPerTeam4(combs_indexes[i],pointsList))
-        combsCost.append(costPerTeam4(combs_indexes[i], costList)) 
+        combsPoints.append(calc.pointsPerTeam4(combs_indexes[i],pointsList))
+        combsCost.append(calc.costPerTeam4(combs_indexes[i], costList)) 
 
     combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
                            columns =['total_points', 'now_cost', 'indexes'])
 
     sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+    
+    ssss = cleaners.del_multiple_cost_per_point(sortedCombs_parts,1)        
 
+    sortedCombs_parts = cleaners.del_multiple_point_per_cost(ssss, 1)
+    
     return(delete_worse_points_when_increasing_cost(sortedCombs_parts, 1), sortedCombs_parts)
 
 #best_fw = create_all_combs_from_cleaned_df(sssfw2, formation[3])

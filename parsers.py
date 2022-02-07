@@ -9,6 +9,7 @@ import numpy as np
 import calculations as calc
 import getters
 import pandas as pd
+import cleaners
 
 def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for each formation part
     """
@@ -43,6 +44,25 @@ def find_best_team(under_cost, points):
                            under_cost[i][1], under_cost[i][2], under_cost[i][3]]
         
     return(np.argmax(point_f))
+
+def create_all_combs_from_cleaned_df(df_part, form_n):
+    
+    combs = np.transpose(calc.nump2(len(df_part), form_n))
+    combs_indexes = calc.calcIndexOld(combs, df_part.index)  
+    pointsList = calc.createPointsList()
+    costList = calc.createCostList()
+    combsPoints, combsCost = [], []
+
+    for i in range(len(combs)): 
+        combsPoints.append(calc.pointsPerTeam4(combs_indexes[i],pointsList))
+        combsCost.append(calc.costPerTeam4(combs_indexes[i], costList)) 
+
+    combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
+                           columns =['total_points', 'now_cost', 'indexes'])
+
+    sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+
+    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, 1), sortedCombs_parts)
 
 
 """

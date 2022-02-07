@@ -121,12 +121,15 @@ def Nmaxelements(list1, N):
 #save this, the old way to calculate all indexes without randomization
 # so that all combinations occur    
     
-def calcIndexOld(indexlist, dat, nr, length):
+def calcIndexOld(indexlist, dat):
     returnlist=[]
-    for i in range(length):
+    dat = list(dat)
+    print(indexlist.shape[0])
+    print(indexlist.shape[1])
+    for i in range(indexlist.shape[0]):
         temp = []
-        for j in range(nr):    
-            temp.append(list(dat)[indexlist[i][j]])
+        for j in range(indexlist.shape[1]):                
+            temp.append(dat[indexlist[i][j]])
         returnlist.append(temp)
     return returnlist    
 

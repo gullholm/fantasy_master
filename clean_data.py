@@ -198,17 +198,18 @@ deleteIndexes=[]
 sortedmf4Points = mfSave4PerPoints.sort_values(by=['now_cost',"total_points"])    
 for i in range(max(mfSave4PerPoints['now_cost'])):
      if((sortedmf4Points['now_cost'] == i).sum()>4):
+         print(list(sortedmf4Points.index[(sortedmf4Points['now_cost'] == i)]))
          mfDelete = list(sortedmf4Points.index[(sortedmf4Points['now_cost'] == i)][:-4])
          print(mfDelete)
          deleteIndexes.extend(mfDelete)
     
-mfFinal = dropRows(sortedmf4Points,deleteIndexes) 
+mfFinalss = dropRows(sortedmf4Points,deleteIndexes) 
 
 
 # In[]
-print(mfFinal.sort_values(by=['total_points', 'now_cost']))
+print(mfFinalss.sort_values(by=['total_points', 'now_cost']))
 
-mfFinalSort = mfFinal.sort_values(by=['now_cost','total_points'], ascending=[True, False])
+mfFinalSort = mfFinalss.sort_values(by=['now_cost','total_points'], ascending=[True, False])
 manDelIndexes = []
 
 # Index på de som inte är tillräckligt bra att välja om man får en miljon till
@@ -230,7 +231,7 @@ for i in range(4,len(mfFinalSort)):
     #print(mfFinal.iloc[i]['total_points'])
     
 #manDelIndexes.extend([269, 279, 451, 337, 207, 293, 96, 124, ])
-manmfFinal = dropRows(mfFinal, manDelIndexes)
+manmfFinal = dropRows(mfFinalss, manDelIndexes)
 
 
 # In[]
