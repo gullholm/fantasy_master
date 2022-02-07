@@ -89,6 +89,8 @@ def del_multiple_cost_per_point(sorted_df_part, n):
         
     return(dropRows(sorted_df_part,deleteIndexes))
 
+
+
 def del_multiple_point_per_cost(sorted_df_part, n):
     """
     delete if there are more than 
