@@ -124,8 +124,6 @@ def Nmaxelements(list1, N):
 def calcIndexOld(indexlist, dat):
     returnlist=[]
     dat = list(dat)
-    print(indexlist.shape[0])
-    print(indexlist.shape[1])
     for i in range(indexlist.shape[0]):
         temp = []
         for j in range(indexlist.shape[1]):                
@@ -137,6 +135,7 @@ def calc_from_combs(all_combs, column):
     return [comb[column].values for comb in all_combs]
 
 def calc_best_team(all_combs, cost_limit):
+
     all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
 
     all_points = calc_from_combs(all_combs, "total_points")
@@ -146,13 +145,13 @@ def calc_best_team(all_combs, cost_limit):
 
     costs_full = parsers.parse_formations_points_or_cost(all_costs)
 
-    under_cost =  np.argwhere(costs_full < cost_limit)
-    
-    best = parsers.find_best_team(under_cost, points_full)
 
-    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+ #   under_cost =  np.argwhere(costs_full < cost_limit)
     
-    return sep_ids, under_cost, best
+ #   best = parsers.find_best_team(under_cost, points_full)
+# sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+    
+    return  under_cost, best
     
     #best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
     

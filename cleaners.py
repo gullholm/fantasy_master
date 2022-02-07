@@ -49,6 +49,7 @@ def saveBetterPointsWhenIncreasingCost(df):
 
 
 
+
 def clean_gk(sorted_df_gk):
     
     idx = sorted_df_gk.groupby(['now_cost'])['total_points'].transform(max) == sorted_df_gk['total_points']
