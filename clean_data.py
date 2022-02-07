@@ -5,19 +5,11 @@ Created on Mon Feb  7 11:42:44 2022
 @author: jonat
 """
 
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jan 24 18:12:50 2022
-
-@author: jonat
-"""
 # In[ ]:
 
 import getters
 import numpy as np
 import time
-import matplotlib.pyplot as plt
-import calculations as calc
 from calculations import *
 import pandas as pd
 
@@ -27,7 +19,7 @@ import pandas as pd
 data2 = getters.get_data()
 players = getters.get_players_feature(data2)
 gk, df, mf, fw = getters.get_diff_pos(players)
-gk1, def4, mid4, forw2 = calc.createFormation(gk,df,mf,fw, 4, 4, 2, 100)
+gk1, def4, mid4, forw2 = createFormation(gk,df,mf,fw, 4, 4, 2, 100)
 
  
 # In[]
@@ -71,30 +63,15 @@ print((np.max(gkPoints)))
 
 dfGK = pd.DataFrame.from_dict(gk, orient='index')  
 sorteddfGK = dfGK.sort_values(by=['total_points', 'now_cost'])
-#gkDelete = list(sorteddfGK.index[(sorteddfGK['total_points'] == 0)][1:])
 
 dfDF = pd.DataFrame.from_dict(df, orient='index')  
 sorteddfDF = dfDF.sort_values(by=['total_points', 'now_cost'])
-dfDelete = list(sorteddfDF.index[(sorteddfDF['total_points'] == 0)][4:])
 
 dfMF = pd.DataFrame.from_dict(mf, orient='index')  
 sorteddfMF = dfMF.sort_values(by=['total_points', 'now_cost'])
-mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == 0)][4:] )
 
 dfFW = pd.DataFrame.from_dict(fw, orient='index')  
 sorteddfFW = dfFW.sort_values(by=['total_points', 'now_cost'])
-#fwDelete = list(sorteddfFW.index[(sorteddfFW['total_points'] == 0)][2:])
-
-# In[]
-
-def dropRows(df, indexes):
-    df = df.drop(indexes, axis=0)
-    return df
-
-#gkDropZero = dropRows(dfGK, gkDelete)
-dfDropZero = dropRows(dfDF, dfDelete)
-mfDropZero = dropRows(dfMF, mfDelete)
-#fwDropZero = dropRows(dfFW, fwDelete)
 
 # In[]    
 #Goalkeepers
@@ -158,7 +135,7 @@ fwFinal = dropRows(sortedfw2Points,deleteIndexes)
   
 # In[]
 
-forw = np.transpose(calc.nump2(len(fwFinal), 2))
+forw = np.transpose(nump2(len(fwFinal), 2))
 n=len(forw)
 forwards = calcIndexOld(forw, fwFinal.index, 2, n)  
 
@@ -184,14 +161,15 @@ print(len(bestFW))
 
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
-sortedmfDropZero= mfDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
+
 deleteIndexes=[]
-for i in range(max(sortedmfDropZero['total_points'])+1):
-    if((sortedmfDropZero['total_points'] == i).sum() > 4):
-        mfDelete = list(sortedmfDropZero.index[(sortedmfDropZero['total_points'] == i) ][4:])
+for i in range(max(sorteddfMF['total_points'])+1):
+    if((sorteddfMF['total_points'] == i).sum() > 4):
+        mfDelete = list(sorteddfMF.index[(sorteddfMF['total_points'] == i) ][4:])
         deleteIndexes.extend(mfDelete)
 
-mfSave4PerPoints = dropRows(sortedmfDropZero,deleteIndexes)        
+mfSave4PerPoints = dropRows(sorteddfMF,deleteIndexes)   
+
     
 #endast 4 bästa per kostnad
 deleteIndexes=[]    
@@ -236,7 +214,7 @@ manmfFinal = dropRows(mfFinalss, manDelIndexes)
 
 # In[]
 # calculate all possible combinations 
-midf = np.transpose(calc.nump2(len(manmfFinal), 4))
+midf = np.transpose(nump2(len(manmfFinal), 4))
 n=len(midf)
 midfielders = calcIndexOld(midf, manmfFinal.index, 4, n)
 
@@ -262,18 +240,15 @@ print(len(bestMF))
 
 # Gör så vi bara har 4 per poäng kvar, femte på en speciell poäng, 
 #Som är dyrare kommer man aldrig välja
-sorteddfDropZero= dfDropZero.sort_values(by=[ 'total_points', 'now_cost'])    
 deleteIndexes=[]
-for i in range(max(sorteddfDropZero['total_points'])+1):
-    if((sorteddfDropZero['total_points'] == i).sum() > 4):
-        #print(i)
-        
-        dfDelete = list(sorteddfDropZero.index[(sorteddfDropZero['total_points'] == i) ][4:])
+for i in range(max(sorteddfDF['total_points'])+1):
+    if((sorteddfDF['total_points'] == i).sum() > 4):
+        dfDelete = list(sorteddfDF.index[(sorteddfDF['total_points'] == i) ][4:])
         deleteIndexes.extend(dfDelete)
 
 #Tar manuellt bort den med minuspoäng också 
 deleteIndexes.append(276)
-dfSave4PerPoints = dropRows(sorteddfDropZero,deleteIndexes)        
+dfSave4PerPoints = dropRows(sorteddfDF,deleteIndexes)        
 
 #endast 4 bästa per kostnad
 deleteIndexes=[]    
@@ -312,7 +287,7 @@ mandfFinal = dropRows(dfFinal, manDelIndexes)
 
 # In[]
 # Calculate all possible combinations 
-defe = np.transpose(calc.nump2(len(mandfFinal), 4))
+defe = np.transpose(nump2(len(mandfFinal), 4))
 n=len(defe)
 defenders = calcIndexOld(defe, mandfFinal.index, 4, n)
 
@@ -342,7 +317,71 @@ bestGK=bestGK[['total_points', 'now_cost', 'Goalkeeper']]
 
 # In[]
 
-bestGK.to_csv('1_goalkeeper.csv', index=False)
-bestDF.to_csv('4_defenders.csv', index=False)
-bestMF.to_csv('4_midfielders.csv', index=False)
-bestFW.to_csv('2_forwards.csv', index=False)
+#bestGK.to_csv('1_goalkeeper.csv', index=False)
+#bestDF.to_csv('4_defenders.csv', index=False)
+#bestMF.to_csv('4_midfielders.csv', index=False)
+#bestFW.to_csv('2_forwards.csv', index=False)
+
+# In[]
+## Some old functions that works 
+
+
+# calculate n max numbers of a list and append tehm to a list and print  
+def Nmaxelements(list1, N):
+    final_list = []
+  
+    for i in range(0, N): 
+        max1 = 0
+          
+        for j in range(len(list1)):     
+            if list1[j] > max1:
+                max1 = list1[j];
+                  
+        list1.remove(max1);
+        final_list.append(max1)
+          
+    print(final_list)  
+    
+#save this, the old way to calculate all indexes without randomization
+# so that all combinations occur    
+    
+def calcIndexOld(indexlist, dat, nr, length):
+    returnlist=[]
+    for i in range(length):
+        temp = []
+        for j in range(nr):    
+            temp.append(list(dat)[indexlist[i][j]])
+        returnlist.append(temp)
+    return returnlist    
+
+def calc_from_combs(all_combs, column):
+    return [comb[column].values for comb in all_combs]
+
+def calc_best_team(all_combs, cost_limit):
+    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+
+    all_points = calc_from_combs(all_combs, "total_points")
+    all_costs = calc_from_combs(all_combs, "now_cost" )
+
+    points_full = parsers.parse_formations_points_or_cost(all_points)
+
+    costs_full = parsers.parse_formations_points_or_cost(all_costs)
+
+    under_cost =  np.argwhere(costs_full < cost_limit)
+    
+    best = parsers.find_best_team(under_cost, points_full)
+
+    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+    
+    return sep_ids, under_cost, best
+    
+    #best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+    
+    #return best_team_ids
+    
+
+def dropRows(df, indexes):
+    df = df.drop(indexes, axis=0)
+    return df
+    
+    
