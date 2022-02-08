@@ -60,56 +60,6 @@ for comb in all_pass_combs:
     done_df = calc_full_teams(all_combs)
     nrows =+ len(done_df.index)
     done_df.to_csv("data_cleaned/as/" + str(comb) + ".csv", index = False)
-    
-    
-#%%
-import pandas as pd
-import calculations as calc
-import numpy as np
-import ast
-generic = lambda x: ast.literal_eval(x)
 
-conv = {'indexes': generic}
-
-sorted_dfs = cleaners.all_forms_as_df_cleaned()
-best_gk = cleaners.clean_gk(sorted_dfs[0])
-all_combs =   [best_gk, pd.read_csv("data_cleaned/as/df/4.csv", converters = conv),pd.read_csv("data_cleaned/as/mf/4.csv", converters = conv), pd.read_csv("data_cleaned/as/fw/2.csv", converters = conv)]
-
-all_combs[0]['indexes'] = all_combs[0].index
-all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
-
-all_points = calc.calc_from_combs(all_combs, "total_points")
-all_costs = calc.calc_from_combs(all_combs, "now_cost" )
-
-points_full = parsers.parse_formations_points_or_cost(all_points)
-costs_full = parsers.parse_formations_points_or_cost(all_costs)
-
-sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
-tot_cost, tot_points, indexes = [],[], []
-
-#%%
-
-
-
-def calc_full_teams(all_combs):
-    all_points = calc.calc_from_combs(all_combs, "total_points")
-    all_costs = calc.calc_from_combs(all_combs, "now_cost" )
-
-    points_full = parsers.parse_formations_points_or_cost(all_points)
-    costs_full = parsers.parse_formations_points_or_cost(all_costs)
-    
-    it = np.nditer(points_full, flags=['multi_index'])
-    bit = np.nditer(costs_full, flags = ['multi_index'])
-    sep_ids  = [combs['indexes'].values.tolist() for combs in reversed(all_combs)]
-    costs_total, points_total, indexes = [], [], []
-
-    for x, y in zip(it,bit):
-        points_total.append(x)
-        costs_total.append(y)
-        reg_list = [x[it.multi_index[i]] for (i,x) in enumerate(sep_ids)]
-        indexes.append([item for sublist in reg_list for item in sublist])
-        
-    full_teams_df = pd.DataFrame({"cost": costs_total, "points_total": points_total, "indexes": indexes})
-    return(full_teams_df)
 
 

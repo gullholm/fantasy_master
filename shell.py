@@ -29,7 +29,10 @@ dfPoints = [d.get('total_points') for d in df.values()]
 
 #best_team_ids = parsers.get_best_team_from_random(n = 100, cost_limit = 700) 
 
-best_team_ids = [462, 416, 72, 150, 180, 390, 460, 67, 113, 174, 374] # 700
+best_team_ids = [392, 22, 20, 25, 102, 72, 400, 254, 200, 326, 3]
+
+
+ # 700
 
 names = getters.get_full_name_team(data_as, best_team_ids)
 
@@ -38,8 +41,10 @@ best_team_ids_values = [players[ids] for ids in best_team_ids]
 random_sum_cost = [player['now_cost'] for player in best_team_ids_values] #653
 random_sum_points = [player['total_points'] for player in best_team_ids_values] #941
 
+#%%
+dfPointz = parsers.change_dict_
 
-dfPointz = parsers.change_dict_to_2darray(df, "total_points")
+2darray(df, "total_points")
 mfPointz = parsers.change_dict_to_2darray(mf, "total_points")
 fwdPointz = parsers.change_dict_to_2darray(fwd, "total_points")
 gkPointz = parsers.change_dict_to_2darray(df, "total_points")
