@@ -58,14 +58,23 @@ def calc_full_teams(all_combs):
 #%%
 import pandas as pd
 import calculations as calc
+import ast
+generic = lambda x: ast.literal_eval(x)
+conv = {'indexes': generic}
+
+
 
 all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
 form_name = ["df", "mf", "fw"]
 all_combs = []
+nrows = []
 for comb in all_pass_combs: 
-    all_combs = [pd.read_csv("data_cleaned/as/" + form + "/" + str(c) + ".csv") for (c,form) in zip(comb,form_name)]
+    all_combs = [pd.read_csv("data_cleaned/as/" + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
     all_combs.insert(0,pd.read_csv("data_cleaned/gk.csv"))
+    all_combs[0]['indexes'] = all_combs[0].index #GK
+    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
     done_df = calc_full_teams(all_combs)
+    nrows =+ len(done_df.index)
     done_df.to_csv("data_cleaned/as/" + str(comb) + ".csv", index = False)
     
     
