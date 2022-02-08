@@ -49,14 +49,12 @@ def find_best_team(under_cost, points):
 #def convert_from_matrix_to_list(all_combs, all_points, all_costs)
 
 
-def create_all_combs_from_cleaned_df(df_part, form_n):
-    
+def create_all_combs_from_cleaned_df(df_full,df_part, form_n):
     combs = np.transpose(calc.nump2(len(df_part), form_n))
     combs_indexes = calc.calcIndexOld(combs, df_part.index)  
-    pointsList = calc.createPointsList()
-    costList = calc.createCostList()
+    pointsList = calc.createPointsList(df_full)
+    costList = calc.createCostList(df_full)
     combsPoints, combsCost = [], []
-
     for i in range(len(combs)): 
         combsPoints.append(calc.pointsPerTeam4(combs_indexes[i],pointsList))
         combsCost.append(calc.costPerTeam4(combs_indexes[i], costList)) 
@@ -65,7 +63,6 @@ def create_all_combs_from_cleaned_df(df_part, form_n):
                            columns =['total_points', 'now_cost', 'indexes'])
 
     sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-
     return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, 1), sortedCombs_parts)
 
 

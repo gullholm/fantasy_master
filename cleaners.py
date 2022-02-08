@@ -21,6 +21,20 @@ def all_forms_as_df_cleaned(league = "allsvenskan"):
     
     return sorted_dfs
 
+def all_forms_as_df_cleaned_pl(league = "premier league"):
+    playerspl = pd.read_csv("data/pl_csv/players_raw_2021.csv") 
+    playerspl = playerspl.to_dict('index')
+    playerspldata = getters.get_players_feature_pl(playerspl)
+
+    all_form = getters.get_diff_pos(playerspldata)
+
+    all_form_df = [pd.DataFrame.from_dict(part, 
+                                          orient = 'index').drop("element_type", axis=1) for part in all_form]
+
+    sorted_dfs = [part.sort_values(by = ['total_points','now_cost']) for part in all_form_df]
+    
+    return sorted_dfs
+
 def run_all_cleans(df_part, n_part):
     
     df_clean =  del_n_zeros(df_part, n_part)
@@ -110,7 +124,6 @@ def del_multiple_point_per_cost(sorted_df_part, n):
     return(dropRows(sorted_df_part,deleteIndexes))
 
 def delete_worse_points_when_increasing_cost(df_part, n_form):
-    
     df_part.sort_values(by=['now_cost','total_points'], 
                         ascending=[True, False], inplace = True)
     
