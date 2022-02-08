@@ -17,10 +17,9 @@ import calculations as calc
 import getters
 
 
-def calc_best_team_under_budget(max_cost):
+def calc_best_team_under_budget(players, max_cost):
     
     under_cost =  np.argwhere(costs_full <= max_cost) 
-    print(under_cost.shape)
     best = parsers.find_best_team(under_cost, points_full)
     sep_ids = [fw_combs['indexes'].values.tolist(),mf_combs['indexes'].values.tolist() 
                , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]
@@ -47,14 +46,10 @@ for i in range(len(formations)):
     df = formations[i][0]
     mf =formations[i][1]
     fw = formations[i][2]
-    
 
     df_csv = "data_cleaned/as/df/" + str(df) + ".csv"
     mf_csv = "data_cleaned/as/mf/" + str(mf) + ".csv"
     fw_csv = "data_cleaned/as/fw/" + str(fw) + ".csv"
-    
-    #if df == 4:
-    #    df_csv= "data_cleaned/df.csv"
 
     gk_combs = pd.read_csv("data_cleaned/gk.csv", converters = conv)
     df_combs = pd.read_csv(df_csv, converters = conv)
@@ -82,7 +77,7 @@ for i in range(len(formations)):
     best_total_costs, best_total_points =[],[]
     
     for j in range(500, 900, 50):
-        costs, points = calc_best_team_under_budget(j)
+        costs, points = calc_best_team_under_budget(players, j)
         best_costs.append(sorted(costs))
         best_points.append(sorted(points))
         best_total_costs.append(sum(costs))
@@ -113,10 +108,8 @@ for i in range(len(formations)):
     #formation= str(df) + '-' + str(mf) + '-' + str(fw)
     #csv_output ='results/as/' + formation + '.csv'
     #dataframe.to_csv(csv_output, index=False)
-         
-# In[]
+    #best_dataframe.to_csv('results/as/best.csv', index=False)
 
-best_dataframe.to_csv('results/as/best.csv', index=False)
 
 # In[]
 sum_best_costs = list(map(sum, best_costs))
@@ -208,13 +201,9 @@ formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
 for i in range(len(formations)):
     print("Running formation " + str(formations[i]))
     
-
     all_csv = "data_cleaned/as/" + str(formations[i]) + ".csv"
-
-    all_combs = pd.read_csv(all_csv, converters = conv)
-    
+    all_combs = pd.read_csv(all_csv, converters = conv)    
     all_points = all_combs['points_total'].values
-        
     all_costs = all_combs['cost'].values
     
     best_costs, best_points = [],[]
@@ -234,5 +223,88 @@ for i in range(len(formations)):
     dataframe['Best total points'] = best_total_points
     dataframe['Individual costs'] = best_costs
  # In[]
-
 print(all_combs.loc[1]['cost'])    
+
+
+# In[]
+
+
+#PL
+
+conv = {'indexes': generic}
+
+playerspl = pd.read_csv("data/pl_csv/players_raw_2021.csv") 
+playerspl = playerspl.to_dict('index')
+playerspldata = getters.get_players_feature_pl(playerspl)
+
+formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
+
+for i in range(len(formations)):
+#for i in range(1):
+    print("Running formation " + str(formations[i]))
+    df = formations[i][0]
+    mf =formations[i][1]
+    fw = formations[i][2]
+
+    df_csv = "data_cleaned/pl/2021/df/" + str(df) + ".csv"
+    mf_csv = "data_cleaned/pl/2021/mf/" + str(mf) + ".csv"
+    fw_csv = "data_cleaned/pl/2021/fw/" + str(fw) + ".csv"
+
+    gk_combs = pd.read_csv("data_cleaned/pl/2021/gk.csv", converters = conv)
+    df_combs = pd.read_csv(df_csv, converters = conv)
+    mf_combs = pd.read_csv(mf_csv, converters = conv)
+    fw_combs = pd.read_csv(fw_csv, converters = conv)
+    gk_combs['indexes'] = gk_combs['indexes'].apply(lambda x: [x])
+    
+    gk_points = gk_combs['total_points'].values
+    df_points = df_combs['total_points'].values
+    mf_points = mf_combs['total_points'].values
+    fw_points = fw_combs['total_points'].values
+    
+    all_points=[gk_points, df_points, mf_points, fw_points]
+    points_full = parsers.parse_formations_points_or_cost(all_points)
+    
+    gk_costs = gk_combs['now_cost'].values
+    df_costs = df_combs['now_cost'].values
+    mf_costs = mf_combs['now_cost'].values
+    fw_costs = fw_combs['now_cost'].values
+    
+    all_costs = [gk_costs, df_costs, mf_costs, fw_costs]
+    costs_full = parsers.parse_formations_points_or_cost(all_costs)
+
+    best_costs, best_points = [],[]
+    best_total_costs, best_total_points =[],[]
+    
+    for j in range(500, 1050, 50):
+        costs, points = calc_best_team_under_budget(playerspldata, j)
+        best_costs.append(sorted(costs))
+        best_points.append(sorted(points))
+        best_total_costs.append(sum(costs))
+        best_total_points.append(sum(points))
+     
+    budget = range(500, 1050, 50)    
+    dataframe = pd.DataFrame()
+    dataframe['Budget'] = budget
+    dataframe['Best total cost'] = best_total_costs 
+    dataframe['Best total points'] = best_total_points
+    dataframe['Individual costs'] = best_costs
+    #print (dataframe)
+    if i == 0:
+        best_dataframe = dataframe
+        df_form= []
+        for l in range(len(best_dataframe)):
+            df_form.append(formations[0])
+        best_dataframe['Formation'] = df_form 
+    else:
+        for j in range(len(dataframe)):
+            if dataframe.loc[j]['Best total points'] > best_dataframe.loc[j]['Best total points']:
+                best_dataframe.loc[j]=dataframe.loc[j]
+                df_form[j]=formations[i]
+                best_dataframe['Formation'] = df_form
+
+    # Uncomment to save as csv
+    
+    formation= str(df) + '-' + str(mf) + '-' + str(fw)
+    csv_output ='results/pl/2021/' + formation + '.csv'
+    dataframe.to_csv(csv_output, index=False)
+best_dataframe.to_csv('results/pl/2021/best.csv', index=False)
