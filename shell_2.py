@@ -12,26 +12,10 @@ year = 2021
 """
 
 
-
-
-
-all_parts_but_goalie = cleaners.all_forms_as_df_cleaned(league = league)[1:]
 formations = [[3,4,5],[3,4,5],[1,2,3]]
 form_name = ["df", "mf", "fw"]
 
-
-for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
-    for p in part:
-        all_cleaned = cleaners.run_all_cleans(df, p)
-        combs = parsers.create_all_combs_from_cleaned_df(all_cleaned, p)[0]
-        combs.to_csv("data_cleaned/as/" + pos + "/" + str(p) + ".csv",index = False)
-
-
-
 def calc_full_teams(all_combs):
-    all_combs[0]['indexes'] = all_combs[0].index
-    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
-
     all_points = calc.calc_from_combs(all_combs, "total_points")
     all_costs = calc.calc_from_combs(all_combs, "now_cost" )
 
@@ -59,6 +43,7 @@ def calc_full_teams(all_combs):
 import pandas as pd
 import calculations as calc
 import ast
+import numpy as np
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 
@@ -70,8 +55,7 @@ all_combs = []
 nrows = []
 for comb in all_pass_combs: 
     all_combs = [pd.read_csv("data_cleaned/as/" + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
-    all_combs.insert(0,pd.read_csv("data_cleaned/gk.csv"))
-    all_combs[0]['indexes'] = all_combs[0].index #GK
+    all_combs.insert(0, pd.read_csv("data_cleaned/gk.csv"))
     all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
     done_df = calc_full_teams(all_combs)
     nrows =+ len(done_df.index)
@@ -108,9 +92,6 @@ tot_cost, tot_points, indexes = [],[], []
 
 
 def calc_full_teams(all_combs):
-    all_combs[0]['indexes'] = all_combs[0].index
-    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
-
     all_points = calc.calc_from_combs(all_combs, "total_points")
     all_costs = calc.calc_from_combs(all_combs, "now_cost" )
 

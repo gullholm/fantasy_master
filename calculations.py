@@ -146,14 +146,14 @@ def calc_best_team(all_combs, cost_limit):
     costs_full = parsers.parse_formations_points_or_cost(all_costs)
 
 
- #   under_cost =  np.argwhere(costs_full < cost_limit)
+    under_cost =  np.argwhere(costs_full < cost_limit)
     
- #   best = parsers.find_best_team(under_cost, points_full)
-# sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+    best = parsers.find_best_team(under_cost, points_full)
+    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
     
-    return  under_cost, best
+
     
-    #best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+    best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
     
-    #return best_team_ids
+    return under_cost, best_team_ids
     
