@@ -13,12 +13,14 @@ import numpy as np
 import getters
 generic = lambda x: ast.literal_eval(x)
 import matplotlib.pyplot as plt 
+import calculations as calc 
+import getters
 
 
 def calc_best_team_under_budget(max_cost):
     
-    under_cost =  np.argwhere(costs_full < max_cost) 
-
+    under_cost =  np.argwhere(costs_full <= max_cost) 
+    print(under_cost.shape)
     best = parsers.find_best_team(under_cost, points_full)
     sep_ids = [fw_combs['indexes'].values.tolist(),mf_combs['indexes'].values.tolist() 
                , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]
@@ -51,8 +53,8 @@ for i in range(len(formations)):
     mf_csv = "data_cleaned/as/mf/" + str(mf) + ".csv"
     fw_csv = "data_cleaned/as/fw/" + str(fw) + ".csv"
     
-    if df == 4:
-        df_csv= "data_cleaned/df.csv"
+    #if df == 4:
+    #    df_csv= "data_cleaned/df.csv"
 
     gk_combs = pd.read_csv("data_cleaned/gk.csv", converters = conv)
     df_combs = pd.read_csv(df_csv, converters = conv)
@@ -146,14 +148,91 @@ plt.show()
 #spanning the range from a to 2C-a
 
 # maybe total budget should be the total cost of the best team 
-# maybe a, minimum salary, should be the cheapest in the best team
+# maybe minimum salary, "a", should be the cheapest in the best team
 
-idx = 8
+for idx in range(len(y)):
 
-k,m= np.polyfit(x,y[idx],1)
-plt.plot(x, k*x+m)
+    k,m= np.polyfit(x,y[idx],1)
+    plt.plot(x, k*x+m)
+    
+    theory_m = y[idx][0]
+    theory_expensive = round(sum(y[idx])*2/11-theory_m)  
+    theory_k = np.float64(theory_expensive-theory_m)/11
+    plt.plot(x, theory_k*x+theory_m)
+    
+    total_diff = 0
+    for i in range(1,12):
+        first = k*i+m
+        second =  theory_k*i + theory_m
+        diff = np.abs(first-second)
+        total_diff += diff
+    
+    mean_diff =  total_diff/11
+    print(mean_diff)
+    
+ # In[]
+costList= calc.createCostList()
+plt.hist(costList)
+plt.xlabel("Cost")
+plt.ylabel("Amount")
+plt.show()
 
-theory_m = y[idx][0]
-theory_expensive = round(sum(y[idx])*2/11-theory_m)  
-theory_k = np.float64(theory_expensive-theory_m)/11
-plt.plot(x, theory_k*x+theory_m)
+   
+# In[]
+
+def calc_best_team_under_budget2(max_cost):
+    
+    under_cost =  np.argwhere(all_costs <= max_cost) 
+            
+    point_f = []
+    for idx in under_cost:
+        point_f.append(all_points[idx])
+    
+    best = np.argmax(point_f)
+    best_id = under_cost[best][0]
+    
+    best_indexes = all_combs.loc[best_id]['indexes']
+    
+    best_costs=[]
+    for idx in best_indexes:
+        best_costs.append(getters.get_cost_player(data, idx))
+    
+    return best_id, best_costs
+
+conv = {'indexes': generic}
+
+data = getters.get_data()
+
+formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
+
+for i in range(len(formations)):
+    print("Running formation " + str(formations[i]))
+    
+
+    all_csv = "data_cleaned/as/" + str(formations[i]) + ".csv"
+
+    all_combs = pd.read_csv(all_csv, converters = conv)
+    
+    all_points = all_combs['points_total'].values
+        
+    all_costs = all_combs['cost'].values
+    
+    best_costs, best_points = [],[]
+    best_total_costs, best_total_points =[],[]
+    
+    for j in range(500, 900, 50):
+        best_id, id_costs = calc_best_team_under_budget2(j)
+    
+        best_costs.append(sorted(id_costs))
+        best_total_costs.append(all_costs[best_id])
+        best_total_points.append(all_points[best_id])
+     
+    budget = range(500, 900, 50)    
+    dataframe = pd.DataFrame()
+    dataframe['Budget'] = budget
+    dataframe['Best total cost'] = best_total_costs 
+    dataframe['Best total points'] = best_total_points
+    dataframe['Individual costs'] = best_costs
+ # In[]
+
+print(all_combs.loc[1]['cost'])    
