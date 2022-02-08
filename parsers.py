@@ -29,7 +29,7 @@ def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for e
 
     return gk_df_mf_fw
 
-# (fw:mf:df:gk) index
+# (fw,mf,df,gk) index
 
 
 def find_best_team(under_cost, points):
