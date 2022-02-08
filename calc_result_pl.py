@@ -18,8 +18,6 @@ import parsers
 
 playerspl = pd.read_csv("data/pl_csv/players_raw_2021.csv") 
 playerspl = playerspl.to_dict('index')
- 
-
 playerspldata = getters.get_players_feature_pl(playerspl)
 
 formations = [[3,4,5],[3,4,5],[1,2,3]]
@@ -37,4 +35,18 @@ for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
         combs.to_csv("data_cleaned/pl/2021" + pos + "/" + str(p) + ".csv")
         combs.to_csv("data_cleaned/pl/2021" + pos + "/" + str(p) + ".csv",index = False)
 
+# In[]
 
+# goalkeepers
+
+gk, df,mf,fw = getters.get_diff_pos(playerspldata)
+
+df_gk = pd.DataFrame.from_dict(gk, orient='index')
+
+sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+
+cleaned_gk = cleaners.clean_gk(sorted_df_gk)
+cleaned_gk.reset_index(inplace=True)
+cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+cleaned_gk.drop('element_type', inplace=True, axis=1)
+cleaned_gk.to_csv("data_cleaned/pl/2021/gk.csv")
