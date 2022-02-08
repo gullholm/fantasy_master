@@ -46,7 +46,7 @@ def find_best_team(under_cost, points):
     return(np.argmax(point_f))
 
 
-def convert_from_matrix_to_list(all_combs, all_points, all_costs)
+#def convert_from_matrix_to_list(all_combs, all_points, all_costs)
 
 
 def create_all_combs_from_cleaned_df(df_part, form_n):
