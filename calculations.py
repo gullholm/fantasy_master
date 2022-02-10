@@ -10,7 +10,7 @@ import getters
 import parsers
 
 data2 = getters.get_data()
-players = getters.get_players_feature(data2)
+players2 = getters.get_players_feature(data2)
 
 def nump2(n, k):
     a = np.ones((k, n-k+1), dtype=int)
@@ -68,20 +68,20 @@ def costPerTeam4(team, costList):
         teamcost = teamcost + costList[key-1]
     return teamcost  
 
-def createCostList(players=players):
+def createCostList(players=players2):
     costList = []
-    for i in range(len(players)):
-        costList.append(players[i+1]["now_cost"])
+    for i in list(players.keys()):
+        costList.append(players[i]["now_cost"])
     #for player in players:
     #    costList.append(player["now_cost"])    
     return tuple(costList)
 
-def createPointsList(players=players):
+def createPointsList(players=players2):
     pointsList=[]
-    for i in range(len(players)):
-        pointsList.append(players[i+1]["total_points"])
+    for i in list(players.keys()):
+        pointsList.append(players[i]["total_points"])
     #for player in players:
-     #   pointsList.append(player["total_points"])
+        #pointsList.append(player["total_points"])
     return tuple(pointsList)
 
 

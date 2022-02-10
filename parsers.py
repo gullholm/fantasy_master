@@ -49,7 +49,7 @@ def find_best_team(under_cost, points):
 #def convert_from_matrix_to_list(all_combs, all_points, all_costs)
 
 
-def create_all_combs_from_cleaned_df(df_full,df_part, form_n):
+def create_all_combs_from_cleaned_df(df_full, df_part, form_n):
     combs = np.transpose(calc.nump2(len(df_part), form_n))
     combs_indexes = calc.calcIndexOld(combs, df_part.index)  
     pointsList = calc.createPointsList(df_full)

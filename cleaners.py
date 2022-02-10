@@ -21,8 +21,8 @@ def all_forms_as_df_cleaned(league = "allsvenskan"):
     
     return sorted_dfs
 
-def all_forms_as_df_cleaned_pl(league = "premier league"):
-    playerspl = pd.read_csv("data/pl_csv/players_raw_2021.csv") 
+def all_forms_as_df_cleaned_pl(csv_file):
+    playerspl = pd.read_csv(csv_file) 
     playerspl = playerspl.to_dict('index')
     playerspldata = getters.get_players_feature_pl(playerspl)
 
