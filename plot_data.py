@@ -37,15 +37,16 @@ Create different plots
 """
 
 # plot histogram of how many of each position
+x=["gk", "df", "mf", "fw" ]
 aspositions= [len(asgk), len(asdf), len(asmf), len(asfw) ]
 plpositions= [len(plgk), len(pldf), len(plmf), len(plfw) ]
 
-plt.hist(aspositions)
+plt.plot(x,aspositions, 'o')
 plt.xlabel("Position")
 plt.ylabel("Amount")
 plt.show()
 
-plt.hist(plpositions)
+plt.plot(x,plpositions,'o')
 plt.xlabel("Position")
 plt.ylabel("Amount")
 plt.show()
