@@ -205,7 +205,6 @@ def calc_best_per_season_pl(season):
         
         all_points=[gk_points, df_points, mf_points, fw_points]
         points_full = parsers.parse_formations_points_or_cost(all_points)
-        print(len(points_full))
         gk_costs = gk_combs['now_cost'].values
         df_costs = df_combs['now_cost'].values
         mf_costs = mf_combs['now_cost'].values
@@ -213,7 +212,6 @@ def calc_best_per_season_pl(season):
         
         all_costs = [gk_costs, df_costs, mf_costs, fw_costs]
         costs_full = parsers.parse_formations_points_or_cost(all_costs)
-        print(len(costs_full))
         best_costs= []
         best_total_costs, best_total_points =[],[]
         
@@ -246,10 +244,10 @@ def calc_best_per_season_pl(season):
         #print(dataframe['Best total cost'])              
         # Uncomment to save as csv
         
-        #formation= str(df) + '-' + str(mf) + '-' + str(fw)
-        #csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
-        #dataframe.to_csv(csv_output, index=False)
-    #best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
+        formation= str(df) + '-' + str(mf) + '-' + str(fw)
+        csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
+        dataframe.to_csv(csv_output, index=False)
+    best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
     return all_points, points_full
     
 # In[]
@@ -260,8 +258,8 @@ def calc_best_per_season_pl(season):
 seasons = [1617, 1718, 1819, 1920, 2021]
 #season = seasons[3]
 
-#for season in seasons:
-#    print("Calculating season: " + str(season))
-#    calc_best_per_season_pl(season)
-season=seasons[0]
-all_points , points_full = calc_best_per_season_pl(season)
+for season in seasons:
+    print("Calculating season: " + str(season))
+    calc_best_per_season_pl(season)
+#season=seasons[0]
+#all_points , points_full = calc_best_per_season_pl(season)
