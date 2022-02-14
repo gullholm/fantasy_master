@@ -12,17 +12,20 @@ import ast
 import numpy as np
 import getters
 generic = lambda x: ast.literal_eval(x)
-import calculations as calc 
-import getters
 
 
-def calc_best_team_under_budget(players, max_cost, costs_full, points_full):
+def calc_best_team_under_budget(players, max_cost, full_costs, full_points, combs):
+    gk_combs=combs[0]
+    df_combs=combs[1]
+    mf_combs=combs[2]
+    fw_combs=combs[3]
     
-    under_cost =  np.argwhere(costs_full <= max_cost) 
-    best = parsers.find_best_team(under_cost, points_full)
+    #print(len(costs_full))
+    under_cost =  np.argwhere(full_costs <= max_cost) 
+    #print(len(under_cost))
+    best = parsers.find_best_team(under_cost, full_points)
     sep_ids = [fw_combs['indexes'].values.tolist(),mf_combs['indexes'].values.tolist() 
                , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]
-    
     best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
     best_team_i = [item for sublist in best_team_ids for item in sublist]    
     best_team_ids_values = [players[ids] for ids in best_team_i]
@@ -80,7 +83,7 @@ for i in range(len(formations)):
     best_total_costs, best_total_points =[],[]
     
     for j in range(500, 900, 50):
-        costs, points = calc_best_team_under_budget(players, j)
+        costs, points = calc_best_team_under_budget(players, j, costs_full,points_full)
         best_costs.append(sorted(costs))
         best_points.append(sorted(points))
         best_total_costs.append(sum(costs))
@@ -171,9 +174,9 @@ for i in range(len(formations)):
 def calc_best_per_season_pl(season): 
     conv = {'indexes': generic}
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+    
     playerspl = pd.read_csv(csv_file).to_dict('index')
     playerspldata = getters.get_players_feature_pl(playerspl)
-    
     formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
     
     for i in range(len(formations)):
@@ -191,15 +194,18 @@ def calc_best_per_season_pl(season):
         mf_combs = pd.read_csv(mf_csv, converters = conv)
         fw_combs = pd.read_csv(fw_csv, converters = conv)
         gk_combs['indexes'] = gk_combs['indexes'].apply(lambda x: [x])
+        combs_all = [gk_combs, df_combs, mf_combs, fw_combs]
         
+
         gk_points = gk_combs['total_points'].values
         df_points = df_combs['total_points'].values
         mf_points = mf_combs['total_points'].values
         fw_points = fw_combs['total_points'].values
         
+        
         all_points=[gk_points, df_points, mf_points, fw_points]
         points_full = parsers.parse_formations_points_or_cost(all_points)
-        
+        print(len(points_full))
         gk_costs = gk_combs['now_cost'].values
         df_costs = df_combs['now_cost'].values
         mf_costs = mf_combs['now_cost'].values
@@ -207,15 +213,13 @@ def calc_best_per_season_pl(season):
         
         all_costs = [gk_costs, df_costs, mf_costs, fw_costs]
         costs_full = parsers.parse_formations_points_or_cost(all_costs)
-    
-        best_costs, best_points = [],[]
+        print(len(costs_full))
+        best_costs= []
         best_total_costs, best_total_points =[],[]
         
         for j in range(500, 1050, 50):
-            costs, points = calc_best_team_under_budget(playerspldata, j)
-            print(costs) 
+            costs, points = calc_best_team_under_budget(playerspldata, j, costs_full, points_full, combs_all)
             best_costs.append(sorted(costs))
-            #best_points.append(sorted(points))
             best_total_costs.append(sum(costs))
             best_total_points.append(sum(points))
          
@@ -238,14 +242,15 @@ def calc_best_per_season_pl(season):
                     best_dataframe.loc[j]=dataframe.loc[j]
                     df_form[j]=formations[i]
                     best_dataframe['Formation'] = df_form
-                     
+                    
+        #print(dataframe['Best total cost'])              
         # Uncomment to save as csv
         
         #formation= str(df) + '-' + str(mf) + '-' + str(fw)
         #csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
         #dataframe.to_csv(csv_output, index=False)
-   # best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
-    
+    #best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
+    return all_points, points_full
     
 # In[]
 
@@ -255,6 +260,8 @@ def calc_best_per_season_pl(season):
 seasons = [1617, 1718, 1819, 1920, 2021]
 #season = seasons[3]
 
-for season in seasons:
-    print("Calculating season: " + str(season))
-    calc_best_per_season_pl(season)
+#for season in seasons:
+#    print("Calculating season: " + str(season))
+#    calc_best_per_season_pl(season)
+season=seasons[0]
+all_points , points_full = calc_best_per_season_pl(season)

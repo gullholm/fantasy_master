@@ -69,20 +69,31 @@ def costPerTeam4(team, costList):
     return teamcost  
 
 def createCostList(players=players2):
-    costList = []
+    costList =[]
+    for i in range(len(players)):
+        costList.append(0)
+    #print(players.keys())
     for i in list(players.keys()):
-        costList.append(players[i]["now_cost"])
+        #print(i)
+        #costList.append(players[i]["now_cost"])
+        costList[i-1] = players[i]["now_cost"]
     #for player in players:
     #    costList.append(player["now_cost"])    
     return tuple(costList)
 
 def createPointsList(players=players2):
-    pointsList=[]
+    pointsList =[]
+    for i in range(len(players)):
+        pointsList.append(0)
+    #print(players.keys())
     for i in list(players.keys()):
-        pointsList.append(players[i]["total_points"])
+        #print(i)
+        #costList.append(players[i]["total_points"])
+        pointsList[i-1] = players[i]["total_points"]
     #for player in players:
-        #pointsList.append(player["total_points"])
+    #    costList.append(player["now_cost"])    
     return tuple(pointsList)
+
 
 
 
