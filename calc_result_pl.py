@@ -59,7 +59,7 @@ def clean_all_data_pl(season):
  # In[]   
 
 # Change for different seasons
-seasons = [1718, 1819, 1920, 2021]
+seasons = [1920, 2021]
 #season = seasons[3]
 
 for season in seasons:

@@ -68,9 +68,10 @@ def costPerTeam4(team, costList):
         teamcost = teamcost + costList[key-1]
     return teamcost  
 
-def createCostList(players=players2):
+def createCostList(players = players2):
     costList =[]
-    for i in range(len(players)):
+    #Pick a larger number than largest key, some spots are missing / 0
+    for i in range(750):
         costList.append(0)
     #print(players.keys())
     for i in list(players.keys()):
@@ -81,13 +82,12 @@ def createCostList(players=players2):
     #    costList.append(player["now_cost"])    
     return tuple(costList)
 
-def createPointsList(players=players2):
+def createPointsList(players = players2):
     pointsList =[]
-    for i in range(len(players)):
+    #Pick a larger number than largest key, some spots are missing / 0
+    for i in range(750):
         pointsList.append(0)
-    #print(players.keys())
     for i in list(players.keys()):
-        #print(i)
         #costList.append(players[i]["total_points"])
         pointsList[i-1] = players[i]["total_points"]
     #for player in players:
