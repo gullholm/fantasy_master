@@ -173,7 +173,7 @@ for i in range(len(formations)):
 # In[]
 def calc_best_per_season_pl(season): 
     conv = {'indexes': generic}
-    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+x    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     
     playerspl = pd.read_csv(csv_file).to_dict('index')
     playerspldata = getters.get_players_feature_pl(playerspl)
@@ -244,10 +244,10 @@ def calc_best_per_season_pl(season):
         #print(dataframe['Best total cost'])              
         # Uncomment to save as csv
         
-        formation= str(df) + '-' + str(mf) + '-' + str(fw)
-        csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
-        dataframe.to_csv(csv_output, index=False)
-    best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
+        #formation= str(df) + '-' + str(mf) + '-' + str(fw)
+        #csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
+        #dataframe.to_csv(csv_output, index=False)
+    #best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
     return all_points, points_full
     
 # In[]

@@ -10,6 +10,10 @@ from random import *
 import pandas as pd
 import getters
 import calculations
+import cleaners
+import ast
+generic = lambda x: ast.literal_eval(x)
+
 
 #Random generate teams from ditribution or randomly.
 
@@ -162,17 +166,90 @@ plt.hist(allPoints)
 
 
 
+# In[]
 
+def cleanAllPositions(season):
+    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+    playerspl = pd.read_csv(csv_file) 
+    playerspl = playerspl.to_dict('index')
+    playerspldata = getters.get_players_feature_pl(playerspl)
+    
+    formations = [[3,4,5],[3,4,5],[1,2,3]]
+    form_name = ["df", "mf", "fw"]
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
+    
+    individualCleansPerPosition =[]
+    
+    for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+        print(pos)
+        for p in part:
+            print(p)
+            all_cleaned = cleaners.run_all_cleans(df, p)  
+            individualCleansPerPosition.append(all_cleaned)
+            
+    
+    # Goalkeepers
+    
+    gk, _,_,_ = getters.get_diff_pos(playerspldata)
+    
+    df_gk = pd.DataFrame.from_dict(gk, orient='index')
+    
+    sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+    
+    cleaned_gk = cleaners.clean_gk(sorted_df_gk)
+    cleaned_gk.reset_index(inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.drop('element_type', inplace=True, axis=1)
+    
+    individualCleansPerPosition.append(cleaned_gk)
+    
+    print("Done with " + str(season))
+    return individualCleansPerPosition
+
+# In[]
+import collections
+#cleaned = cleanALlPositions(1819)
+
+season=1819
+csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+playerspl = pd.read_csv(csv_file) 
+playerspl = playerspl.to_dict('index')
+playerspldata = getters.get_players_feature_pl(playerspl)
+gk, df, mf,fw = getters.get_diff_pos(playerspldata)
+
+allmfCost=[]
+for m in mf.items():
+    allmfCost.append(m[1]['now_cost'])
+
+occurrences = collections.Counter(allmfCost)
+print(sorted(occurrences.items()))    
+plt.hist(allmfCost)   
+
+ 
+#gk,df,mf,fw = getters.get_diff_pos(playerspldata)
+
+#for g in gk.items():
+ #   print(g[1]['now_cost'])
+    
+#def splitDfByCost():
+ #   return
+ 
+ 
+ # In[]
+ 
+sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
+
+test_dictionary = { idx : playerspldata[idx] for idx in sortIdxByCost }
+#print(test_dictionary[testsort[0]]) 
+
+for idx in sortIdxByCost:
+    print(playerspldata[idx])
+    
+print(playerspldata[sortIdxByCost[2]])
 
 # In[]
 
-gk,df,mf,fw = getters.get_diff_pos(playerspldata)
-
-for g in gk.items():
-    print(g[1]['now_cost'])
-    
-def splitDfByCost():
-    return
+# get the mean of all PL-seasons
 
 
 

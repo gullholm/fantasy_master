@@ -12,7 +12,7 @@ import pandas as pd
 import getters
 import calculations as calc
 import numpy as np
-
+import ast
 """
 Get the data
 """
@@ -46,9 +46,10 @@ for season in seasons:
     
     positions= [len(gk), len(df), len(mf), len(fw)]
         
-    plot_per_position(positions, title)
-    plot_hist_of_costs(playersdata, title)
-    plot_hist_of_points(playersdata, title)
+    #plot_per_position(positions, title)
+    #plot_hist_of_costs(playersdata, title)
+    #plot_hist_of_points(playersdata, title)
+    plotIndividualCosts(results, title, degree=1, line=False)
 
 
 # In[]
@@ -92,6 +93,21 @@ def plot_hist_of_costs(feature_data, title):
     plt.ylim(ymin, ymax)
     plt.title(title)
     plt.show()
+    
+def plotIndividualCosts(feature_data, title, degree, line=False):
+
+    x = list(range(1,12,1))
+    plt.xlabel("Player")
+    plt.ylabel("Cost")
+    for i in range(len(feature_data)):
+        y = ast.literal_eval(feature_data[i]['Individual costs'])
+        plt.plot(x,y, 'o', label = '< %s'%(500+i*50))
+        if line:
+            poly= np.polyfit(x,y,degree)
+            plt.plot(x, np.polyval(poly,x))
+    plt.legend()
+    plt.title(title)
+    plt.show()              
 
 # In[]
 # NOT DONE
@@ -99,16 +115,18 @@ def plot_hist_of_costs(feature_data, title):
     # plot best score per budget
     # plot cost of all players in best team per budget
 
-
-x = range(1,12,1)
-y = best_costs
+best_costs = results[7]['Individual costs']
+ind_costs = [50,53,55,55,56,57,66,96,113,119,129]
+x = list(range(1,12,1))
+y = ind_costs
 plt.xlabel("Player")
 plt.ylabel("Cost")
 #print(y[0])
-for i in range(len(y)):
-    plt.plot(x,[pt for pt in y[i]], 'o', label = '< %s'%(500+i*50))
+#for i in range(len(y)):
+#    plt.plot(x,[pt for pt in y[i]], 'o', label = '< %s'%(500+i*50))
 plt.legend()
 plt.show()  
+# In[9]
 #Theory 
 # minimum salary, in our case 37?
 # total budget, in our case 700
@@ -148,4 +166,92 @@ sum_best_points = list(map(sum, best_points))
 # plot "score", score = points/cost
 
 
+ # In[] 
+import RandomGenreateTeams
+eason=1819
+cleaned = RandomGenreateTeams.cleanAllPositions(season)  
+# In[]
+titlenames = ["df3", 'df4','df5', 'mf3', 'mf4', 'mf5', 'fw1', 'fw2', 'fw3', 'gk']
+for j in range(len(cleaned)):
+    totcost=[]
+    for i in range(len(cleaned[j])):
+        totcost.append(cleaned[j].iloc[i]['now_cost'])
+    plt.hist(totcost)
+    plt.xlabel("Cost")
+    plt.ylabel
+    plt.title("Individuella kostnader efter cleaned, "
+              "innan cleaned som formation: " + titlenames[j] + 
+              " season: " + str(season))
+    plt.show()
+    
+    
+    
+# In[]
+    
+
+def getResultsPerSeason(season):
+    if season == 0: 
+        csv_results = "results/as/best.csv"
+        results = pd.read_csv(csv_results).to_dict('index') 
+    else: 
+        csv_results = "results/pl/" + str(season) + "/best.csv"
+        results = pd.read_csv(csv_results).to_dict('index') 
+        
+    return results 
+
+    
+# In[]        
+
+seasons=[0, 1617, 1718, 1819, 1920, 2021]
+
+allResults = []
+for season in seasons: 
+    allResults.append(getResultsPerSeason(season))        
+
+meanIndCost = []
+for j in range(len(allResults[1])): 
+    for i in range(1,6):
+        if i == 1:
+            meanIndCost.append(ast.literal_eval(allResults[i][j]['Individual costs']))
+        else: 
+            lista = meanIndCost[j]
+            listb = ast.literal_eval(allResults[i][j]['Individual costs'])
+            meanIndCost[j] = [lista[i] + listb[i] for i in range(11)]
+            
+for k in range(11):    
+    meanIndCost[k] = [x/5 for x in meanIndCost[k]]   
+    
+degree=3
+#x= range(11)    
+#plt.plot(x, meanIndCost, 'o')
+#poly= np.polyfit(x,meanIndCost,degree)
+#plt.plot(x, np.polyval(poly,x))
+x = list(range(1,12,1))
+plt.xlabel("Player")
+plt.ylabel("Cost")
+line=True
+for i in range(len(meanIndCost)):
+    y = (meanIndCost[i])
+    plt.plot(x,y, 'o', label = '< %s'%(500+i*50))
+    if line:
+        poly= np.polyfit(x,y,degree)
+        plt.plot(x, np.polyval(poly,x))
+plt.legend()
+plt.title("test")
+plt.show()
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
