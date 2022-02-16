@@ -137,6 +137,32 @@ def get_cost_team(full_data, team_id): # Team is list with id's
     team_cost = [get_cost_player(full_data, player_id) for player_id in team_id]
     return team_cost
 
+# PL
+
+def get_full_name_pl(full_data, corr_id): # Get full name for a single player
+    
+    for player in full_data:
+        if full_data[player]['id'] == corr_id:
+            return full_data[player]['first_name'] + " " + full_data[player]['second_name']
+    return 0
+
+def get_full_name_team_pl(full_data, team_id): # Team is list with id's
+    team_names = [get_full_name_pl(full_data, player_id) for player_id in team_id]
+    return team_names
+
+def get_cost_player_pl(full_data, corr_id):
+
+    for player in full_data:
+        if (full_data[player]['id'] == corr_id):
+            return full_data[player]['now_cost']
+    return 0
+
+def get_cost_team_pl(full_data, team_id): # Team is list with id's
+    team_cost = [get_cost_player_pl(full_data, player_id) for player_id in team_id]
+    return team_cost
+
+
+
 def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
     # create empty list
     dataframes_list = []
