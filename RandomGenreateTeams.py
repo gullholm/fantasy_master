@@ -110,23 +110,13 @@ while len(allCosts) < 10000:
 print(max(allCosts))
 
 #%%
-
-# Plot results        
-plt.hist(allCosts)
-plt.title("All costs from random under budget: " + str(budget))
-plt.show()
-
-plt.hist(allPoints)    
-plt.title("All points from random under budget: " + str(budget))
+plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "random")
 
 # In[]
-
-
 budget = 1000
 formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
 
 allCosts, allPoints, allDynamics =[], [], []
-
 season = 1617
 
 allCombsPerFormation = []
@@ -146,31 +136,21 @@ while len(allCosts) < 1000:
 
 # In[]
 # for understanding
-
-max_value = max(allPoints)
-max_index = allPoints.index(max_value)
-#print('Best index: ' +str(max_index))
-print('Best total points: ' +str(max_value))
-print('Total cost for best team: ' + str(allCosts[max_index]))
-#print(allDynamics[max_index])
-print("Individual costs: " +str(getters.get_cost_team_pl(playerspl, allDynamics[max_index])))
-print("Players in best team: " + str(getters.get_full_name_team_pl(playerspl, allDynamics[max_index])))
-print("Mean total points: " + str(sum(allPoints)/len(allPoints)))
-print("Mean total cost: " + str(sum(allCosts)/len(allCosts)))
-
-
-
+def printAndPlotSummary(allCosts, allPoints, allDynamics, budget): 
+    max_value = max(allPoints)
+    max_index = allPoints.index(max_value)
+    #print('Best index: ' +str(max_index))
+    print('Best total points: ' +str(max_value))
+    print('Total cost for best team: ' + str(allCosts[max_index]))
+    #print(allDynamics[max_index])
+    print("Individual costs: " +str(getters.get_cost_team_pl(playerspl, allDynamics[max_index])))
+    print("Players in best team: " + str(getters.get_full_name_team_pl(playerspl, allDynamics[max_index])))
+    print("Mean total points: " + str(sum(allPoints)/len(allPoints)))
+    print("Mean total cost: " + str(sum(allCosts)/len(allCosts)))
 
 
 # In[]
-
-import matplotlib.pyplot as plt 
-
-plt.hist(allCosts)
-plt.show()
-plt.hist(allPoints)
-
-
+plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "Random")
 
 # In[]
 
@@ -230,17 +210,7 @@ for m in mf.items():
 occurrences = collections.Counter(allmfCost)
 print(sorted(occurrences.items()))    
 plt.hist(allmfCost)   
-
- 
-#gk,df,mf,fw = getters.get_diff_pos(playerspldata)
-
-#for g in gk.items():
- #   print(g[1]['now_cost'])
-    
-#def splitDfByCost():
- #   return
- 
- 
+  
  # In[]
  
 sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
@@ -332,23 +302,16 @@ while (len(allCosts)<10000):
         allPoints.append(points)
         allDynamics.append(dynamics)
 
-#%%
-# Plot results        
-plt.hist(allCosts)
-plt.title("All costs from distribution under budget: " + str(budget))
-plt.show()
+# Plot results distribution
+plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "distribution")       
 
-plt.hist(allPoints)    
-plt.title("All points from distribution under budget: " + str(budget))
 
 #%%
 
-
-def generateRandomTeamFromTheList(theList, budget): 
+def generateRandomTeamFromAllPlayers(theList, budget): 
     n=11
     
     res = [i for i in range(len(theList)) if theList[i] is not None]
-
     totalPoints, totalCost = 0, 0
     teamDistr = []
     
@@ -356,7 +319,7 @@ def generateRandomTeamFromTheList(theList, budget):
         cost = choice(res)    
         templist = theList[cost]
         
-        teamDistr.append(cost)    
+        teamDistr.append(cost)
         totalPoints += choice(templist) # add points
         totalCost += cost
     
@@ -368,17 +331,35 @@ lowerbudget = 770
 allCosts, allPoints, allDynamics =[], [], []
 
 while (len(allCosts)<10000):
-    points, costs, dynamics = generateRandomTeamFromTheList(theList, budget)
+    points, costs, dynamics = generateRandomTeamFromAllPlayers(theList, budget)
     if costs < budget and costs > lowerbudget:
         allCosts.append(costs)
         allPoints.append(points)
         allDynamics.append(dynamics)
-        
-#%%
-# Plot results        
-plt.hist(allCosts)
-plt.title("All costs from random under budget: " + str(budget))
-plt.show()
 
-plt.hist(allPoints)    
-plt.title("All points from random under budget: " + str(budget))        
+plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "random")        
+#%%
+# Plot results
+
+def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):        
+    plt.hist(allCosts)
+    plt.title("All costs from" + title + " under budget: " + str(budget))
+    plt.xlabel("Costs")
+    plt.ylabel("Amount")
+    plt.show()
+    
+    plt.hist(allPoints)    
+    plt.title("All points from " + title + " under budget: " + str(budget)) 
+    plt.xlabel("Points")
+    plt.ylabel("Amount")       
+    plt.show()
+    
+    
+#%%
+#gk,df,mf,fw = getters.get_diff_pos(playerspldata)
+
+#for g in gk.items():
+ #   print(g[1]['now_cost'])
+    
+#def splitDfByCost():
+ #   return-    
