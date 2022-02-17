@@ -7,9 +7,11 @@ Created on Tue Jan 25 10:55:46 2022
 
 import numpy as np
 import getters
+import parsers
 
 data2 = getters.get_data()
-players = getters.get_players_feature(data2)
+players2 = getters.get_players_feature(data2)
+
 
 def nump2(n, k):
     a = np.ones((k, n-k+1), dtype=int)
@@ -23,36 +25,43 @@ def nump2(n, k):
         a[j] = np.add.accumulate(a[j])
     return a
 
-def calcindex(indexlist, dat, nr, length):
+def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) amount of diff random players combinations
     returnlist=[]
+    np.random.seed(seed)
+    rand_x = np.random.randint(indexlist.shape[0], size = length)
+    
     for i in range(length):
-        temp = []
-        for j in range(nr):    
-            temp.append(list(dat)[indexlist[i][j]])
+
+        if(len(indexlist.shape) == 1):
+            temp = list(dat)[indexlist[rand_x[i]]]
+        else:
+            temp = [list(dat)[indexlist[rand_x[i],j]] for j in range(nr)]
         returnlist.append(temp)
+        
     return returnlist
 
-def pointsPerTeam3(team):
-    teampoints = 0
-    for key in team: 
-        teampoints = teampoints + players[key]["total_points"]
-     
-    return teampoints
+def createFormation(gk, df, mf, fw, d = 4, m = 4, f = 2, n = 100, seed = 123): # standard 4-4-2
+    
+    defe = np.transpose(nump2(len(df), d))
+    midf = np.transpose(nump2(len(mf), m))
+    forw = np.transpose(nump2(len(fw), f))    
+    glk = np.transpose(nump2(len(gk), 1))
+
+    forwards = calcindex(forw, fw, f, n, seed) 
+    defenders = calcindex(defe, df, d, n, seed )
+    midfielders = calcindex(midf, mf, m, n, seed)
+    goalkeepers = calcindex(glk, gk, 1, len(gk), seed)
+    
+    return goalkeepers, defenders, midfielders, forwards
 
 def pointsPerTeam4(team, pointsList):
-    #teampoints = 0
-    teampoints = np.sum(pointsList[team])
-    #for key in team: 
-    #    teampoints = teampoints + pointsList[key-1]
+    teampoints = 0
+    #teampoints = np.sum(pointsList[team])
+    for key in team: 
+        teampoints = teampoints + pointsList[key-1]
      
     return teampoints
 
-
-def costPerTeam(team):
-    teamcost = 0
-    for key in team:
-        teamcost = teamcost + players[key]["now_cost"]
-    return teamcost  
 
 def costPerTeam4(team, costList):
     teamcost = 0
@@ -60,35 +69,34 @@ def costPerTeam4(team, costList):
         teamcost = teamcost + costList[key-1]
     return teamcost  
 
-def createCostList():
-    costList = []
-    for i in range(len(players)):
-        costList.append(players[i+1]["now_cost"])
+def createCostList(players = players2):
+    costList =[]
+    #Pick a larger number than largest key, some spots are missing / 0
+    for i in range(750):
+        costList.append(0)
+    #print(players.keys())
+    for i in list(players.keys()):
+        #print(i)
+        #costList.append(players[i]["now_cost"])
+        costList[i-1] = players[i]["now_cost"]
     #for player in players:
     #    costList.append(player["now_cost"])    
-    return costList
+    return tuple(costList)
 
-def createPointsList():
-    pointsList=[]
-    for i in range(len(players)):
-        pointsList.append(players[i+1]["total_points"])
+def createPointsList(players = players2):
+    pointsList =[]
+    #Pick a larger number than largest key, some spots are missing / 0
+    for i in range(750):
+        pointsList.append(0)
+    for i in list(players.keys()):
+        #costList.append(players[i]["total_points"])
+        pointsList[i-1] = players[i]["total_points"]
     #for player in players:
-     #   pointsList.append(player["total_points"])
-    return pointsList
+    #    costList.append(player["now_cost"])    
+    return tuple(pointsList)
 
-def createFormation(d = 4, m = 4, f = 2, n = 100):
-    
-    gk, df, mf, fw = getters.get_diff_pos(players)
-    
-    defe = np.transpose(nump2(len(df),d))
-    midf = np.transpose(nump2(len(mf),m))
-    forw = np.transpose(nump2(len(fw),f))    
-        
-    forwards = calcindex(forw, fw, f, n) 
-    defenders = calcindex(defe, df, d, n )
-    midfielders = calcindex(midf, mf, m, n)
-    
-    return defenders, midfielders, forwards
+
+
 
 def printSummary(teamPoints, teamCosts):
     
@@ -105,3 +113,59 @@ def printSummary(teamPoints, teamCosts):
     print("Mean points: " + str(meanPoints))
     
     #return None
+    
+# calculate n max numbers of a list and append tehm to a list and print  
+def Nmaxelements(list1, N):
+    final_list = []
+  
+    for i in range(0, N): 
+        max1 = 0
+          
+        for j in range(len(list1)):     
+            if list1[j] > max1:
+                max1 = list1[j];
+                  
+        list1.remove(max1);
+        final_list.append(max1)
+          
+    print(final_list)  
+    
+#save this, the old way to calculate all indexes without randomization
+# so that all combinations occur    
+    
+def calcIndexOld(indexlist, dat):
+    returnlist=[]
+    dat = list(dat)
+    for i in range(indexlist.shape[0]):
+        temp = []
+        for j in range(indexlist.shape[1]):                
+            temp.append(dat[indexlist[i][j]])
+        returnlist.append(temp)
+    return returnlist    
+
+def calc_from_combs(all_combs, column):
+    return [comb[column].values for comb in all_combs]
+
+def calc_best_team(all_combs, cost_limit):
+
+    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+
+    all_points = calc_from_combs(all_combs, "total_points")
+    all_costs = calc_from_combs(all_combs, "now_cost" )
+
+    points_full = parsers.parse_formations_points_or_cost(all_points)
+
+    costs_full = parsers.parse_formations_points_or_cost(all_costs)
+
+
+    under_cost =  np.argwhere(costs_full < cost_limit)
+    
+    best = parsers.find_best_team(under_cost, points_full)
+    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
+    
+
+    
+    best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
+    
+    return under_cost, best_team_ids
+    

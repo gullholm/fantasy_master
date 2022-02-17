@@ -1,0 +1,517 @@
+first_name,second_name,goals_scored,assists,total_points,minutes,goals_conceded,clean_sheets,red_cards,yellow_cards,selected_by_percent,now_cost,element_type
+Nikita,Khaykin,0,0,123,2610,23,13,0,1,8.6,57,GK
+Joshua,Smits,0,0,1,90,2,0,0,0,1.1,48,GK
+Marcus,Andersen,0,0,0,0,0,0,0,0,2.7,39,GK
+Fredrik Andre,Bjørkan,2,8,139,2292,20,11,0,1,40.3,66,DEF
+Alfons,Sampsted,0,3,111,2546,23,13,0,1,20.2,61,DEF
+Morten,Ågnes Konradsen,0,1,49,974,7,5,0,1,1.7,53,DEF
+Marius,Lode,0,0,72,1655,13,9,0,3,4.1,50,DEF
+Brede,Moe,2,2,96,1964,18,9,0,2,6.4,52,DEF
+Marius,Høibråten,1,0,61,1392,15,6,0,1,5.9,47,DEF
+Vegard,Kongsro,0,0,1,50,1,0,0,1,0.2,47,DEF
+Sigurd,Kvile,0,0,23,422,3,2,0,0,0.3,42,DEF
+Ulrik,Saltnes,8,7,130,1980,19,8,0,2,23.5,105,MID
+Ola,Solbakken,6,6,126,2223,15,14,0,2,16.8,105,MID
+Sondre,Sørli,3,4,59,825,7,5,0,1,3.5,93,MID
+Axel,Lindahl,1,0,13,148,3,0,0,2,0.2,72,MID
+Hugo,Vetlesen,5,8,98,1158,15,6,0,2,4.9,73,MID
+Sondre,Brunstad Fet,3,5,80,1837,17,8,0,2,3.1,73,MID
+Sebastian,Tounekti,0,0,5,66,1,0,0,0,2.9,69,MID
+Vegard,Leikvoll Moberg,0,0,0,0,0,0,0,0,0.1,65,MID
+Runar,Hauge,0,0,0,0,0,0,0,0,0.0,60,MID
+Patrick,Berg,3,5,102,2274,22,10,0,5,29.7,59,MID
+Kent Malic,Swaleh,0,0,0,0,0,0,0,0,0.1,47,MID
+Elias,Hagen,0,0,24,699,9,3,0,2,0.4,48,MID
+Adan Abadala,Hussein,0,0,0,0,0,0,0,0,0.4,43,MID
+Ask,Tjærandsen-Skau,0,0,0,0,0,0,0,0,0.0,45,MID
+Erik,Botheim,15,4,150,2632,21,14,0,2,34.7,106,FWD
+José Vitor,Rodrigues da Silva dos Santos,0,0,8,120,3,0,0,0,0.1,83,FWD
+Hakon,Opdal,0,0,23,1080,27,1,0,0,2.8,48,GK
+Markus,Pettersen,0,0,0,0,0,0,0,0,0.1,45,GK
+Eirik,Holmen Johansen,0,0,17,450,8,1,0,0,1.1,44,GK
+Thomas,Grøgaard,0,1,34,996,17,1,0,1,0.9,47,DEF
+Ole Didrik,Blomberg,0,0,20,984,19,1,0,1,0.8,47,DEF
+Vegard,Forren,0,0,18,821,20,2,0,2,2.4,48,DEF
+Jon-Helge,Tveita,1,0,13,237,7,0,0,0,0.3,48,DEF
+Ole Martin,Kolskogen,0,0,40,1765,32,2,0,1,0.8,48,DEF
+David,Wolfe,1,1,32,791,22,0,0,0,0.3,49,DEF
+Ruben,Kristiansen,1,2,64,2162,46,2,0,2,4.2,45,DEF
+Filip Møller,Delaveris,0,0,18,430,11,2,0,0,0.4,73,MID
+Robert,Taylor,6,9,122,2239,46,1,0,0,6.7,74,MID
+Petter,Strand,1,4,74,2304,45,3,0,2,5.1,68,MID
+Moonga,Simba,1,1,32,818,14,0,0,1,0.3,70,MID
+Mathias,Rasmussen,2,5,79,1934,38,3,0,3,0.5,60,MID
+Kristoffer,Barmen,0,0,21,886,21,1,0,1,1.1,52,MID
+Kasper,Skaanes,1,2,44,1225,22,2,0,2,0.5,55,MID
+Mikal,Berg Kvinge,0,0,0,0,0,0,0,0,0.1,47,MID
+Daniel A.,Pedersen,1,0,29,935,17,0,0,0,0.1,50,MID
+Daouda,Bamba,6,1,53,1116,25,2,0,2,9.2,88,FWD
+Aune Selland,Heggebø,8,3,95,1661,31,2,0,1,6.9,61,FWD
+Helge,Sandvik,0,0,0,0,0,0,0,0,1.9,48,GK
+Egil,Selvik,0,0,122,2610,44,9,0,0,10.1,54,GK
+Frank,Stople,0,0,2,90,1,0,0,0,13.7,40,GK
+Alexander,Stølås,2,1,47,1138,25,2,0,2,1.2,61,DEF
+Mikkel,Desler,1,0,53,900,7,6,0,0,1.4,62,DEF
+Benjamin,Tiedemann Hansen,2,0,94,2610,44,9,0,2,4.4,56,DEF
+Ulrik,Fredriksen,0,0,57,2340,42,6,0,3,0.9,49,DEF
+Fredrik,Pallesen Knudsen,1,1,33,1288,24,2,1,5,1.2,49,DEF
+Thore Baardsen,Pedersen,0,5,75,2202,39,7,0,5,0.7,50,DEF
+Kristoffer,Velde,7,10,135,2391,40,7,0,4,12.4,86,MID
+Niklas,Sandberg,3,8,105,2200,37,7,0,1,1.9,74,MID
+Alioune,Ndour,7,1,81,1000,13,6,1,1,2.9,69,MID
+Peter,Therkildsen,2,3,88,2559,44,9,0,3,0.2,60,MID
+Kevin Martin,Krygård,1,2,76,2510,41,9,0,5,0.4,49,MID
+Bruno,Leite,0,2,20,410,3,2,0,1,0.4,49,MID
+Kristoffer,Gunnarshaug,0,0,4,32,1,0,0,0,0.1,44,MID
+Mads,Berg Sande,1,0,29,368,7,0,0,1,0.2,44,MID
+Ibrahima,Wadji,8,0,62,898,18,3,0,1,3.8,80,FWD
+Sondre,Liseth,5,5,100,2294,38,9,0,5,3.2,70,FWD
+Andreas,Endresen,0,0,1,8,0,0,0,0,1.4,43,FWD
+Sean,McDermott,0,0,122,2663,45,9,0,1,26.2,58,GK
+Serigne,Mor Mbaye,0,0,0,0,0,0,0,0,0.2,45,GK
+Christoffer,Aasbak,1,3,71,1327,17,7,0,1,1.1,54,DEF
+Dan Peter,Ulvestad,1,0,58,1685,29,5,0,3,4.5,48,DEF
+Snorre,Nilsen,6,2,119,2388,37,8,0,4,16.9,60,DEF
+Bent,Sørmo,0,0,5,388,8,0,0,1,2.1,48,DEF
+Ivar,Furu,0,0,2,92,3,0,0,0,0.3,42,DEF
+Aliou,Coly,1,2,85,2246,37,7,0,4,16.0,48,DEF
+Erlend,Sivertsen,0,0,11,580,16,0,0,2,0.2,43,DEF
+Max Normann,Williamsen,0,0,8,245,10,0,0,0,2.1,39,DEF
+Liridon,Kalludra,1,6,62,1115,18,3,0,3,1.4,63,MID
+Bendik,Bye,7,1,90,1865,30,7,0,0,1.6,64,MID
+Agon,Mucolli,4,6,84,1388,23,4,0,3,0.6,62,MID
+Brynjólfur Darri,Willumsson,0,1,31,690,10,5,0,4,0.1,58,MID
+Olaus,Skarsem,1,4,74,1482,19,7,0,3,1.2,59,MID
+Sander,Kartum,4,2,70,1237,20,5,0,4,0.5,58,MID
+Amin,Askar,0,2,30,702,14,1,0,1,0.5,54,MID
+Pål Erik,Ulvestad,0,2,33,832,17,3,0,4,1.3,44,MID
+Horenus,Taddese,0,0,0,0,0,0,0,0,0.1,45,MID
+Ousseynou Cavin,Diagne,0,0,0,0,0,0,0,0,0.1,44,MID
+Amidou,Diop,0,0,58,2028,29,10,0,2,2.8,44,MID
+Noah,Solskjær,0,0,0,0,0,0,0,0,0.1,45,MID
+Andreas,Hopmark,1,1,83,2520,40,9,0,1,14.2,44,MID
+Flamur,Kastrati,0,1,29,724,15,2,0,3,3.3,65,FWD
+Faris,Pemi Moumbagna,0,0,14,521,6,3,0,2,1.2,60,FWD
+Oskar Siira,Sivertsen,1,0,8,46,2,0,0,1,9.9,41,FWD
+Álex,Craninx,0,0,3,180,6,0,0,0,2.9,42,GK
+Mads Hedenstad,Christiansen,0,0,101,2160,25,8,0,0,6.1,46,GK
+Emil,Ødegaard,0,0,0,0,0,0,0,0,2.0,40,GK
+Vetle,Winger Dragsnes,2,3,102,2671,39,8,0,2,10.0,51,DEF
+Igoh,Ogbu,1,2,84,2331,32,7,1,5,8.5,48,DEF
+Philip,Slørdahl,0,0,21,855,17,2,0,1,0.1,44,DEF
+Simen,Kind Mikalsen,0,0,1,1,0,0,0,0,0.0,43,DEF
+Lars,Ranger,2,2,63,1866,32,4,0,8,3.6,42,DEF
+Espen,Garnas,2,0,81,2323,32,7,0,6,2.0,46,DEF
+Eskil,Edh,1,3,69,1335,17,5,0,4,4.1,43,DEF
+Josef,Baccay,0,0,1,1,0,0,0,0,0.7,40,DEF
+Erik Tobias,Sandberg,0,0,0,0,0,0,0,0,0.1,40,DEF
+Pål André,Helland,1,1,25,337,4,2,0,2,1.0,84,MID
+Gjermund,Åsen,2,12,126,2217,31,7,0,0,6.0,80,MID
+Daniel,Gustafsson,2,2,67,1567,23,7,0,2,0.4,64,MID
+Kaan,Kairinen,1,5,60,1494,19,6,0,1,0.7,60,MID
+Tobias,Svendsen,0,2,37,755,15,3,0,1,0.2,59,MID
+Fredrik,Krogstad,1,1,36,617,13,0,0,1,0.3,52,MID
+Jonatan,Brunes,1,2,29,210,8,0,0,1,0.1,45,MID
+Uranik,Seferi,0,0,0,0,0,0,0,0,0.1,44,MID
+Apipon,Tongnoy,0,0,0,0,0,0,0,0,0.0,45,MID
+Ulrik,Mathisen,1,0,33,664,11,1,0,0,0.2,45,MID
+Thomas,Lehne Olsen,26,3,205,2532,33,10,0,3,37.7,100,FWD
+Kent,Havard Eriksen,3,2,46,935,30,0,0,0,0.9,57,FWD
+Alexander Hrcka,Sannes,0,0,0,0,0,0,0,0,0.2,45,FWD
+Andreas,Linde,0,0,89,2250,37,8,0,2,9.3,64,GK
+Mathias Eriksen,Ranmark,0,0,0,0,0,0,0,0,0.1,44,GK
+Oliver,Petersen,0,0,23,450,3,2,0,0,0.2,45,GK
+Marcus,Holmgren Pedersen,0,2,20,476,7,1,0,2,2.1,62,DEF
+Kristoffer,Haugen,6,1,114,1934,26,9,0,4,15.1,68,DEF
+Kristoffer,Haraldseid,0,0,0,0,0,0,0,0,0.0,59,DEF
+Birk,Risa,3,1,54,1064,17,4,1,3,9.6,56,DEF
+Stian,Gregersen,1,1,51,983,15,5,0,1,6.5,58,DEF
+Sheriff,Sinyan,3,2,90,2007,31,6,0,1,4.4,54,DEF
+Martin,Bjørnbak,3,0,93,2318,35,9,1,3,17.6,58,DEF
+Fredrik,Sjølstad,0,0,5,120,5,0,0,0,0.0,49,DEF
+Magnus,Wolff Eikrem,4,9,106,1611,27,5,0,2,5.8,124,MID
+Eirik,Ulland Andersen,6,4,92,1389,21,5,0,3,4.2,82,MID
+Eirik,Hestad,3,3,55,1084,20,3,0,0,2.3,81,MID
+Mathis,Bolly,3,0,42,593,12,2,0,1,0.4,77,MID
+Ola,Brynhildsen,5,13,138,2396,32,9,0,3,20.7,84,MID
+Erling,Knudtzon,1,1,49,1268,21,5,0,1,4.0,69,MID
+Etzaz,Hussain,2,7,85,1858,27,9,0,4,9.4,61,MID
+Martin,Ellingsen,2,0,27,494,2,3,0,2,1.0,57,MID
+Fredrik,Aursnes,1,5,61,1307,17,6,0,1,16.5,65,MID
+Emil,Breivik,1,6,55,1103,16,3,0,2,1.3,43,MID
+Ohikhuaeme,Omoijuanfo,27,2,191,2360,32,12,0,3,43.6,123,FWD
+Björn,Sigurdarson,0,0,1,13,0,0,0,0,2.5,98,FWD
+David Datro,Fofana,0,1,22,305,9,0,0,0,4.4,90,FWD
+Sondre,Rossbach,0,0,40,1530,32,2,0,1,5.4,53,GK
+Leopold,Wahlstedt,0,0,40,1170,26,1,0,1,2.1,45,GK
+Espen,Ruud,2,3,51,1724,42,1,0,1,1.0,68,DEF
+John,Kitolano,0,2,50,2321,47,3,0,6,3.4,59,DEF
+Steffen,Hagen,0,0,8,558,13,0,0,0,0.2,48,DEF
+Odin Luras,Björtuft,0,1,56,2440,50,3,0,2,2.3,49,DEF
+Solomon,Owusu,1,0,24,897,24,0,0,1,0.6,48,DEF
+Kevin,Egell-Johnsen,0,0,1,55,3,0,0,0,0.0,45,DEF
+Bjørn,Mæland,0,0,0,0,0,0,0,0,0.3,43,DEF
+Eirik Asante,Gayi,0,0,0,0,0,0,0,0,0.8,39,DEF
+Thomas,Hallstensen,0,0,1,5,0,0,0,0,0.2,40,DEF
+Markus,Kaasa,2,3,80,2444,53,4,0,3,0.8,63,MID
+Kristoffer,Larsen,1,2,37,601,14,1,0,0,0.2,64,MID
+Gilli,Ròlantsson Sørensen,1,4,55,1661,37,1,0,3,0.1,59,MID
+Onyekachi,Ugwuadu,0,1,8,43,2,0,0,0,0.1,52,MID
+Joshua,Kitolano,2,2,75,2444,54,3,0,6,8.5,53,MID
+Conrad,Wallem,3,3,72,1528,23,2,0,3,0.1,54,MID
+Magnus,Lekven,0,0,51,2096,41,3,0,0,1.0,49,MID
+Filip Rønningen,Jørgensen,2,1,80,2360,49,3,0,2,3.9,44,MID
+Elias,Skogvoll,0,0,0,0,0,0,0,0,0.1,45,MID
+Mushaga,Bakenga,11,1,79,879,11,2,0,4,8.0,98,FWD
+Tobias,Lauritsen,8,3,92,1622,44,0,0,1,2.5,75,FWD
+André,Hansen,0,0,73,2314,38,5,0,0,8.6,59,GK
+Julian Faye,Lund,0,0,19,385,4,1,0,0,0.4,49,GK
+Sander,Tangvik,0,0,0,0,0,0,0,0,2.8,39,GK
+Markus,Henriksen,1,0,21,703,13,2,1,1,2.3,64,DEF
+Hólmar Örn,Eyjólfsson,2,2,52,1440,20,3,0,5,1.6,63,DEF
+Jonathan,Augustinsson,0,1,24,661,9,2,0,2,0.1,64,DEF
+Erlend,Dahl Reitan,1,10,102,2490,37,5,0,4,17.5,63,DEF
+Adam,Andersson,0,4,72,2306,36,5,1,3,2.5,57,DEF
+Even,Hovland,2,2,84,2565,40,6,0,1,6.8,59,DEF
+Besim,Serbecic,1,0,20,632,11,1,0,1,1.6,54,DEF
+Gustav,Valsvik,3,2,107,2595,42,7,1,1,8.7,57,DEF
+Mikkel,Konradsen Ceide,0,0,1,4,0,0,0,0,1.2,39,DEF
+Pawel,Chrupalla,0,0,0,0,0,0,0,0,0.2,39,DEF
+Kristoffer,Zachariassen,8,3,82,1080,17,3,0,4,14.4,103,MID
+Stefano,Vecchia,11,1,104,1250,20,3,0,0,5.1,93,MID
+Emil,Konradsen Ceïde,5,3,84,1523,20,3,0,2,3.5,80,MID
+Carlo,Holse,7,7,125,2297,36,4,0,0,10.6,81,MID
+Anders,Ågnes Konradsen,2,0,34,784,12,1,0,0,1.0,69,MID
+Per Ciljan,Skjelbred,1,3,37,932,16,1,0,4,0.2,54,MID
+Edvard,Tagseth,1,2,49,1218,23,3,0,3,0.6,54,MID
+Vebjørn,Hoff,0,4,49,1400,19,4,0,3,3.6,51,MID
+Dino,Islamovic,6,2,74,1478,23,3,0,3,7.5,104,FWD
+Guillermo,Molins,2,2,32,548,9,1,0,1,2.1,88,FWD
+Ole Christian,Saeter,0,0,1,1,0,0,0,0,0.1,74,FWD
+Rasmus,Wiedesheim-Paul,3,1,35,495,6,1,0,0,1.0,60,FWD
+Iven,Austbø,0,0,19,900,21,0,0,1,3.1,51,GK
+Arild,Østbø,0,0,41,1240,17,3,0,1,0.5,50,GK
+Trym,Sølvberg Ur,0,0,0,0,0,0,0,0,0.4,40,GK
+Sondre,Flem Bjørshol,1,0,25,508,10,0,0,1,1.9,54,DEF
+Shayne,Pattynama,2,6,64,888,15,2,0,3,0.5,55,DEF
+Runar,Ullaland Hove,0,1,25,1253,28,0,0,1,0.5,48,DEF
+Viljar,Vevatne,1,1,56,2223,44,2,0,2,3.1,47,DEF
+Henrik,Heggheim,0,0,24,1483,31,0,0,2,5.7,47,DEF
+Rolf Daniel,Vikstøl,1,2,48,1329,21,3,0,6,2.9,43,DEF
+Herman,Haugen,0,0,9,183,5,0,0,0,2.2,40,DEF
+Sebastian Sørlie,Henriksen,0,0,1,1,0,0,0,0,1.0,38,DEF
+Kristoffer,Paulsen,0,0,1,1,0,0,0,0,0.3,39,DEF
+Kevin,Kabran,3,6,76,1808,32,0,0,3,1.6,79,MID
+Yann-Erik,de Lanlay,1,1,38,982,15,2,0,0,0.2,75,MID
+Fredrik,Torsteinbø,0,2,26,859,20,0,0,0,1.5,61,MID
+Samúel Kári,Fridjónsson,5,2,74,1487,28,3,0,5,8.6,62,MID
+Johnny,Furdal,0,0,0,0,0,0,0,0,0.0,59,MID
+Sebastian,Sebulonsen,4,2,93,2043,26,6,0,2,0.7,54,MID
+Kristoffer,Løkberg,3,1,55,1294,18,5,0,4,1.6,47,MID
+Sondre,Auklend,0,1,14,226,7,0,0,0,0.1,47,MID
+Joe,Bell,1,9,110,2388,38,4,0,5,10.2,52,MID
+Harald,Nilsen Tangen,5,4,95,1986,40,2,0,2,8.4,48,MID
+Veton,Berisha,22,8,185,2333,40,4,0,2,41.0,113,FWD
+Tommy,Høiland,0,0,8,77,2,0,0,0,1.5,55,FWD
+Anders,Kristiansen,0,0,90,2689,44,7,0,3,1.5,55,GK
+Simen Vidtun,Nilsen,0,0,1,10,0,0,0,0,0.2,44,GK
+Joachim,Soltvedt,0,1,32,608,12,3,0,2,1.4,54,DEF
+Joachim,Thomassen,3,1,88,2377,38,6,0,7,5.9,55,DEF
+Eirik,Wichne,1,5,73,1687,29,4,0,2,3.1,56,DEF
+Bjørn Inge,Utvik,0,1,83,2374,36,8,0,3,7.5,54,DEF
+Magnar,Ødegaard,0,0,56,2149,29,5,0,4,2.4,50,DEF
+Benjamin,Karamoko,0,1,37,1495,29,2,0,5,0.2,49,DEF
+Mikael,Dyrestam,0,0,57,2097,32,5,0,3,0.3,50,DEF
+Jørgen,Horn,0,0,0,0,0,0,0,0,0.0,49,DEF
+Sulayman,Bojang,0,0,22,608,12,2,0,0,0.8,42,DEF
+Sebastian,Jarl,0,0,5,82,3,0,0,1,0.1,44,DEF
+Rashad,Muhammed,1,0,15,211,4,0,0,2,0.2,64,MID
+Ole Jørgen,Halvorsen,1,3,49,955,14,4,0,3,0.5,62,MID
+Jonathan,Lindseth,10,3,123,1834,24,4,0,3,13.3,69,MID
+Anton,Salétros,3,8,103,2231,38,7,1,3,1.6,65,MID
+Mohamed,Ofkir,0,0,8,296,6,0,0,0,0.2,64,MID
+Aboubacar,Konte,0,0,0,0,0,0,0,0,0.1,55,MID
+Gaute Høberg,Vetti,0,0,16,529,7,3,0,1,0.0,48,MID
+Emil,Palsson,0,0,20,579,7,3,0,1,0.2,44,MID
+Nicolai,Næss,0,1,48,1764,34,6,0,3,8.4,43,MID
+Laurent Jacques,Mendy,0,0,5,122,3,1,0,0,0.9,43,MID
+Emir,Derviskadic,0,0,0,0,0,0,0,0,0.1,44,MID
+Kristian,Opseth,5,2,48,593,18,1,0,0,0.3,84,FWD
+Ibrahima,Kone,11,4,115,2167,28,11,1,5,6.7,79,FWD
+Mostafa,Abdellaoue,0,0,0,0,0,0,0,0,0.1,69,FWD
+Steffen,Skålevik,1,0,13,254,6,0,0,0,1.2,58,FWD
+Marcus,Sandberg,0,0,94,2568,58,6,1,2,2.1,55,GK
+Jonas Vatne,Brauti,0,0,2,128,6,0,0,0,0.1,44,GK
+Marius Amundsen,Ulla,0,0,0,0,0,0,0,0,0.1,44,GK
+Mats,Solheim,0,1,19,671,17,2,0,2,5.7,54,DEF
+Yaw,Amankwah,1,0,31,895,18,2,0,1,0.7,50,DEF
+Jeppe,Moe,1,1,36,1004,19,2,0,3,0.3,48,DEF
+Sturla,Ottesen,1,4,77,2610,61,6,0,5,2.8,45,DEF
+Peder,Vogt,0,0,0,0,0,0,0,0,0.1,44,DEF
+Nicolas,Pignatel Jenssen,0,0,51,2091,47,5,0,2,0.4,45,DEF
+Emil,Jonassen,0,1,8,163,6,0,0,0,19.7,39,DEF
+Oliver Valaker,Edvardsen,7,6,110,1659,40,5,0,1,7.9,69,MID
+Herolind,Shala,0,3,31,663,14,3,0,2,1.2,64,MID
+Kornelius Normann,Hansen,2,4,64,1809,48,4,1,2,1.1,64,MID
+Herman,Geelmuyden,2,1,36,598,15,2,0,3,0.1,57,MID
+Sammy,Skytte,2,0,35,1084,24,3,0,4,0.5,60,MID
+Marcus,Solbakken,1,0,54,1747,46,3,0,1,0.6,54,MID
+Kaloyan,Kostadinov,0,1,32,929,20,3,0,1,0.1,51,MID
+Magnus,Strandman Lundal,0,0,0,0,0,0,0,0,0.1,55,MID
+Jesper,Isaksen,1,2,33,889,29,0,0,4,0.1,49,MID
+Tortol,Lumanza-Lembi,0,1,10,222,9,0,0,0,0.2,48,MID
+Kristian Bernt,Torgersen,0,0,14,470,12,1,0,0,0.2,45,MID
+Fitim,Azemi,2,0,37,1142,23,4,0,1,1.0,63,FWD
+Kosuke,Kinoshita,1,0,19,595,13,2,0,1,2.6,54,FWD
+Viljar,Myhra,0,0,93,2368,36,6,0,2,14.5,46,GK
+Morten,Sætra,0,0,12,331,7,1,0,0,4.5,40,GK
+Daniel,Skretteberg,0,0,0,0,0,0,0,0,0.4,40,GK
+Lars-Christopher,Vilsvik,1,4,92,2260,33,6,0,1,5.2,46,DEF
+Nico,Mickelson,0,0,4,64,0,0,0,0,0.3,44,DEF
+Jonathan,Parr,0,3,56,1209,20,5,0,1,2.1,42,DEF
+Duplexe Tchamba,Bangou,1,0,14,188,3,1,0,0,0.0,45,DEF
+Ari,Leifsson,1,0,49,1436,23,5,0,6,0.9,42,DEF
+Niklas,Gunnarsson,0,1,39,1531,26,3,0,5,0.3,44,DEF
+Prosper,Mendy,0,0,9,407,11,0,0,0,0.2,45,DEF
+Andreas Rosendal,Nyhagen,0,0,2,22,0,0,0,0,0.7,39,DEF
+Sondre,Fosnaess Hanssen,0,0,2,90,1,0,0,0,6.5,38,DEF
+Mikkel,Maigaard,1,4,62,1683,37,2,0,2,0.2,79,MID
+Johan,Hove,6,6,123,2497,40,6,0,1,3.5,78,MID
+Valdimar,Ingimundarson,0,1,19,395,11,0,0,2,0.1,64,MID
+Kristoffer,Tokstad,3,1,40,564,10,1,0,1,0.2,57,MID
+Halldor,Stenevik,2,5,90,2412,35,7,0,6,0.6,60,MID
+Mustapha,Fofana,0,0,0,0,0,0,0,0,0.0,55,MID
+Herman,Stengel,6,4,112,2560,40,8,0,4,8.0,55,MID
+Aleksander,Stenseth,0,0,0,0,0,0,0,0,0.1,44,MID
+Sebastian,Pop,0,0,0,0,0,0,0,0,0.1,44,MID
+Ipalibo,Jack,3,0,50,991,14,5,0,3,0.3,44,MID
+Kreshnik,Krasniqi,1,1,38,869,14,2,0,3,0.2,44,MID
+Tobias Fjeld,Gulliksen,5,2,97,1932,24,9,0,5,5.0,47,MID
+Fred,Friday,7,5,112,2480,40,7,0,3,8.3,80,FWD
+Moses,Mawa,5,3,77,1800,36,4,0,3,3.1,73,FWD
+Simen Hjerkinn,Hammershaug,0,0,1,9,0,0,0,0,0.8,44,FWD
+Jacob,Karlstrøm,0,1,108,2700,44,8,0,1,17.4,47,GK
+Mats,Trige,0,0,0,0,0,0,0,0,7.6,39,GK
+Tomas,Totland,5,3,114,2392,42,7,0,3,19.2,60,DEF
+Lasse,Nilsen,0,1,32,1122,21,3,0,2,0.6,48,DEF
+Jostein,Gundersen,0,0,46,1590,27,5,0,6,0.8,43,DEF
+Anders,Jenssen,1,1,63,2038,39,6,1,3,1.1,45,DEF
+Adam,Arnarson,1,1,31,525,8,2,0,1,0.3,42,DEF
+Simen,Wangberg,3,0,73,1901,38,4,0,4,6.2,44,DEF
+Magnus,Andersen,0,0,7,45,1,0,0,0,0.0,43,DEF
+Isak,Helstad Amundsen,1,0,49,1764,35,3,0,3,0.9,45,DEF
+Casper,Øyvann,0,0,43,800,9,5,0,1,5.8,40,DEF
+Eric,Kitolano,4,7,112,2369,37,8,0,3,3.7,74,MID
+Mikael,Ingebrigtsen,0,0,6,64,2,0,0,0,0.3,62,MID
+Kent-Are,Antonsen,1,0,34,1224,24,2,0,2,0.1,57,MID
+Daniel,Berntsen,0,0,32,998,25,3,0,2,0.3,56,MID
+Ruben,Yttergård Jenssen,0,3,82,2610,43,8,0,3,2.0,47,MID
+Tomas,Stabell,0,0,0,0,0,0,0,0,0.4,43,MID
+August,Mikkelsen,8,2,122,2278,33,7,0,2,20.6,54,MID
+Runar,Espejord,0,5,39,814,9,3,0,0,1.3,72,FWD
+Moses,Ebiye,8,3,86,1584,28,6,0,0,18.7,54,FWD
+Tobias,Hafstad,0,0,1,5,0,0,0,0,2.6,45,FWD
+Kristoffer,Klaesson,0,1,39,1260,20,2,0,1,11.3,54,GK
+Christian Kjetil,Haug,0,0,50,1223,15,3,0,0,1.8,49,GK
+Christian,Borchgrevink,3,6,96,2022,28,4,0,5,26.5,59,DEF
+Felix Horn,Myhre,0,0,28,1622,32,0,0,1,1.7,54,DEF
+Ivan,Näsberg,0,0,55,2187,30,4,0,2,7.3,53,DEF
+Sam,Adekugbe,0,0,26,1080,15,2,0,2,3.3,54,DEF
+Jonatan,Tollås Nation,3,1,98,2475,30,6,0,4,15.7,58,DEF
+Brage,Skaret,0,0,13,499,8,1,0,1,0.2,43,DEF
+Fredrik,Holmé,0,0,1,12,0,0,0,0,0.5,39,DEF
+Amin,Nouri,0,0,0,0,0,0,0,0,1.0,39,DEF
+Oskar,Opsahl,0,0,0,0,0,0,0,0,0.4,39,DEF
+Amor,Layouni,3,6,95,2131,26,9,0,4,2.0,102,MID
+Aron,Dønnum,6,3,64,762,14,1,0,2,12.3,100,MID
+Henrik Rørvik,Bjørdal,4,5,121,2655,36,7,0,3,2.6,83,MID
+Osame,Sahraoui,2,7,109,2184,28,7,0,2,6.2,81,MID
+Tobias,Christensen,3,2,82,2126,31,4,0,3,3.2,68,MID
+Odin,Thiago Holm,3,1,45,836,9,2,0,2,0.4,54,MID
+Seedy,Jatta,2,0,38,755,16,1,0,0,0.2,47,MID
+Fredrik,Oldrup Jensen,2,2,81,2696,37,6,0,0,1.6,50,MID
+Sakarias,Opsahl,0,2,51,1205,15,5,0,2,0.1,48,MID
+Vidar,Kjartansson,5,1,57,1304,16,6,0,0,8.6,112,FWD
+Henrik,Udahl,6,4,76,1144,16,3,0,0,3.8,81,FWD
+Sosha,Makani,0,0,69,1980,39,3,0,0,6.4,49,GK
+Gard,Thomas,0,0,0,0,0,0,0,0,1.4,40,GK
+Idar Nordby,Lysgård,0,0,26,720,13,1,0,0,2.6,41,GK
+Markus,Nakkim,3,0,79,2610,50,4,0,4,7.3,50,DEF
+Sondre,Solholm Johansen,1,1,53,1440,21,3,0,1,2.0,51,DEF
+Joachim,Olsen Solberg,0,2,36,1182,27,1,0,4,0.7,43,DEF
+William,Sell,0,0,11,615,13,0,0,3,0.0,45,DEF
+Nikolas,Walstad,2,3,75,2256,41,3,0,4,3.1,44,DEF
+Syver Skaar,Eriksen,2,1,45,1013,22,3,0,3,1.0,41,DEF
+Adrian Aleksander,Hansen,0,0,5,273,7,0,0,1,0.9,40,DEF
+Fredrik,Brustad,2,2,55,1287,28,3,0,1,0.4,58,MID
+Lars,Olden Larsen,8,3,108,2062,39,4,0,2,1.6,59,MID
+Tonny,Brochmann,1,1,21,420,3,2,0,1,0.7,60,MID
+Ole Amund,Sveen,1,0,49,1618,31,4,0,3,0.1,52,MID
+Alfred,Schriven,0,0,5,24,0,0,0,0,0.0,54,MID
+Christian,Gauseth,0,2,40,1229,22,4,0,3,0.7,49,MID
+Stian Semb,Aasmundsen,0,1,37,1401,25,3,0,6,0.2,49,MID
+Frank,Bamenye,0,0,1,9,0,0,0,0,0.0,49,MID
+Erik,Stavas Skistad,0,0,19,676,18,1,0,1,0.1,49,MID
+Martin,Ovenstad,3,5,90,1979,31,8,0,3,3.4,46,MID
+Magnus,Bækken,0,0,4,45,2,0,0,0,0.0,48,MID
+Isaac,Twum,1,0,47,1758,35,2,0,4,0.5,44,MID
+Benjamin,Stokke,4,4,75,1680,25,6,0,1,2.0,64,FWD
+Ibrahim,Shuaibu,1,0,10,103,0,0,0,0,1.2,57,FWD
+Jacob,Storevik,0,1,108,2700,52,7,0,0,10.6,50,GK
+Frederik,Due,0,0,0,0,0,0,0,0,0.2,44,GK
+Jesper,Granlund,0,0,0,0,0,0,0,0,0.3,40,GK
+Marc,Vales González,1,0,35,1078,24,2,0,5,1.4,48,DEF
+Martin,Kreuzriegler,1,0,71,2304,37,7,0,5,8.3,44,DEF
+Brice,Wembangomo,0,2,66,1937,37,5,0,4,3.3,43,DEF
+Mats,Haakenstad,0,1,46,1474,29,5,0,0,0.6,42,DEF
+Lars,Markmanrud,0,0,3,84,1,0,0,0,0.0,44,DEF
+Sander Moen,Foss,2,0,64,2429,49,5,0,5,2.5,44,DEF
+Hermann,Nilsen,0,0,0,0,0,0,0,0,0.6,40,DEF
+Harmeet,Singh,0,0,43,1715,34,4,0,3,0.3,59,MID
+André,Södlund,0,1,19,487,10,1,0,1,0.1,53,MID
+Kristoffer,Normann Hansen,7,8,132,2084,41,6,0,2,12.9,61,MID
+Vidar,Ari Jónsson,11,5,147,2490,46,7,0,5,28.0,59,MID
+Amer,Ordagic,0,3,42,1078,18,3,0,0,0.1,50,MID
+Erik Næsbak,Brenden,3,1,51,977,20,2,0,2,0.1,47,MID
+Franklin,Nyenetue,0,1,31,682,15,0,0,0,0.1,48,MID
+Enric,Vallés,0,1,17,360,6,2,0,0,0.0,50,MID
+William,Kurtovic,2,1,61,1879,35,5,0,4,0.0,50,MID
+Jose,Eduardo de Araujo,0,0,20,578,10,1,0,3,0.3,44,MID
+Peder,Meen Johansen,0,0,2,7,0,0,0,0,0.2,44,MID
+Martin,Andersen,0,0,0,0,0,0,0,0,0.0,45,MID
+Henrik Sælebakke,Falchener,0,0,2,78,4,0,0,0,0.2,43,MID
+Sander,Mork,2,3,56,1081,20,2,0,0,0.3,45,MID
+Sivert,Gussias,1,0,14,189,4,0,0,0,1.8,57,FWD
+Marcos,Celorrio Yecora,0,0,1,16,1,0,0,0,1.6,47,FWD
+Ifeanyi,Mathew,2,4,100,2640,38,9,0,3,2.0,51,MID
+Niklas,Jensen,1,0,21,384,6,1,0,0,0.7,43,MID
+Syver,Aas,1,0,16,155,2,0,0,1,0.5,43,MID
+Elias,Hadaya,0,0,1,36,1,0,0,0,0.5,44,GK
+Ole Kristian,Enersen,0,1,9,155,1,1,0,2,0.0,44,MID
+Torgil,Øwre Gjertsen,6,8,122,1910,31,7,0,3,4.3,75,MID
+Sander,Svendsen,8,6,126,2177,48,3,0,1,11.7,75,MID
+Jonas,Valland,0,0,0,0,0,0,0,0,0.8,39,DEF
+Zlatko,Tripic,7,5,110,1813,29,5,0,4,3.4,95,MID
+Magnus,Grødem,1,1,27,271,4,0,0,0,0.1,79,MID
+Lasse,Nordas,2,1,26,348,8,0,0,0,0.1,78,FWD
+Lars,Erik Sodal,0,0,0,0,0,0,0,0,0.0,45,MID
+Runar,Norheim,0,0,1,20,1,0,0,0,0.0,45,MID
+Jesper,Robertsen,0,0,3,24,0,0,0,0,0.1,40,DEF
+Isak,Vik,0,0,0,0,0,0,0,0,0.3,39,DEF
+Simen,Henriksen,0,0,0,0,0,0,0,0,0.0,45,MID
+Alexander,Ruud Tveter,6,3,94,2389,46,7,0,0,2.8,56,FWD
+Magnus,Riisnaes,0,0,1,1,0,0,0,0,0.0,45,MID
+Vieux Yakhya,Sané,0,0,4,144,4,0,0,0,0.0,50,DEF
+Lars,Gerson,0,0,1,10,0,0,0,0,0.0,49,DEF
+Sivert,Overby,0,0,7,174,9,0,0,0,0.0,43,DEF
+Moubarak,Compaoré,0,0,0,0,0,0,0,0,0.0,53,FWD
+Oleksii,Khoblenko,0,0,4,138,3,0,0,1,0.1,69,FWD
+Uche,Sabastine,0,1,7,43,2,0,0,1,0.0,59,FWD
+Simon,Thomas,0,0,0,0,0,0,0,0,0.0,45,GK
+Niklas,Vesterlund,2,1,76,1359,17,6,0,2,4.2,47,DEF
+Felix,Winther,0,0,14,394,7,2,0,1,0.0,47,MID
+Joachim,Rothmann,0,0,7,99,2,0,0,0,0.0,55,FWD
+George Felix,Michel Melki,0,0,1,32,0,0,0,0,0.0,49,MID
+Tomas,Rataj,0,0,0,0,0,0,0,0,0.0,75,FWD
+Alexander,Tettey,0,0,14,470,6,2,0,2,0.1,55,MID
+Jørgen Kili,Fjeldskår,0,0,0,9,1,0,0,0,0.0,40,DEF
+Antonio,Nusa,3,0,35,562,12,1,0,0,1.0,45,MID
+Vetle,Egeli,0,0,3,43,2,0,0,0,0.0,45,MID
+Mathias,Emilsen,0,0,3,12,1,0,0,0,0.0,45,MID
+Tord Johnsen,Salte,0,0,0,0,0,0,0,0,0.0,40,DEF
+Brynjar,Johnsplass,0,0,0,0,0,0,0,0,0.0,40,DEF
+Mathias,Tjoland,0,0,1,1,0,0,0,0,0.1,45,FWD
+Olav Lilleoren,Veum,0,0,2,31,1,0,0,0,0.0,40,DEF
+Jørgen,Sveinhaug,0,0,0,0,0,0,0,0,2.3,39,GK
+Isak,Hjorteseth,0,0,0,0,0,0,0,0,0.0,45,MID
+Martin,Bergum,0,0,1,6,0,0,0,0,0.0,45,MID
+Peder,Hoel Lervik,0,0,0,0,0,0,0,0,0.0,40,GK
+Simen,Kvia-Egeskog,0,1,15,180,2,0,0,0,0.3,45,FWD
+Jacob Emile,Dicko Eng,0,0,5,35,0,0,0,0,0.0,45,MID
+Leander,Oy,0,0,0,0,0,0,0,0,0.1,40,GK
+Magnus,Brondbo,0,0,0,0,0,0,0,0,0.1,40,GK
+Bendik,Brevik,0,0,1,1,0,0,0,0,0.0,40,DEF
+Martin,Samuelsen,2,1,34,690,10,4,0,1,0.1,75,FWD
+Albin,Morfelt,0,0,3,44,2,0,0,1,0.0,64,MID
+Mikkel,Andersen,0,0,0,0,0,0,0,0,0.0,50,GK
+Magnus,Knudsen,0,1,36,947,12,4,0,1,0.1,44,MID
+Moussa,Njie,0,0,9,229,10,0,0,0,0.0,65,MID
+Kristoffer Lassen,Harrison,0,0,0,0,0,0,0,0,0.1,45,FWD
+Markus,Haaland,0,0,0,0,0,0,0,0,0.0,45,MID
+Heine,Gikling Bruseth,0,0,0,0,0,0,0,0,0.0,45,MID
+Marius,Sivertsen Broholm,0,0,0,0,0,0,0,0,0.0,45,MID
+Emanuel,Kulego,0,0,0,0,0,0,0,0,0.0,45,FWD
+Magnus,Rugland Ree,0,0,0,0,0,0,0,0,0.0,40,GK
+Andreas,Albertsen,0,0,0,0,0,0,0,0,0.1,40,GK
+Ingmar,Austberg,0,0,0,0,0,0,0,0,0.0,45,FWD
+Tom,Pettersson,3,1,69,1451,21,5,0,1,2.1,46,DEF
+Kasper,Pedersen,0,0,16,747,22,1,0,0,0.0,42,DEF
+Martin,Hoyland,1,0,19,580,14,1,0,1,0.2,42,MID
+Sivert,Heggheim Mannsverk,0,1,29,1046,19,3,0,2,0.2,57,MID
+Pål Alexander,Kirkevold,1,1,27,629,17,0,0,1,0.1,56,FWD
+Noah Jean,Holm,3,4,53,1159,18,3,0,2,3.3,77,FWD
+Leonard,Zuta,1,0,49,1435,16,4,0,3,0.5,54,DEF
+Alexander,Søderlund,3,0,33,615,14,3,0,2,0.3,78,FWD
+Japhet,Sery,1,0,17,600,11,0,0,0,0.3,44,DEF
+Andreas,Waterfield Skjold,0,0,0,0,0,0,0,0,0.0,45,MID
+Mathias,Løvik,0,0,0,0,0,0,0,0,0.0,40,DEF
+Mai,Traore,0,1,11,201,5,0,0,1,0.0,67,FWD
+Albin,Sporrong,1,0,15,485,11,0,1,2,0.2,45,DEF
+Christophe,Psyché,0,1,55,1111,10,5,0,3,1.2,46,DEF
+Torje,Naustdal,0,0,14,308,5,0,0,1,0.0,45,MID
+Victor,Wernersson,0,1,27,817,21,3,0,1,0.2,48,DEF
+Magnus,Smelhus Sjøeng,0,0,0,0,0,0,0,0,0.1,40,GK
+Joel,Mvuka,0,0,6,102,1,0,0,1,0.0,60,MID
+Amadou,Camara,0,0,0,0,0,0,0,0,0.0,59,FWD
+Gianni,Stensness,1,1,45,1178,13,4,0,3,1.2,51,DEF
+Sivert,Heltne Nilsen,0,1,28,1350,27,0,0,5,0.2,50,MID
+Bård,Finne,4,2,57,1049,21,2,0,0,0.6,73,MID
+Nicolaj,Thomsen,1,0,18,240,6,0,0,0,0.0,68,MID
+Knut-Andrè,Skjaerstein,0,0,5,360,9,0,0,0,0.7,39,GK
+David,Brekalo,2,0,36,781,10,3,1,2,0.2,47,DEF
+Aleksander,Andresen,0,0,0,0,0,0,0,0,0.0,45,MID
+Henrik,Skogvold,0,0,3,20,1,0,0,0,0.0,45,MID
+Pavle,Vagic,0,0,19,755,13,2,0,2,0.0,49,MID
+Eivind,Helgeland,0,0,0,0,0,0,0,0,0.0,40,DEF
+Niklas,Ødegård,0,0,0,0,0,0,0,0,0.0,45,MID
+Martin,Linnes,0,0,30,813,10,3,0,2,0.9,59,DEF
+Rafik,Zekhnini,0,2,28,528,7,3,0,0,0.1,73,MID
+Amahl,Pellegrino,6,2,77,1174,8,8,0,3,7.5,112,MID
+Adrian,Pereira,0,0,1,56,2,0,0,0,0.3,59,DEF
+Dario,Canadjija,1,1,29,849,16,0,0,1,0.0,50,MID
+Anders,Bærtelsen,0,1,29,900,13,3,0,0,0.0,50,DEF
+Isak,Aalberg,0,0,0,0,0,0,0,0,0.0,40,DEF
+Marko Lawk,Farji,0,0,0,0,0,0,0,0,0.0,45,MID
+Mathias Lønne,Dyngeland,0,0,13,216,2,1,0,0,0.2,54,GK
+Gilbert,Koomson,1,0,11,60,1,0,0,0,0.0,92,MID
+Lennart,Grill,0,0,26,1170,20,0,0,0,0.2,50,GK
+Lagos,Kunga,0,0,1,8,0,0,0,0,0.0,54,MID
+Daniel,Janevski,0,0,11,540,12,1,0,1,0.0,44,DEF
+Milan,Jevtovic,0,0,11,272,7,0,0,1,0.0,67,MID
+Ian,Smeulers,0,0,22,972,18,3,1,2,0.1,44,DEF
+Chuma,Anene,0,0,1,4,0,0,0,0,0.0,60,FWD
+Ivan,Mesik,1,0,38,1007,18,4,0,4,0.1,45,DEF
+Fredrik,Haugen,3,2,53,994,21,4,0,1,0.4,65,MID
+Jordan Attah,Kadiri,1,0,11,159,3,0,0,0,0.1,52,FWD
+Zdenek,Ondrasek,1,1,25,424,5,1,0,0,0.3,65,FWD
+Patrik,Gunnarsson,0,0,23,557,10,1,1,0,0.3,50,GK
+Deyver,Vega,0,0,10,209,2,1,0,1,0.0,65,MID
+Herman,Kleppa,0,0,15,749,15,1,0,1,0.0,44,DEF
+Mattias,Käit,0,0,0,0,0,0,0,0,0.0,70,MID
+Vajebah,Sakor,0,0,4,101,2,0,0,0,0.0,54,MID
+Tomás,Martins Podstawski,0,1,20,569,8,3,0,2,0.3,42,MID
+Viktor Gustavsen,Engh,0,0,0,0,0,0,0,0,0.0,40,GK
+Leo Bech,Hermansen,0,0,1,3,0,0,0,0,0.0,45,MID
+Victor,Boniface,0,0,1,1,0,0,0,0,0.0,90,FWD
+Hakon,Rosten,0,0,0,0,0,0,0,0,0.0,40,DEF
+Jesper,Wichstrom Johansen,0,0,0,0,0,0,0,0,0.0,45,FWD
+Asbjørn,Engenes,0,0,0,0,0,0,0,0,0.0,40,GK
+Vegard,Solheim,0,0,0,0,0,0,0,0,0.0,45,MID
+Heine,Larsen,0,0,1,10,0,0,0,0,0.0,45,MID
+Eirik,Blikstad,0,0,0,0,0,0,0,0,0.0,40,DEF
+Brinder,Singh,0,0,1,14,1,0,0,0,0.0,45,FWD
+Magnus,Hammeras,0,0,0,0,0,0,0,0,0.0,45,FWD
+Sindre Walle,Egeli,0,0,0,0,0,0,0,0,0.0,45,FWD
+Joakim,Våge Nilsen,0,0,1,1,0,0,0,0,0.0,50,MID
+Elias,Myrlid,0,0,0,0,0,0,0,0,0.0,45,FWD
+Filip,Loftesnes Bjune,0,0,1,2,0,0,0,0,0.0,45,MID
