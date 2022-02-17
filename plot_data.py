@@ -46,9 +46,9 @@ for season in seasons:
     
     positions= [len(gk), len(df), len(mf), len(fw)]
         
-    #plot_per_position(positions, title)
-    #plot_hist_of_costs(playersdata, title)
-    #plot_hist_of_points(playersdata, title)
+    plot_per_position(positions, title)
+    plot_hist_of_costs(playersdata, title)
+    plot_hist_of_points(playersdata, title)
     plotIndividualCosts(results, title, degree=1, line=False)
 
 
@@ -85,7 +85,9 @@ def plot_hist_of_points(feature_data, title):
 # plot hist of costs
 def plot_hist_of_costs(feature_data, title):
     costList= calc.createCostList(feature_data)
+    #npscostlist = [np.log(x) for x in costList if x > 0]
     plt.hist(costList)
+    #plt.hist(npscostlist)
     plt.xlabel("Costs")
     plt.ylabel("Amount")
     xmin, xmax, ymin, ymax = [35, 140, 0, 400]

@@ -12,6 +12,7 @@ import parsers
 data2 = getters.get_data()
 players2 = getters.get_players_feature(data2)
 
+
 def nump2(n, k):
     a = np.ones((k, n-k+1), dtype=int)
     a[0] = np.arange(n-k+1)

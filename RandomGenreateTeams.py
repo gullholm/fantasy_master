@@ -12,6 +12,7 @@ import getters
 import calculations
 import cleaners
 import ast
+import matplotlib.pyplot as plt
 generic = lambda x: ast.literal_eval(x)
 
 
@@ -194,7 +195,7 @@ def cleanAllPositions(season):
 
 # In[]
 import collections
-#cleaned = cleanALlPositions(1819)
+
 
 season=1819
 csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
@@ -354,7 +355,18 @@ def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):
     plt.ylabel("Amount")       
     plt.show()
     
-    
+#%%   
+ 
+cleaned = cleanALlPositions(1819)
+#%%
+#Cleaned players for 5 def, 5 mid, 3 forw, 1 keeper
+
+values=[2,5,8,9]
+cleanedPlayers = []
+for i in range(len(cleaned)):
+    if i in values:
+        cleanedPlayers.append(cleaned[i])
+
 #%%
 #gk,df,mf,fw = getters.get_diff_pos(playerspldata)
 
@@ -363,3 +375,7 @@ def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):
     
 #def splitDfByCost():
  #   return-    
+#%%
+
+printAndPlotSummary(allCosts, allPoints, allDynamics, budget)
+ 
