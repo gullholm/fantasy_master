@@ -26,7 +26,7 @@ def generateRandomTeam(allpositions, budget, formation):
     
     teamCost = gkcost + dfcost + mfcost + fwcost 
     
-    lowerBudget= 0
+    lowerBudget= 500
     if teamCost <= budget and teamCost >= lowerBudget:
         teamPoints = gkpoints + dfpoints + mfpoints + fwpoints
         teamDynamics =  gkindCost + dfindCost + mfindCost + fwindCost
@@ -34,8 +34,6 @@ def generateRandomTeam(allpositions, budget, formation):
     else:
         return None, None, None
     
-
-
 
 def addPositions(df, n):
     indexes = sample(list(df.keys()), n)
@@ -97,10 +95,10 @@ allpositions = getters.get_diff_pos(playerspldata)
 
 allCosts, allPoints, allDynamics =[], [], []
 
-budget = 500
+budget = 550
 formations = [[3,5,2],[3,4,3],[4,4,2],[4,3,3],[4,5,1],[5,3,2],[5,4,1]]
 
-while len(allCosts) < 100:
+while len(allCosts) < 10000:
     formation = choice(formations)
     teamCost, teamPoints, teamDynamics = generateRandomTeam(allpositions, budget, formation)
     
@@ -111,8 +109,15 @@ while len(allCosts) < 100:
 
 print(max(allCosts))
 
+#%%
 
+# Plot results        
+plt.hist(allCosts)
+plt.title("All costs from random under budget: " + str(budget))
+plt.show()
 
+plt.hist(allPoints)    
+plt.title("All points from random under budget: " + str(budget))
 
 # In[]
 
@@ -141,6 +146,7 @@ while len(allCosts) < 1000:
 
 # In[]
 # for understanding
+
 max_value = max(allPoints)
 max_index = allPoints.index(max_value)
 #print('Best index: ' +str(max_index))
@@ -239,7 +245,7 @@ plt.hist(allmfCost)
  
 sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
 
-test_dictionary = { idx : playerspldata[idx] for idx in sortIdxByCost }
+test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
 #print(test_dictionary[testsort[0]]) 
 
 for idx in sortIdxByCost:
@@ -248,13 +254,131 @@ for idx in sortIdxByCost:
 print(playerspldata[sortIdxByCost[2]])
 
 # In[]
+value = -1
+theList = [None]*128 #127 highest value for cost
+templist=[]
+for key in test_dictionary.values(): 
+    if key['now_cost'] <= value:
+        templist.append(key['total_points'])
+        #print(key)
+    else: 
+        theList[value] = templist  
+        templist = []
+        value = key['now_cost']
+        templist.append(key['total_points'])
+        if key['now_cost'] == 127:
+            theList[value] = templist
 
-# get the mean of all PL-seasons
+print(choice(theList[38]))
+
+#%%
+
+# minimum salary, in our case 38 # maybe cheapest in best team
+# total budget, in our case 700 # can change
+# C = 700/11 ~63.64, a = 37
+#spanning the range from a to 2C-a
+
+#theory_m is first not None value
+def calculateTheoryDistribution(theList, budget):
+    n = 11
+    theory_m = next(idx for idx,item in zip(range(len(theList)),theList) if item is not None)
+    #TEST
+    #theory_m += 30
+    
+    C = budget/n
+    theory_expensive = round(2*C-theory_m)  
+    theory_k = (theory_expensive-theory_m)/(n-1)
+    for x in range(11):
+        low = round(theory_k*x+theory_m-theory_k/2)
+        high = round(theory_k*x+theory_m+theory_k/2)
+        print(low)
+        print(high)
+    return theory_k, theory_m
+
+def generateTeamFromDistribution(theList, budget, theory_k, theory_m):
+    
+    n = 11
+    totalPoints, totalCost = 0, 0
+    teamDistr = []
+    for x in range(n):
+        low = round(theory_k*x+theory_m-theory_k/2)
+        high = round(theory_k*x+theory_m+theory_k/2)
+        
+        if x == 0: 
+            low = theory_m
+        cost = randint(low, high)
+        templist = theList[cost]
+        while (templist is None): 
+            cost = randint(low, high)    
+            templist = theList[cost]
+        
+        teamDistr.append(cost)    
+        totalPoints += choice(templist) # add points
+        totalCost += cost
+    
+    return totalPoints, totalCost, teamDistr
+
+#%%
+budget = 800
+allCosts, allPoints, allDynamics =[], [], []
+
+theory_k, theory_m = calculateTheoryDistribution(theList, budget)
+
+while (len(allCosts)<10000):
+    points, costs, dynamics = generateTeamFromDistribution(theList, budget, theory_k, theory_m)
+    
+    if costs < budget:
+        allCosts.append(costs)
+        allPoints.append(points)
+        allDynamics.append(dynamics)
+
+#%%
+# Plot results        
+plt.hist(allCosts)
+plt.title("All costs from distribution under budget: " + str(budget))
+plt.show()
+
+plt.hist(allPoints)    
+plt.title("All points from distribution under budget: " + str(budget))
+
+#%%
 
 
+def generateRandomTeamFromTheList(theList, budget): 
+    n=11
+    
+    res = [i for i in range(len(theList)) if theList[i] is not None]
 
+    totalPoints, totalCost = 0, 0
+    teamDistr = []
+    
+    for i in range(n):
+        cost = choice(res)    
+        templist = theList[cost]
+        
+        teamDistr.append(cost)    
+        totalPoints += choice(templist) # add points
+        totalCost += cost
+    
+    return totalPoints, totalCost, teamDistr
 
+#%%
+budget = 800
+lowerbudget = 770
+allCosts, allPoints, allDynamics =[], [], []
 
+while (len(allCosts)<10000):
+    points, costs, dynamics = generateRandomTeamFromTheList(theList, budget)
+    if costs < budget and costs > lowerbudget:
+        allCosts.append(costs)
+        allPoints.append(points)
+        allDynamics.append(dynamics)
+        
+#%%
+# Plot results        
+plt.hist(allCosts)
+plt.title("All costs from random under budget: " + str(budget))
+plt.show()
 
-
-
+plt.hist(allPoints)    
+plt.title("All points from random under budget: " + str(budget))        

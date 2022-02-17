@@ -127,7 +127,7 @@ plt.ylabel("Cost")
 plt.legend()
 plt.show()  
 # In[9]
-#Theory 
+#Theory , not done
 # minimum salary, in our case 37?
 # total budget, in our case 700
 # C = 700/11 ~63.64, a = 37
@@ -139,8 +139,8 @@ plt.show()
 
 for idx in range(len(y)):
 
-    k,m= np.polyfit(x,y[idx],1)
-    plt.plot(x, k*x+m)
+    poly= np.polyfit(x,y[idx],1)
+    plt.plot(x, np.polyval(poly,x))
     
     theory_m = y[idx][0]
     theory_expensive = round(sum(y[idx])*2/11-theory_m)  
@@ -201,6 +201,8 @@ def getResultsPerSeason(season):
 
     
 # In[]        
+
+# Mean of all PL data
 
 seasons=[0, 1617, 1718, 1819, 1920, 2021]
 
