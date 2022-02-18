@@ -140,9 +140,7 @@ def get_cost_team(full_data, team_id): # Team is list with id's
 # PL
 
 def get_full_name_pl(full_data, corr_id): # Get full name for a single player
-    
     for player in full_data:
-        #print(player)
         if full_data[player]['id'] == corr_id:
             return full_data[player]['first_name'] + " " + full_data[player]['second_name']
     return 0
@@ -151,18 +149,15 @@ def get_full_name_team_pl(full_data, team_id): # Team is list with id's
     team_names = [get_full_name_pl(full_data, player_id) for player_id in team_id]
     return team_names
 
-def get_teamName_pl(full_data, corr_id): # Get full name for a single player
-    #print(corr_id)    
-    for (k,v) in full_data.items():
-        print(k)
-        if (full_data[k]['id'] == corr_id):
-            #print('hi')
-            return full_data[k]['team']
-        return 0
+def get_teamName_pl(full_data, corr_id): # Get full name for a single player    
 
-def get_teamName_team_pl(full_data, team_id):
-    print('hi22')
-    teams = [get_teamName_pl(full_data, player_id) for player_id in team_id]
+    for player in full_data:
+        if (full_data[player]['id'] == corr_id):
+            return full_data[player]['team']
+    return 0
+
+def get_teamName_team_pl(data, team_id):
+    teams = [get_teamName_pl(data, player_id) for player_id in team_id]
     return teams
 
 def get_cost_player_pl(full_data, corr_id):
