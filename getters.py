@@ -149,11 +149,11 @@ def get_full_name_team_pl(full_data, team_id): # Team is list with id's
     team_names = [get_full_name_pl(full_data, player_id) for player_id in team_id]
     return team_names
 
-def get_teamName_pl(full_data, corr_id): # Get full name for a single player    
-
+def get_teamName_pl(full_data, corr_id, listOfTeams): # Get full name for a single player    
     for player in full_data:
         if (full_data[player]['id'] == corr_id):
-            return full_data[player]['team']
+            return(listOfTeams[full_data[player]['team']-1])
+            #return full_data[player]['team']
     return 0
 
 def get_teamName_team_pl(data, team_id):
@@ -171,7 +171,16 @@ def get_cost_team_pl(full_data, team_id): # Team is list with id's
     team_cost = [get_cost_player_pl(full_data, player_id) for player_id in team_id]
     return team_cost
 
+def get_dreamteam_player_pl(full_data, corr_id):
 
+    for player in full_data:
+        if (full_data[player]['id'] == corr_id):
+            return full_data[player]['in_dreamteam']
+    return 0
+
+def get_dreamteam_team_pl(full_data, team_id): # Team is list with id's
+    team_cost = [get_dreamteam_player_pl(full_data, player_id) for player_id in team_id]
+    return team_cost
 
 def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
     # create empty list
