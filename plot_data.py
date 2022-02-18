@@ -265,10 +265,12 @@ def getIdFromBestTeam(playerspl, season):
         indexes = ast.literal_eval(allResults[i][j]['Id'])
         best_names = getters.get_full_name_team_pl(playerspl, indexes)
         teamNames = getters.get_teamName_team_pl(playerspl, indexes)
-        print(teamNames)
-        print(best_names)
+        inDreamteam = getters.get_dreamteam_team_pl(playerspl, indexes)
+        print(inDreamteam)
         allResults[i][j]['Name'] = best_names
         allResults[i][j]['Team'] = teamNames
+        allResults[i][j]["Dreamteam"] = inDreamteam 
+        print(sum(inDreamteam))
     return 
 
 seasons=[1617, 1718, 1819, 1920, 2021]
@@ -277,12 +279,27 @@ for season in seasons:
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file).to_dict('index')
     
+    
+    
     getIdFromBestTeam(playerspl, season)    
 
+#%%
 
+def seasonTeamsAndPlacement(season):
+    if season == 2021:
+        listOfTeams2021 = ["Arsenal", "Aston Villa", "Brighton & Hove Albion", 'Burnley', 'Chelsea',
+ 'Crystal Palace', 'Everton', 'Fulham','Leeds United','Leicester City','Liverpool','Manchester City',	
+'Manchester United','Newcastle United', 'Sheffield United', 'Southampton',
+ 'Tottenham Hotspur', 'West Bromwich Albion', 'West Ham United','Wolverhampton Wanderers']
+        placementTeams2021=[8,11,16,17,4,14,10,18,9,5,3,1,2,12,20,15,7,19,6,13]
+        return listOfTeams2021, placementTeams2021
+    elif season == 1920:
+        listOfTeams1920=[]
+        placementTeams1920=[]
+        return listOfTeams1920, placementTeams1920
     
-    
-    
+ 
+a, b = seasonTeamsAndPlacement(1819)    
     
     
     
