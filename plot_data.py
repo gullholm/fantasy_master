@@ -243,16 +243,43 @@ for i in range(len(meanIndCost)):
 plt.legend()
 plt.title("test")
 plt.show()
+    
+    
+    
+#%%
+import getters
+generic = lambda x: ast.literal_eval(x)
 
+
+seasons=[0, 1617, 1718, 1819, 1920, 2021]
+
+allResults = []
+for season in seasons: 
+    allResults.append(getResultsPerSeason(season))     
+
+def getIdFromBestTeam(playerspl, season):
+    seasons=[0, 1617, 1718, 1819, 1920, 2021]
+    i = seasons.index(season)
+    indexes=[]
+    for j in range(len(allResults[1])):
+        indexes = ast.literal_eval(allResults[i][j]['Id'])
+        best_names = getters.get_full_name_team_pl(playerspl, indexes)
+        teamNames = getters.get_teamName_team_pl(playerspl, indexes)
+        print(teamNames)
+        print(best_names)
+        allResults[i][j]['Name'] = best_names
+        allResults[i][j]['Team'] = teamNames
+    return 
+
+seasons=[1617, 1718, 1819, 1920, 2021]
+for season in seasons: 
+    conv = {'indexes': generic}
+    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+    playerspl = pd.read_csv(csv_file).to_dict('index')
     
-    
-    
-    
-    
-    
-    
-    
-    
+    getIdFromBestTeam(playerspl, season)    
+
+
     
     
     
