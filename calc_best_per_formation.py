@@ -34,7 +34,7 @@ def calc_best_team_under_budget(players, max_cost, full_costs, full_points, comb
     best_sum_cost = [player['now_cost'] for player in best_team_ids_values] 
     best_sum_points = [player['total_points'] for player in best_team_ids_values]
     
-    return best_sum_cost, best_sum_points
+    return best_sum_cost, best_sum_points, best_team_i
 
 #%%
 
@@ -173,7 +173,7 @@ for i in range(len(formations)):
 # In[]
 def calc_best_per_season_pl(season): 
     conv = {'indexes': generic}
-x    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     
     playerspl = pd.read_csv(csv_file).to_dict('index')
     playerspldata = getters.get_players_feature_pl(playerspl)
@@ -214,12 +214,14 @@ x    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
         costs_full = parsers.parse_formations_points_or_cost(all_costs)
         best_costs= []
         best_total_costs, best_total_points =[],[]
+        best_ids=[]
         
         for j in range(500, 1050, 50):
-            costs, points = calc_best_team_under_budget(playerspldata, j, costs_full, points_full, combs_all)
+            costs, points, ids = calc_best_team_under_budget(playerspldata, j, costs_full, points_full, combs_all)
             best_costs.append(sorted(costs))
             best_total_costs.append(sum(costs))
             best_total_points.append(sum(points))
+            best_ids.append(ids)
          
         budget = range(500, 1050, 50)    
         dataframe = pd.DataFrame()
@@ -227,6 +229,7 @@ x    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
         dataframe['Best total cost'] = best_total_costs 
         dataframe['Best total points'] = best_total_points
         dataframe['Individual costs'] = best_costs
+        dataframe['Id'] = ids
         #print (dataframe)
         if i == 0:
             best_dataframe = dataframe
@@ -243,11 +246,11 @@ x    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
                     
         #print(dataframe['Best total cost'])              
         # Uncomment to save as csv
-        
-        #formation= str(df) + '-' + str(mf) + '-' + str(fw)
-        #csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
-        #dataframe.to_csv(csv_output, index=False)
-    #best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
+        print(dataframe['Id'])
+        formation= str(df) + '-' + str(mf) + '-' + str(fw)
+        csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
+        dataframe.to_csv(csv_output, index=False)
+    best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
     return all_points, points_full
     
 # In[]
