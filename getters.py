@@ -149,16 +149,23 @@ def get_full_name_team_pl(full_data, team_id): # Team is list with id's
     team_names = [get_full_name_pl(full_data, player_id) for player_id in team_id]
     return team_names
 
-def get_teamName_pl(full_data, corr_id, listOfTeams): # Get full name for a single player    
-    for player in full_data:
+def get_teamName_pl(full_data, corr_id, season): # Get full name for a single player    
+     listOfTeams, _ = seasonTeamsAndPlacement(season)
+     for player in full_data:
         if (full_data[player]['id'] == corr_id):
             return(listOfTeams[full_data[player]['team']-1])
-            #return full_data[player]['team']
-    return 0
+     return 0
 
-def get_teamName_team_pl(data, team_id):
-    teams = [get_teamName_pl(data, player_id) for player_id in team_id]
-    return teams
+def get_teamPos_pl(full_data, corr_id, season):
+    _ , placementTeams = seasonTeamsAndPlacement(season)
+    for player in full_data:
+       if (full_data[player]['id'] == corr_id):
+           return(placementTeams[full_data[player]['team']-1])
+
+def get_teamName_and_pos_team_pl(data, team_id, season):
+    teams = [get_teamName_pl(data, player_id, season) for player_id in team_id]
+    teampos = [get_teamPos_pl(data, player_id, season) for player_id in team_id]
+    return teams, teampos
 
 def get_cost_player_pl(full_data, corr_id):
 
@@ -179,8 +186,45 @@ def get_dreamteam_player_pl(full_data, corr_id):
     return 0
 
 def get_dreamteam_team_pl(full_data, team_id): # Team is list with id's
-    team_cost = [get_dreamteam_player_pl(full_data, player_id) for player_id in team_id]
-    return team_cost
+    dream_team = [get_dreamteam_player_pl(full_data, player_id) for player_id in team_id]
+    return dream_team
+
+def get_selected_by_perc_player_pl(full_data, corr_id):
+
+    for player in full_data:
+        if (full_data[player]['id'] == corr_id):
+            return full_data[player]['selected_by_percent']
+    return 0
+
+def get_selected_by_perc_team_pl(full_data, team_id): # Team is list with id's
+    perc = [get_selected_by_perc_player_pl(full_data, player_id) for player_id in team_id]
+    return perc
+
+def get_dreamteam_months_player_pl(full_data, corr_id):
+
+        for player in full_data:
+            if (full_data[player]['id'] == corr_id):
+                return full_data[player]['dreamteam_count']
+        return 0
+
+def get_dreamteam_months_team_pl(full_data, team_id): # Team is list with id's
+    dreamteamcount = [get_dreamteam_months_player_pl(full_data, player_id) for player_id in team_id]
+    return dreamteamcount
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
     # create empty list
@@ -199,3 +243,42 @@ def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
     
     
     
+def seasonTeamsAndPlacement(season):
+    if season == 2021:
+        listOfTeams = ["Arsenal", "Aston Villa", "Brighton & Hove Albion", 'Burnley', 'Chelsea',
+ 'Crystal Palace', 'Everton', 'Fulham','Leeds United','Leicester City','Liverpool','Manchester City',	
+'Manchester United','Newcastle United', 'Sheffield United', 'Southampton',
+ 'Tottenham Hotspur', 'West Bromwich Albion', 'West Ham United','Wolverhampton Wanderers']
+        placementTeams=[8,11,16,17,4,14,10,18,9,5,3,1,2,12,20,15,7,19,6,13]
+    
+    elif season == 1920:
+        listOfTeams = ["Arsenal", "Aston Villa", 'Bournemouth', "Brighton & Hove Albion", 'Burnley', 'Chelsea',
+     'Crystal Palace', 'Everton','Leicester City','Liverpool','Manchester City',	
+    'Manchester United','Newcastle United', 'Norwich City', 'Sheffield United', 'Southampton',
+     'Tottenham Hotspur', 'Watford', 'West Ham United','Wolverhampton Wanderers']
+        placementTeams = [8,17,18,15,10,4,14,12,5,1,2,3,13,20,9,11,6,19,16,7]
+    
+    elif season == 1819:
+           listOfTeams = ["Arsenal", 'Bournemouth', "Brighton & Hove Albion", 'Burnley', 'Cardiff City', 'Chelsea',
+        'Crystal Palace', 'Everton', 'Fullham', 'Huddersfield Town', 'Leicester City','Liverpool','Manchester City',	
+       'Manchester United','Newcastle United', 'Southampton',
+        'Tottenham Hotspur', 'Watford', 'West Ham United','Wolverhampton Wanderers']
+           placementTeams = [5,14,17,15,18,3,12,8,19,20,9,2,1,6,13,16,4,11,10,7]
+   
+    elif season == 1718:
+           listOfTeams = ["Arsenal", 'Bournemouth', "Brighton & Hove Albion", 'Burnley', 'Chelsea',
+        'Crystal Palace', 'Everton', 'Huddersfield Town', 'Leicester City','Liverpool','Manchester City',	
+       'Manchester United','Newcastle United', 'Southampton', 'Stoke City', 'Swansey City',
+        'Tottenham Hotspur', 'Watford', ' West Bromwich Albion', 'West Ham United']
+           placementTeams = [6,12,15,7,5,11,8,16,9,4,1,2,10,17,19,18,3,14,20,13]
+
+
+    elif season == 1617:
+        listOfTeams=['Arsenal', 'Bournemouth', 'Burnley', 'Chelsea',
+        'Crystal Palace', 'Everton', 'Hull City', 'Leicester City', 'Liverpool',
+        'Manchester City' , 'Manchester United', 'Middlesbrough', 'Southampton',
+        'Stoke City', 'Sunderland', 'Swansea City', 'Tottenham Hotspur', 'Watford',
+        'West Bromwich', 'West Ham United']
+        placementTeams=[5,9,16,1,14,7,18,12,4,3,6,19,8,13,20,15,2,17,10,11]
+        
+    return listOfTeams, placementTeams
