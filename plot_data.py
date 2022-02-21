@@ -293,14 +293,60 @@ for season in seasons:
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file).to_dict('index')
     
-    test = getIdFromBestTeam(playerspl, season)    
+    test = getIdFromBestTeam(playerspl, season)   
     
+#%%
+# Save results per budget, not per season
+
+seasons=[1617, 1718, 1819, 1920, 2021]
 
 
+allResults = []
+for season in seasons: 
+    allResults.append(getResultsPerSeason(season))       
 
 
-
-
-
+for j in range(len(allResults[0])):
+    budgetFrame = pd.DataFrame()
+    budget = allResults[0][j]['Budget']
+    for i in range(5):
+        data = pd.DataFrame.from_dict(allResults[i][j], orient='index').transpose()    
+        budgetFrame = budgetFrame.append(data) 
+        budgetFrame = budgetFrame.drop('Budget', axis=1)
     
+    budgetFrame.to_csv("results/pl/budget/" + str(budget) + ".csv",index = False)
+
+
+
+#%%
+
+def getResultsPerBudget(budget): 
+    csv_results = "results/pl/budget/" + str(budget) +".csv"
+    results = pd.read_csv(csv_results).to_dict('index')    
+    return results
+
+budgets = list(range(500,1050, 50))
+budgetResults =[]
+for budget in budgets:
+    budgetResults.append(getResultsPerBudget(budget))    
+
+sortedCosts =[]  
+for i in range(len(budgetResults[1])):
+    sortedCosts.append(list(ast.literal_eval(budgetResults[1][i]['Sorted individual costs'])))
+
+def rmse(actual, predicted):
+    return np.sqrt(np.square(np.subtract(np.array(actual), np.array(predicted))).mean())
+
+def testIfLinear(data):
+    x=range(1,12)
     
+    for degree in range(1,8):
+        poly= np.polyfit(x,data,degree)
+        ypred = np.polyval(poly,x)
+        plt.plot(x, ypred)
+        print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
+    
+    plt.plot(x, data, 'o')
+    plt.show()
+     
+testIfLinear(test)    
