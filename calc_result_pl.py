@@ -16,7 +16,7 @@ import parsers
 
 # In[]
 
-def clean_all_data_pl(season, clean_all = True):
+def clean_all_data_pl(season, clean_all = True, ns = 3):
 
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file) 
@@ -37,11 +37,11 @@ def clean_all_data_pl(season, clean_all = True):
             all_cleaned = cleaners.run_all_cleans(df, p)
             
             if clean_all: 
-                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, clean_all)[0]
+                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, 1)[0]
                 combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 
-                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, clean_all)
+                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, ns)
                 combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
 
     
@@ -74,7 +74,7 @@ clean_all = False # if True, clean combinations of players as well
 
 for season in seasons:
     print("cleaning season " + str(season))
-    clean_all_data_pl(season, clean_all)
+    clean_all_data_pl(season, clean_all, 3)
     
     
 # In[]

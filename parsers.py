@@ -49,7 +49,7 @@ def find_best_team(under_cost, points):
 #def convert_from_matrix_to_list(all_combs, all_points, all_costs)
 
 
-def create_all_combs_from_cleaned_df(df_full, df_part, form_n, clean_all = True):
+def create_all_combs_from_cleaned_df(df_full, df_part, form_n, ns):
     combs = np.transpose(calc.nump2(len(df_part), form_n))
     combs_indexes = calc.calcIndexOld(combs, df_part.index) 
     pointsList = calc.createPointsList(df_full)
@@ -63,10 +63,44 @@ def create_all_combs_from_cleaned_df(df_full, df_part, form_n, clean_all = True)
                            columns =['total_points', 'now_cost', 'indexes'])
 
     sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-    if (clean_all):
-        return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, 1), sortedCombs_parts)
-    else:
-        return(sortedCombs_parts)    
+    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, ns))
+
+    
+def calc_full_teams(all_combs):
+    all_points = calc.calc_from_combs(all_combs, "total_points")
+    all_costs = calc.calc_from_combs(all_combs, "now_cost" )
+
+    points_full = parse_formations_points_or_cost(all_points)
+    costs_full = parse_formations_points_or_cost(all_costs)
+    
+    it = np.nditer(points_full, flags=['multi_index'])
+    bit = np.nditer(costs_full, flags = ['multi_index'])
+    sep_ids  = [combs['indexes'].values.tolist() for combs in reversed(all_combs)]
+    costs_total, points_total, indexes = [], [], []
+
+    for x, y in zip(it,bit):
+        points_total.append(x)
+        costs_total.append(y)
+        reg_list = [x[it.multi_index[i]] for (i,x) in enumerate(sep_ids)]
+        indexes.append([item for sublist in reg_list for item in sublist])
+        
+    full_teams_df = pd.DataFrame({"cost": costs_total, "points_total": points_total, "indexes": indexes})
+    return(full_teams_df)
+import ast
+def write_full_teams(loc):
+    generic = lambda x: ast.literal_eval(x)
+    conv = {'indexes': generic}
+    all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
+    form_name = ["/df", "/mf", "/fw"]
+    all_combs = []
+    for comb in all_pass_combs: 
+        all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
+        all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
+        all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+        done_df = calc_full_teams(all_combs)
+        done_df.to_csv(loc + str(comb) + ".csv", index = False)
+
+
 
 """
 def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
