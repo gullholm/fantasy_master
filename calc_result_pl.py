@@ -67,12 +67,14 @@ def clean_all_data_pl(season, clean_all = True):
  # In[]   
 
 # Change for different seasons
-seasons = [1617]#,1718, 1819, 1920, 2021]
+seasons = [1617, 1718, 1819, 1920, 2021]
 #season = seasons[3]
+
+clean_all = False # if True, clean combinations of players as well
 
 for season in seasons:
     print("cleaning season " + str(season))
-    clean_all_data_pl(season, clean_all=False)
+    clean_all_data_pl(season, clean_all)
     
     
 # In[]
