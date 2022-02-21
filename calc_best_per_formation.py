@@ -62,6 +62,7 @@ for i in range(len(formations)):
     mf_combs = pd.read_csv(mf_csv, converters = conv)
     fw_combs = pd.read_csv(fw_csv, converters = conv)
     gk_combs['indexes'] = gk_combs['indexes'].apply(lambda x: [x])
+    all_combs=[gk_combs, df_combs, mf_combs, fw_combs]
     
     gk_points = gk_combs['total_points'].values
     df_points = df_combs['total_points'].values
@@ -79,15 +80,16 @@ for i in range(len(formations)):
     all_costs = [gk_costs, df_costs, mf_costs, fw_costs]
     costs_full = parsers.parse_formations_points_or_cost(all_costs)
 
-    best_costs, best_points = [],[]
+    best_costs, sorted_costs, best_ids = [],[], []
     best_total_costs, best_total_points =[],[]
     
     for j in range(500, 900, 50):
-        costs, points = calc_best_team_under_budget(players, j, costs_full,points_full)
-        best_costs.append(sorted(costs))
-        best_points.append(sorted(points))
+        costs, points, ids = calc_best_team_under_budget(players, j, costs_full,points_full, all_combs)
+        best_costs.append(costs)
+        sorted_costs.append(sorted(costs))
         best_total_costs.append(sum(costs))
         best_total_points.append(sum(points))
+        best_ids.append(ids)
      
     budget = range(500, 900, 50)    
     dataframe = pd.DataFrame()
@@ -95,6 +97,7 @@ for i in range(len(formations)):
     dataframe['Best total cost'] = best_total_costs 
     dataframe['Best total points'] = best_total_points
     dataframe['Individual costs'] = best_costs
+    dataframe['Sorted individual costs'] = sorted_costs
     #print (dataframe)
     if i == 0:
         best_dataframe = dataframe
@@ -113,10 +116,10 @@ for i in range(len(formations)):
 
     # Uncomment to save as csv
     
-    #formation= str(df) + '-' + str(mf) + '-' + str(fw)
-    #csv_output ='results/as/' + formation + '.csv'
-    #dataframe.to_csv(csv_output, index=False)
-    #best_dataframe.to_csv('results/as/best.csv', index=False)
+    formation= str(df) + '-' + str(mf) + '-' + str(fw)
+    csv_output ='results/as/' + formation + '.csv'
+    dataframe.to_csv(csv_output, index=False)
+best_dataframe.to_csv('results/as/best.csv', index=False)
 
 # In[]
 
