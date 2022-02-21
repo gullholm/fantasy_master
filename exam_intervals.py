@@ -12,10 +12,9 @@ import getters as get
 import ast
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
-
 data = get.get_data()
 
-one = pd.read_csv("data_cleaned/as/[3, 4, 3].csv", converters = conv)
+one = pd.read_csv("data_cleaned/as/[4, 4, 2].csv", converters = conv)
 #%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] < upper]
@@ -50,18 +49,15 @@ def is_diverse(team_id, full_data, budget, c = 5):
         return(1)
 import math
 
-def is_diverse_ed2(team_id, full_data, budget, c = 1):
+def is_diverse_ed2(team_id, full_data, budget):
     team_cost = get.get_cost_team(full_data, team_id)
     team_cost.sort()
     a = det_a(full_data, team_id)
-#    print(a)
     theory_int = thry_interval(a, budget)
+    
     c = int(math.ceil((theory_int[1]-theory_int[0])/2))
-#    print(c)
     theory_int_l = [x - c for x in theory_int]
     theory_int_h = [x + c for x in theory_int]
-#    print(theory_int)
-#    print(team_cost)
     counts = [0]*11
     for re in team_cost:
         
@@ -81,10 +77,11 @@ def is_diverse_ed2(team_id, full_data, budget, c = 1):
 #a = det_a(data, all_ids)
 import random
 #inter = thry_interval(a, 700)
-ones = filter_df(one, 650, 700)
+budget = 700
+ones = filter_df(one, budget-50, budget)
 all_teams = ones["indexes"].to_list()
-#all_teams = random.sample(all_teams, 1000)
-is_dev_or_not = [is_diverse_ed2(team_id, data, 700) for team_id in all_teams]
+#all_teams = random.sample(all_teams, 100)
+is_dev_or_not = [is_diverse_ed2(team_id, data, budget) for team_id in all_teams]
 print(sum(is_dev_or_not))
 indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
 tot_points = []
