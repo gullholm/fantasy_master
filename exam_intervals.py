@@ -14,7 +14,8 @@ generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 data = get.get_data()
 
-one = pd.read_csv("data_cleaned/as/[4, 4, 2].csv", converters = conv)
+one = pd.read_csv("data_cleaned/as/[3, 5, 2].csv", converters = conv)
+
 #%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] < upper]
@@ -94,3 +95,4 @@ print(sum(tot_cost)/len(tot_cost))
 print(sum(tot_points)/len(tot_cost))
 print(ones['points_total'].mean())
 print(ones['cost'].mean())
+#%%
