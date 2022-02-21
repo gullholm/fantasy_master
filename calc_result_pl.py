@@ -16,7 +16,7 @@ import parsers
 
 # In[]
 
-def clean_all_data_pl(season):
+def clean_all_data_pl(season, clean_all = True):
 
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file) 
@@ -35,10 +35,15 @@ def clean_all_data_pl(season):
         for p in part:
             print(p)
             all_cleaned = cleaners.run_all_cleans(df, p)
-            combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)[0]
-            combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv")
-            combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
-    
+            
+            if clean_all: 
+                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, clean_all)[0]
+                combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv")
+                combs.to_csv("data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+            else: 
+                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p, clean_all)
+                combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+
     
     # Goalkeepers
     
@@ -52,19 +57,22 @@ def clean_all_data_pl(season):
     cleaned_gk.reset_index(inplace=True)
     cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
-    cleaned_gk.to_csv("data_cleaned/pl/" + str(season) + "/gk.csv")
-    
+    if clean_all: 
+        cleaned_gk.to_csv("data_cleaned/pl/" + str(season) + "/gk.csv")
+    else : 
+        cleaned_gk.to_csv("individual_data_cleaned/pl/" + str(season) + "/gk.csv")
+        
     print("Done with " + str(season))
     
  # In[]   
 
 # Change for different seasons
-seasons = [1920, 2021]
+seasons = [1617]#,1718, 1819, 1920, 2021]
 #season = seasons[3]
 
 for season in seasons:
     print("cleaning season " + str(season))
-    clean_all_data_pl(season)
+    clean_all_data_pl(season, clean_all=False)
     
     
 # In[]
