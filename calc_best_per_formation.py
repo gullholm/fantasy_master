@@ -98,6 +98,8 @@ for i in range(len(formations)):
     dataframe['Best total points'] = best_total_points
     dataframe['Individual costs'] = best_costs
     dataframe['Sorted individual costs'] = sorted_costs
+    dataframe['Id'] = best_ids
+
     #print (dataframe)
     if i == 0:
         best_dataframe = dataframe
@@ -215,13 +217,14 @@ def calc_best_per_season_pl(season):
         
         all_costs = [gk_costs, df_costs, mf_costs, fw_costs]
         costs_full = parsers.parse_formations_points_or_cost(all_costs)
-        best_costs= []
+        best_costs, sorted_costs= [], []
         best_total_costs, best_total_points =[],[]
         best_ids=[]
         
         for j in range(500, 1050, 50):
             costs, points, ids = calc_best_team_under_budget(playerspldata, j, costs_full, points_full, combs_all)
-            best_costs.append(sorted(costs))
+            best_costs.append((costs))
+            sorted_costs.append(sorted(costs)) 
             best_total_costs.append(sum(costs))
             best_total_points.append(sum(points))
             best_ids.append(ids)
@@ -232,6 +235,7 @@ def calc_best_per_season_pl(season):
         dataframe['Best total cost'] = best_total_costs 
         dataframe['Best total points'] = best_total_points
         dataframe['Individual costs'] = best_costs
+        dataframe['Sorted individual costs'] = sorted_costs
         dataframe['Id'] = best_ids
         #print (dataframe)
         if i == 0:
@@ -249,10 +253,10 @@ def calc_best_per_season_pl(season):
                     
         #print(dataframe['Best total cost'])              
         # Uncomment to save as csv
-        #formation= str(df) + '-' + str(mf) + '-' + str(fw)
-        #csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
-        #dataframe.to_csv(csv_output, index=False)
-    #best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
+        formation= str(df) + '-' + str(mf) + '-' + str(fw)
+        csv_output ='results/pl/' + str(season) + '/' + formation + '.csv'
+        dataframe.to_csv(csv_output, index=False)
+    best_dataframe.to_csv('results/pl/' + str(season) + '/best.csv', index=False)
     return all_points, points_full
     
 # In[]
@@ -265,6 +269,6 @@ seasons = [1617, 1718, 1819, 1920, 2021]
 
 for season in seasons:
     print("Calculating season: " + str(season))
-    calc_best_per_season_pl(season)
+    #calc_best_per_season_pl(season)
 #season=seasons[0]
-#all_points , points_full = calc_best_per_season_pl(season)
+    all_points , points_full = calc_best_per_season_pl(season)
