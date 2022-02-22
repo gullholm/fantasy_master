@@ -319,7 +319,9 @@ def generateRandomTeamFromAllPlayers(theList, budget):
     for i in range(n):
         cost = choice(res)    
         templist = theList[cost]
-        
+        while not templist: 
+            cost = choice(res)    
+            templist = theList[cost]
         teamDistr.append(cost)
         totalPoints += choice(templist) # add points
         totalCost += cost
@@ -357,7 +359,7 @@ def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):
     
 #%%   
  
-cleaned = cleanALlPositions(1819)
+cleaned = cleanAllPositions(1819)
 #%%
 #Cleaned players for 5 def, 5 mid, 3 forw, 1 keeper
 
