@@ -287,6 +287,7 @@ def getIdFromBestTeam(playerspl, season):
 
 #%%
 
+
 seasons=[1617, 1718, 1819, 1920, 2021]
 for season in seasons: 
     conv = {'indexes': generic}
@@ -331,22 +332,232 @@ for budget in budgets:
     budgetResults.append(getResultsPerBudget(budget))    
 
 sortedCosts =[]  
-for i in range(len(budgetResults[1])):
-    sortedCosts.append(list(ast.literal_eval(budgetResults[1][i]['Sorted individual costs'])))
+for j in range(len(budgetResults)):
+    print(j)
+    templist = []
+    for i in range(len(budgetResults[j])):
+    
+        templist.append(list(ast.literal_eval(budgetResults[j][i]['Sorted individual costs'])))
 
+    sortedCosts.append(templist)
+
+#%%
+#root mean square error
 def rmse(actual, predicted):
     return np.sqrt(np.square(np.subtract(np.array(actual), np.array(predicted))).mean())
 
-def testIfLinear(data):
+# root mean square percentage error
+def rmspe(actual, predicted):
+    return np.sqrt(np.mean(np.square((actual - predicted) / actual))) * 100
+
+
+def testIfLinear(data, budget):
     x=range(1,12)
-    
-    for degree in range(1,8):
+    print(budget)
+    low = data[0]
+    high = data[len(data)-1]
+    for degree in range(1,4):
         poly= np.polyfit(x,data,degree)
         ypred = np.polyval(poly,x)
         plt.plot(x, ypred)
         print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
-    
+        #print('RMSPE deg ' + str(degree) +  ': ' + str(rmspe(data,ypred)))
+
+    plt.title("mean for: " + str(budget))
+    plt.xlabel("Player")
+    plt.ylabel("Normalized cost")
     plt.plot(x, data, 'o')
+    plt.legend(["Linear", "Quadtratic", "Third degree polynomial", "Data"])
     plt.show()
      
-testIfLinear(test)    
+
+
+import numpy as np
+# calculate mean of multiple lists
+meanCostsPerBudget =[]
+for i in range(len(sortedCosts)):
+                     
+    arrays = [np.array(x) for x in sortedCosts[i]]
+    meanofLists = [np.mean(k) for k in zip(*arrays)]    
+    meanCostsPerBudget.append(meanofLists)
+
+#%%
+i=0
+for bud in meanCostsPerBudget:
+
+    #testIfLinear([x/bud[len(bud)-1] for x in bud], 500+i) 
+    testIfLinear(bud, 500+i) 
+
+    #testIfLinear([x/127.2 for x in bud], 500+i) 
+    i += 50             
+
+#%%
+
+for bud in sortedCosts[0]:
+    testIfLinear(bud, 500)
+
+
+#%% 
+
+# Plot some mean values for each budget :
+    
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.append(budgetResults[j][i]['Best total points'])
+
+    templistTwo.append(templistOne)
+    
+for i in range(len(sortedCosts)):
+                           
+    budgetMeanPoints = [np.mean(x) for x in templistTwo]
+x=range(500, 1050, 50)
+plt.xlabel("Budget")
+plt.ylabel("Points")
+plt.title("Mean points for different budgets for seasons from 16/17 to 20/21")
+plt.plot(x, budgetMeanPoints, 'o')
+
+#%%     
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.append(budgetResults[j][i]['Amount in Dreamteam'])
+
+    templistTwo.append(templistOne)
+    
+for i in range(len(sortedCosts)):
+                           
+    budgetMeanAmounts = [np.mean(x) for x in templistTwo]
+x=range(500, 1050, 50)
+plt.xlabel("Budget")
+plt.ylabel("Amount")
+plt.title("Mean amounts in dreamteam for different budgets for seasons from 16/17 to 20/21")
+plt.plot(x, budgetMeanAmounts, 'o')
+
+#%%
+
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.append(ast.literal_eval(budgetResults[j][i]['Team position']))
+
+    templistTwo.append(templistOne)
+
+budgetMeanTeamPos =[]
+for i in range(len(sortedCosts)):
+                     
+    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
+    meanofLists = [np.mean(k) for k in zip(*arrays)]    
+    budgetMeanTeamPos.append(meanofLists)  
+    
+for i in range(len(sortedCosts)):
+                           
+    meanmean = [np.mean(x) for x in budgetMeanTeamPos]    
+    
+
+x=list(range(500, 1050, 50))
+
+for i in range(len(x)):
+    plt.scatter([x[i]]*len(budgetMeanTeamPos[i]),budgetMeanTeamPos[i])
+
+plt.plot(x, meanmean, 'o', markersize=12, color='black', label="Mean")
+plt.legend()
+plt.xlabel("Budget")
+plt.ylabel("Positions")
+plt.title("Mean placement of team for different budgets for seasons from 16/17 to 20/21")
+
+#%%
+x=list(range(500, 1050, 50))
+
+for i in range(len(sortedCosts)):
+                           
+    meanmean = [np.mean(x) for x in meanCostsPerBudget]    
+
+
+for i in range(len(x)):
+    plt.scatter([x[i]]*len(meanCostsPerBudget[i]),meanCostsPerBudget[i])
+plt.plot(x, meanmean, 'o', markersize=12, color='black', label="Mean")
+plt.legend()
+plt.xlabel("Budget")
+plt.ylabel("Costs")
+plt.title("Mean costs for different budgets for seasons from 16/17 to 20/21")
+
+
+#%%
+
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.append(ast.literal_eval(budgetResults[j][i]['Selected by percentage']))
+
+    templistTwo.append(templistOne)
+
+budgetMeanSelection =[]
+for i in range(len(sortedCosts)):
+                     
+    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
+    meanofLists = [np.mean(k) for k in zip(*arrays)]    
+    budgetMeanSelection.append(meanofLists) 
+    
+for i in range(len(sortedCosts)):
+                           
+    meanmean = [np.mean(x) for x in budgetMeanSelection]    
+
+x=list(range(500, 1050, 50))
+print(x)
+for i in range(len(x)):
+    plt.scatter([x[i]]*len(budgetMeanSelection[i]),budgetMeanSelection[i])
+
+plt.plot(x, meanmean, 'o', markersize=12, color='black', label="Mean")
+plt.legend()
+plt.xlabel("Budget")
+plt.ylabel("Percentage [%]")
+plt.title("Mean percentage selection of players for different budgets for seasons from 16/17 to 20/21")
+
+#%%
+
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.append(ast.literal_eval(budgetResults[j][i]['Months in Dreamteam']))
+
+    templistTwo.append(templistOne)
+
+budgetMeanMonthsInDT =[]
+for i in range(len(sortedCosts)):
+                     
+    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
+    meanofLists = [np.mean(k) for k in zip(*arrays)]    
+    budgetMeanMonthsInDT.append(meanofLists)    
+
+for i in range(len(sortedCosts)):
+                           
+    budgetMeanMeanMonthsInDT = [np.mean(x) for x in budgetMeanMonthsInDT]
+
+x=list(range(500, 1050, 50))
+print(x)
+for i in range(len(x)):
+    plt.scatter([x[i]]*len(budgetMeanMonthsInDT[i]),budgetMeanMonthsInDT[i])
+
+plt.plot(x, budgetMeanMeanMonthsInDT, 'o', markersize=12, color='black', label="Mean")
+plt.legend()
+plt.xlabel("Budget")
+plt.ylabel("Months")
+plt.title("Mean months in dreamteam for different budgets for seasons from 16/17 to 20/21")
+
+
