@@ -550,7 +550,6 @@ for i in range(len(sortedCosts)):
     budgetMeanMeanMonthsInDT = [np.mean(x) for x in budgetMeanMonthsInDT]
 
 x=list(range(500, 1050, 50))
-print(x)
 for i in range(len(x)):
     plt.scatter([x[i]]*len(budgetMeanMonthsInDT[i]),budgetMeanMonthsInDT[i])
 
@@ -559,5 +558,38 @@ plt.legend()
 plt.xlabel("Budget")
 plt.ylabel("Months")
 plt.title("Mean months in dreamteam for different budgets for seasons from 16/17 to 20/21")
+
+#%%
+from collections import Counter
+templistTwo = []
+
+for j in range(len(budgetResults)):
+    templistOne = []
+    for i in range(len(budgetResults[j])):
+    
+        templistOne.extend(ast.literal_eval(budgetResults[j][i]['Name']))
+
+    templistTwo.append(templistOne)
+
+x=list(range(500, 1050, 50))
+
+occurencesPlayers = []
+for i in range(len(templistTwo)):
+    a = pd.Series(templistTwo[i]).value_counts()
+    b = Counter(a)
+    c = list(b.values())
+    c.reverse()
+    occurencesPlayers.append(c)
+    
+x=list(range(500, 1050, 50))
+for i in range(len(x)):
+    #plt.scatter([x[i]]*len(occurencesPlayers[i]),occurencesPlayers[i])
+    plt.plot(list(range(1,len(occurencesPlayers[i])+1)), occurencesPlayers[i], 'o')
+
+
+plt.xlabel("Occurences")
+plt.ylabel("Amount")
+plt.title("Mean months in dreamteam for different budgets for seasons from 16/17 to 20/21")
+
 
 
