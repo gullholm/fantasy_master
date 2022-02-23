@@ -178,41 +178,18 @@ def get_cost_team_pl(full_data, team_id): # Team is list with id's
     team_cost = [get_cost_player_pl(full_data, player_id) for player_id in team_id]
     return team_cost
 
-def get_dreamteam_player_pl(full_data, corr_id):
 
-    for player in full_data:
-        if (full_data[player]['id'] == corr_id):
-            return full_data[player]['in_dreamteam']
-    return 0
-
-def get_dreamteam_team_pl(full_data, team_id): # Team is list with id's
-    dream_team = [get_dreamteam_player_pl(full_data, player_id) for player_id in team_id]
-    return dream_team
-
-def get_selected_by_perc_player_pl(full_data, corr_id):
-
-    for player in full_data:
-        if (full_data[player]['id'] == corr_id):
-            return full_data[player]['selected_by_percent']
-    return 0
-
-def get_selected_by_perc_team_pl(full_data, team_id): # Team is list with id's
-    perc = [get_selected_by_perc_player_pl(full_data, player_id) for player_id in team_id]
-    return perc
-
-def get_dreamteam_months_player_pl(full_data, corr_id):
+def get_info_player_pl(info, full_data, corr_id):
 
         for player in full_data:
             if (full_data[player]['id'] == corr_id):
-                return full_data[player]['dreamteam_count']
+                return full_data[player][info]
         return 0
 
-def get_dreamteam_months_team_pl(full_data, team_id): # Team is list with id's
-    dreamteamcount = [get_dreamteam_months_player_pl(full_data, player_id) for player_id in team_id]
-    return dreamteamcount
-
-
-
+#info is the column in raw_data
+def get_info_team_pl(info, full_data, team_id): # Team is list with id's
+    info = [get_info_player_pl(info, full_data, player_id) for player_id in team_id]
+    return info
 
 
 

@@ -267,9 +267,18 @@ def getIdFromBestTeam(playerspl, season):
         indexes = ast.literal_eval(allResults[i][j]['Id'])
         best_names = getters.get_full_name_team_pl(playerspl, indexes)
         teamNames, teamPositions = getters.get_teamName_and_pos_team_pl(playerspl, indexes, season)
-        inDreamteam = getters.get_dreamteam_team_pl(playerspl, indexes)
-        percentage = getters.get_selected_by_perc_team_pl(playerspl, indexes)
-        monthsInDreamteam= getters.get_dreamteam_months_team_pl(playerspl, indexes)
+        inDreamteam = getters.get_info_team_pl('in_dreamteam', playerspl, indexes)
+        percentage = getters.get_info_team_pl('selected_by_percent', playerspl, indexes)
+        monthsInDreamteam= getters.get_info_team_pl('dreamteam_count',playerspl, indexes)
+        goals = getters.get_info_team_pl('goals_scored', playerspl, indexes)
+        assists = getters.get_info_team_pl('assists', playerspl, indexes)
+        bonus = getters.get_info_team_pl('bonus', playerspl, indexes)
+        clean_sheets = getters.get_info_team_pl('clean_sheets', playerspl, indexes)
+        goals_conceded = getters.get_info_team_pl('goals_conceded', playerspl, indexes)
+        minutes = getters.get_info_team_pl('minutes', playerspl, indexes)
+        saves = getters.get_info_team_pl('saves', playerspl, indexes)
+        ycard = getters.get_info_team_pl('yellow_cards', playerspl, indexes)
+        rcard = getters.get_info_team_pl('red_cards', playerspl, indexes)
 
         allResults[i][j]['Name'] = best_names
         allResults[i][j]['Team'] = teamNames
@@ -278,6 +287,17 @@ def getIdFromBestTeam(playerspl, season):
         allResults[i][j]["Amount in Dreamteam"] = sum(inDreamteam)
         allResults[i][j]["Months in Dreamteam"] = monthsInDreamteam        
         allResults[i][j]["Selected by percentage"] = percentage
+        allResults[i][j]['Goals'] = goals
+        allResults[i][j]['Assists'] = assists
+        allResults[i][j]['Bonus points'] = bonus 
+        allResults[i][j]['Clean Sheets'] = clean_sheets
+        allResults[i][j]['Goals conceded'] = goals_conceded
+        allResults[i][j]['Total minutes']  = minutes
+        allResults[i][j]['Total saves'] = saves
+        allResults[i][j]['Yellow cards'] = ycard
+        allResults[i][j]['Red cards'] = rcard
+        
+        
         data = pd.DataFrame.from_dict(allResults[i][j], orient='index').transpose()    
         plDataFrame = plDataFrame.append(data)
         
@@ -331,7 +351,7 @@ budgetResults =[]
 for budget in budgets:
     budgetResults.append(getResultsPerBudget(budget))    
 
-sortedCosts =[]  
+sortedCosts = []  
 for j in range(len(budgetResults)):
     print(j)
     templist = []
@@ -440,40 +460,6 @@ plt.ylabel("Amount")
 plt.title("Mean amounts in dreamteam for different budgets for seasons from 16/17 to 20/21")
 plt.plot(x, budgetMeanAmounts, 'o')
 
-#%%
-
-templistTwo = []
-
-for j in range(len(budgetResults)):
-    templistOne = []
-    for i in range(len(budgetResults[j])):
-    
-        templistOne.append(ast.literal_eval(budgetResults[j][i]['Team position']))
-
-    templistTwo.append(templistOne)
-
-budgetMeanTeamPos =[]
-for i in range(len(sortedCosts)):
-                     
-    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
-    meanofLists = [np.mean(k) for k in zip(*arrays)]    
-    budgetMeanTeamPos.append(meanofLists)  
-    
-for i in range(len(sortedCosts)):
-                           
-    meanmean = [np.mean(x) for x in budgetMeanTeamPos]    
-    
-
-x=list(range(500, 1050, 50))
-
-for i in range(len(x)):
-    plt.scatter([x[i]]*len(budgetMeanTeamPos[i]),budgetMeanTeamPos[i])
-
-plt.plot(x, meanmean, 'o', markersize=12, color='black', label="Mean")
-plt.legend()
-plt.xlabel("Budget")
-plt.ylabel("Positions")
-plt.title("Mean placement of team for different budgets for seasons from 16/17 to 20/21")
 
 #%%
 x=list(range(500, 1050, 50))
@@ -490,74 +476,6 @@ plt.legend()
 plt.xlabel("Budget")
 plt.ylabel("Costs")
 plt.title("Mean costs for different budgets for seasons from 16/17 to 20/21")
-
-
-#%%
-
-templistTwo = []
-
-for j in range(len(budgetResults)):
-    templistOne = []
-    for i in range(len(budgetResults[j])):
-    
-        templistOne.append(ast.literal_eval(budgetResults[j][i]['Selected by percentage']))
-
-    templistTwo.append(templistOne)
-
-budgetMeanSelection =[]
-for i in range(len(sortedCosts)):
-                     
-    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
-    meanofLists = [np.mean(k) for k in zip(*arrays)]    
-    budgetMeanSelection.append(meanofLists) 
-    
-for i in range(len(sortedCosts)):
-                           
-    meanmean = [np.mean(x) for x in budgetMeanSelection]    
-
-x=list(range(500, 1050, 50))
-print(x)
-for i in range(len(x)):
-    plt.scatter([x[i]]*len(budgetMeanSelection[i]),budgetMeanSelection[i])
-
-plt.plot(x, meanmean, 'o', markersize=12, color='black', label="Mean")
-plt.legend()
-plt.xlabel("Budget")
-plt.ylabel("Percentage [%]")
-plt.title("Mean percentage selection of players for different budgets for seasons from 16/17 to 20/21")
-
-#%%
-
-templistTwo = []
-
-for j in range(len(budgetResults)):
-    templistOne = []
-    for i in range(len(budgetResults[j])):
-    
-        templistOne.append(ast.literal_eval(budgetResults[j][i]['Months in Dreamteam']))
-
-    templistTwo.append(templistOne)
-
-budgetMeanMonthsInDT =[]
-for i in range(len(sortedCosts)):
-                     
-    arrays = [sorted(np.array(x)) for x in templistTwo[i]]
-    meanofLists = [np.mean(k) for k in zip(*arrays)]    
-    budgetMeanMonthsInDT.append(meanofLists)    
-
-for i in range(len(sortedCosts)):
-                           
-    budgetMeanMeanMonthsInDT = [np.mean(x) for x in budgetMeanMonthsInDT]
-
-x=list(range(500, 1050, 50))
-for i in range(len(x)):
-    plt.scatter([x[i]]*len(budgetMeanMonthsInDT[i]),budgetMeanMonthsInDT[i])
-
-plt.plot(x, budgetMeanMeanMonthsInDT, 'o', markersize=12, color='black', label="Mean")
-plt.legend()
-plt.xlabel("Budget")
-plt.ylabel("Months")
-plt.title("Mean months in dreamteam for different budgets for seasons from 16/17 to 20/21")
 
 #%%
 from collections import Counter
@@ -589,7 +507,55 @@ for i in range(len(x)):
 
 plt.xlabel("Occurences")
 plt.ylabel("Amount")
-plt.title("Mean months in dreamteam for different budgets for seasons from 16/17 to 20/21")
+plt.title("Occurences of players for different budgets for seasons from 16/17 to 20/21")
 
+#%%
 
-
+def plotDifferentResults(data, info):
+    
+    dataPart= []
+    
+    for j in range(len(data)):
+        tempOne = []
+        for i in range(len(data[j])):
+        
+            tempOne.append(ast.literal_eval(data[j][i][info]))
+    
+        dataPart.append(tempOne)
+    
+    hej =[]
+    for i in range(len(sortedCosts)):
+                         
+        arrays = [sorted(np.array(x)) for x in dataPart[i]]
+        meanofLists = [np.mean(k) for k in zip(*arrays)]    
+        hej.append(meanofLists)    
+    
+    for i in range(len(sortedCosts)):
+                               
+        hejMean = [np.mean(x) for x in hej]
+    
+    x=list(range(500, 1050, 50))
+    for i in range(len(x)):
+        plt.scatter([x[i]]*len(hej[i]), hej[i])
+    
+    plt.plot(x, hejMean, 'o', markersize=12, color='black', label="Mean")
+    plt.legend()
+    plt.xlabel("Budget")
+    plt.ylabel("Months")
+    plt.title(info)
+    plt.show()
+    
+#%%    
+plotDifferentResults(budgetResults, 'Months in Dreamteam')  
+plotDifferentResults(budgetResults, 'Selected by percentage') 
+plotDifferentResults(budgetResults, 'Team position')
+plotDifferentResults(budgetResults, 'Yellow cards')
+plotDifferentResults(budgetResults, 'Red cards')
+plotDifferentResults(budgetResults, 'Goals')
+plotDifferentResults(budgetResults, 'Goals conceded')
+plotDifferentResults(budgetResults, 'Bonus points')
+plotDifferentResults(budgetResults, 'Assists')
+plotDifferentResults(budgetResults, 'Total minutes')
+plotDifferentResults(budgetResults, 'Clean Sheets')
+   
+    
