@@ -36,6 +36,7 @@ def find_best_team(under_cost, points):
     """   
     Finds best team (wrt points) index amongst team under cost limit
 
+
     """   
     point_f = np.zeros(under_cost.shape[0])
   
@@ -49,8 +50,9 @@ def find_best_team(under_cost, points):
 #def convert_from_matrix_to_list(all_combs, all_points, all_costs)
 
 
-def create_all_combs_from_cleaned_df(df_full, df_part, form_n, ns):
+def create_all_combs_from_cleaned_df(df_full, df_part, form_n):
     combs = np.transpose(calc.nump2(len(df_part), form_n))
+    
     combs_indexes = calc.calcIndexOld(combs, df_part.index) 
     pointsList = calc.createPointsList(df_full)
     costList = calc.createCostList(df_full)
@@ -58,12 +60,10 @@ def create_all_combs_from_cleaned_df(df_full, df_part, form_n, ns):
     for i in range(len(combs)): 
         combsPoints.append(calc.pointsPerTeam4(combs_indexes[i],pointsList))
         combsCost.append(calc.costPerTeam4(combs_indexes[i], costList)) 
-
     combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
                            columns =['total_points', 'now_cost', 'indexes'])
-
     sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, ns))
+    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, form_n))
 
     
 def calc_full_teams(all_combs):
@@ -87,6 +87,7 @@ def calc_full_teams(all_combs):
     full_teams_df = pd.DataFrame({"cost": costs_total, "points_total": points_total, "indexes": indexes})
     return(full_teams_df)
 import ast
+
 def write_full_teams(loc):
     generic = lambda x: ast.literal_eval(x)
     conv = {'indexes': generic}
@@ -101,6 +102,52 @@ def write_full_teams(loc):
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
 
 
+def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/",  clean_all = True):
+    
+    csv_file = str(bas) + str(season) + ".csv"
+    playerspl = pd.read_csv(csv_file) 
+    playerspl = playerspl.to_dict('index')
+    playerspldata = getters.get_players_feature_pl(playerspl)
+    formations = [[3,4,5],[3,4,5],[1,2,3]]
+    form_name = ["df", "mf", "fw"]
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
+    
+    
+    for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+        #print(part)
+        #print(df)
+        print(pos)
+        for p in part:
+            print(p)
+            all_cleaned = cleaners.run_all_cleans(df, p)
+            
+            if clean_all: 
+                combs = create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+            else: 
+                combs = create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+
+    
+    # Goalkeepers
+    
+    gk, df,mf,fw = getters.get_diff_pos(playerspldata)
+    
+    df_gk = pd.DataFrame.from_dict(gk, orient='index')
+    
+    sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+    
+    cleaned_gk = cleaners.clean_gk(sorted_df_gk)
+    cleaned_gk.reset_index(inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.drop('element_type', inplace=True, axis=1)
+    if clean_all: 
+        cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
+    else : 
+        cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
+        
+    print("Done with " + str(season))
 
 """
 def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
