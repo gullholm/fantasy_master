@@ -380,4 +380,66 @@ for i in range(len(cleaned)):
 #%%
 
 printAndPlotSummary(allCosts, allPoints, allDynamics, budget)
- 
+
+#%%
+
+# Create a combinations of all seasons in PL 
+
+
+
+def combineAllSeasonsPl():
+    
+    seasons=[1617, 1718,1819,1920,2021]
+    for season in seasons: 
+        csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+        playerspl = pd.read_csv(csv_file) 
+        playerspl = playerspl.to_dict('index')
+        playerspldata = getters.get_players_feature_pl(playerspl)
+
+        sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
+        
+        test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
+        value = -1
+        if season == 1617:
+            theList = [None]*133 #132 highest value for cost
+            templist=[]
+            for key in test_dictionary.values(): 
+                if key['now_cost'] <= value:
+                    templist.append(key['total_points'])
+                #print(key)
+                else: 
+                    theList[value]= templist  
+                    templist = []
+                    value = key['now_cost']
+                    templist.append(key['total_points'])
+                    if key['now_cost'] == 127:
+                        theList[value] = templist
+        
+        else:
+            value= -1
+            for key in test_dictionary.values(): 
+                if key['now_cost'] <= value:
+                    templist.append(key['total_points'])
+                #print(key)
+                else: 
+                    if theList[value] is None:
+                        theList[value]= templist 
+                    else:    
+                        beforeList = theList[value]
+                        newList = beforeList + templist
+                        theList[value]= newList
+                    templist = []
+                    value = key['now_cost']
+                    templist.append(key['total_points'])
+                    if key['now_cost'] == 132:
+                        theList[value] = templist
+            
+
+    return theList
+        
+    
+#%%
+#De bästa kommer inte med för tre mittensäsonger, annars klart
+PLCombined = combineAllSeasonsPl()  
+
+     
