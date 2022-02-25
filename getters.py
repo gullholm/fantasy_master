@@ -133,8 +133,8 @@ def get_cost_player(full_data, corr_id):
             return player['now_cost']
     return 0
 
-def get_cost_team(full_data, team_id): # Team is list with id's
-    team_cost = [get_cost_player(full_data, player_id) for player_id in team_id]
+def get_cost_team(cost_list, team_id): # Team is list with id's
+    team_cost = [cost_list[player_id] for player_id in team_id]
     return team_cost
 
 # PL

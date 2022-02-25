@@ -63,7 +63,7 @@ def create_all_combs_from_cleaned_df(df_full, df_part, form_n):
     combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
                            columns =['total_points', 'now_cost', 'indexes'])
     sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
-    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, form_n))
+    return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, 1))
 
     
 def calc_full_teams(all_combs):
@@ -94,9 +94,11 @@ def write_full_teams(loc):
     all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
     form_name = ["/df", "/mf", "/fw"]
     all_combs = []
+    
     for comb in all_pass_combs: 
+        print(comb)
         all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
-        all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
+        all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
         all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
         done_df = calc_full_teams(all_combs)
         done_df.to_csv(loc + str(comb) + ".csv", index = False)

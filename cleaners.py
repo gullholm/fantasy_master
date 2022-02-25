@@ -24,9 +24,7 @@ def all_forms_as_df_cleaned(league = "allsvenskan"):
 def all_forms_as_df_cleaned_pl(csv_file):
     playerspl = pd.read_csv(csv_file).to_dict('index')
     playerspldata = getters.get_players_feature_pl(playerspl)
-
     all_form = getters.get_diff_pos(playerspldata)
-
     all_form_df = [pd.DataFrame.from_dict(part, 
                                           orient = 'index').drop("element_type", axis=1) for part in all_form]
 
