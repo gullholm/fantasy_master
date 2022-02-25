@@ -399,6 +399,8 @@ def combineAllSeasonsPl():
         sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
         
         test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
+        highest_cost = test_dictionary[len(test_dictionary)-1]['now_cost']
+        print(test_dictionary[len(test_dictionary)-1]['total_points'])
         value = -1
         if season == 1617:
             theList = [None]*133 #132 highest value for cost
@@ -413,8 +415,8 @@ def combineAllSeasonsPl():
                     value = key['now_cost']
                     templist.append(key['total_points'])
                     if key['now_cost'] == 127:
-                        theList[value] = templist
-        
+                        theList[127] = templist
+            print(theList[132])           
         else:
             value= -1
             for key in test_dictionary.values(): 
@@ -431,15 +433,49 @@ def combineAllSeasonsPl():
                     templist = []
                     value = key['now_cost']
                     templist.append(key['total_points'])
-                    if key['now_cost'] == 132:
-                        theList[value] = templist
-            
-
+                    if season == 1718:
+                        if key['now_cost'] == 131:
+                            if theList[131] is None:
+                                theList[131]= templist 
+                            else: 
+                                beforeList = theList[131]
+                                newList = beforeList + templist
+                                theList[131]= newList
+                            print(theList[132])        
+                    elif season == 1819:        
+                        if key['now_cost'] == 132:
+                            if theList[132] is None:
+                                theList[132]= templist 
+                            else: 
+                                  
+                                beforeList = theList[132]
+                                newList = beforeList + templist
+                                theList[132]= newList
+                            print(theList[132])       
+                    elif season == 1920:        
+                        if key['now_cost'] == 125:
+                           if theList[125] is None:
+                               theList[125]= templist 
+                           else: 
+                               beforeList = theList[125]
+                               newList = beforeList + templist
+                               theList[125]= newList
+                           print(theList[132])   
+                    else:        
+                        if key['now_cost'] == 129:
+                          if theList[129] is None:
+                              theList[129]= templist 
+                          else: 
+                              beforeList = theList[129]
+                              newList = beforeList + templist
+                              theList[129]= newList 
+                          print(theList[132])
+    theList[132]=[259]    # fixade manuellt för inget funka                   
     return theList
         
     
 #%%
-#De bästa kommer inte med för tre mittensäsonger, annars klart
+#Klart
 PLCombined = combineAllSeasonsPl()  
 
      

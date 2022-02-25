@@ -133,16 +133,8 @@ def calc_best_per_formation_as(inputcsv, outputcsv, season):
 #%%
 
 calc_best_per_formation_as('data_cleaned/as/', 'results/as/', 'AS')  
-#%%
-
-
-data = getters.get_data()
-players2 = getters.get_players_feature(data)
-
 
 #%%
-
-
 
 calc_best_per_formation_as('data_cleaned/inc_copy_players/21/', 'results/inc_copy_players/21/', 'ASDup')    
 
