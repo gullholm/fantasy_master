@@ -14,7 +14,7 @@ generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 data = get.get_data()
 
-one = pd.read_csv("data_cleaned/inc_copy_players/21/[4, 4, 2].csv", converters = conv)
+one = pd.read_csv("data_cleaned/pl/1617/[4, 4, 2].csv", converters = conv)
 #%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] < upper]
@@ -55,40 +55,58 @@ def is_diverse_ed2(team_id, full_data, budget):
 #    print(team_cost)
     a = det_a(full_data, team_id)
 #    a = min(full_data)
+#    print(a)
     theory_int = thry_interval(a, budget)
 #    print(theory_int)
     c = int(math.ceil((theory_int[1]-theory_int[0])/2))
     theory_int_l = [x - c for x in theory_int]
     theory_int_h = [x + c for x in theory_int]
     counts = [0]*11
+#    print(c)
 #    print(theory_int_l)
 #    print(theory_int_h)
-
+    save_empty_indices = []
+#    print(theory_int_l)
+#    print(theory_int)
+#    print(team_cost)
     for re in team_cost:
         
         for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
             if(re >= low and re <= up):
                 counts[i] += 1
 #    print(counts)
-    if(counts.count(0) < 3): # zeros implicates amount that interval doesn't cover
-        return(1)
-    else:
-        return(0)
+    #if(counts.count(0) < 3): # zeros implicates amount that interval doesn't cover
+#        return(1)
+    #else:
+#        return(0)
 
-
+    return(counts)
+def flatten(l):
+    flattened = []
+    for sublist in l:
+        flattened.extend(sublist)
+    return flattened
 #%%
 #all_ids = list(flatten_all_ids(one["indexes"].to_list()))
 #a = det_a(data, all_ids)
 
 import random
 #inter = thry_interval(a, 700)
-players = pd.read_csv("data/inc_copy_players/as21.csv")
+players = pd.read_csv("data/pl_csv/players_raw_1617.csv")
 cost_list = players["now_cost"].to_list()
 budget = 700
 ones = filter_df(one, budget-50, budget)
 all_teams = ones["indexes"].to_list()
-#all_teams = random.sample(all_teams, 100)
+#all_teams = random.sample(all_teams, 50)
 is_dev_or_not = [is_diverse_ed2(team_id, cost_list, budget) for team_id in all_teams]
+
+pos = [[i for (i,x) in enumerate(lis) if x == 0] for lis in is_dev_or_not]
+
+coo = [x for x in is_dev_or_not if x.count(0) < 4]
+from collections import Counter
+pos_flat = flatten(pos)
+print(Counter(pos_flat).most_common())
+#%%
 print(sum(is_dev_or_not))
 indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
 tot_points = []
@@ -101,4 +119,5 @@ print(sum(tot_cost)/len(tot_cost))
 print(sum(tot_points)/len(tot_cost))
 print(ones['points_total'].mean())
 print(ones['cost'].mean())
+
 #%%
