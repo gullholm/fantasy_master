@@ -71,6 +71,14 @@ for season in seasons:
     print("cleaning season " + str(season))
     clean_all_data_pl(season, clean_all, 3)
     
+#%%'
+
+clean_all_data_pl('all', ns=3)  
+
+#csv_file = "data/pl_csv/players_raw_all.csv"
+#playerspl = pd.read_csv(csv_file) 
+#playerspl = playerspl.to_dict('index')
+#playerspldata = getters.get_players_feature_pl(playerspl)  
     
 # In[]
 
