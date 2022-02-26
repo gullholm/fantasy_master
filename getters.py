@@ -41,7 +41,6 @@ def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', '
 
 def get_players_feature_pl(full_data, list_feature = ['element_type', 'now_cost', 'total_points']):
     players_feature = {}
-    print(len(full_data))
     for i in range(len(full_data)):
         case = {x: full_data[i][x] for x in list_feature}
         players_feature[full_data[i]['id']] = case
