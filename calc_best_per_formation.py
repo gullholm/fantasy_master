@@ -28,7 +28,7 @@ def calc_best_team_under_budget(players, max_cost, full_costs, full_points, comb
                , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]
     best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
     best_team_i = [item for sublist in best_team_ids for item in sublist]    
-    print(best_team_i)
+    #print(best_team_i)
     best_team_ids_values = [players[ids] for ids in best_team_i]
     #best_team_names = getters.get_full_name_team(data, best_team_i)
 
@@ -287,3 +287,9 @@ for season in seasons:
     #calc_best_per_season_pl(season)
 #season=seasons[0]
     all_points , points_full = calc_best_per_season_pl(season)
+    
+#%%
+
+#All
+
+all_points, points_full = calc_best_per_season_pl('all')     
