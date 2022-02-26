@@ -500,4 +500,4 @@ for idxes, rows in combined_csv.iterrows():
     
     #print(rows['id'])
 combined_csv['id'] = newIDs
-combined_csv.to_csv( "combined_csv.csv", index=False, encoding='utf-8-sig')        
+combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')        
