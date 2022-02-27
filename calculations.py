@@ -22,7 +22,7 @@ def nump2(n, k):
         ind = np.add.accumulate(reps)
         a[j, ind[:-1]] = 1-reps[1:]
         a[j, 0] = j
-        a[j] = np.add.accumulate(a[j])
+        a[j] = np.add.accumulate(a[j]) 
     return a
 
 def calcindex(indexlist, dat, nr, length, seed): # Returns indexes of (length) amount of diff random players combinations
