@@ -153,15 +153,6 @@ flat_list = clean_all_data_pl_place_indep(1617)
 
 #%%
 import numpy as np
-test = np.array([9, 4, 4, 3, 3, 9, 0, 4, 6, 0])
-ind = np.argpartition(test, -4)[-4:]
-print(ind)
-#array([1, 5, 8, 0])
-top4 = test[ind]
-print(top4)
-#array([4, 9, 6, 9])
-
-
 import itertools
 
 points =[]
@@ -173,46 +164,60 @@ for i in range(len(flat_list)):
 tuplelist = [(x,y) for x,y in zip(points,costs) ] 
 sorttuple = sorted(tuplelist)[::-1]
 sortpoints = [i for i,j in sorttuple]
-sortcosts =[j for i,j in sorttuple]  
+sortcosts = [j for i,j in sorttuple]  
 
 count=0 
-bestteampoints =[0,0,0,0,0,0,0,0,0]
-nr = 5
+bestteampoints =[1170,1397,1565,1705,1824,1930,2020,2107,2170,2231,2249] # for formations
+budgets=list(range(500, 1001, 50))
+nr = 11
+
+# try to create all combinations in a tree structure and see how many you get and how fast it will take
+# probably in for-loops...
+
+#k = 11
+#n = 107
+
+#a = np.ones((k, n-k+1), dtype=np.int8)
+# a[0] = np.arange(n-k+1)
+# for j in range(1, k):
+#     reps = (n-k+j) - a[j-1]
+#     a = np.repeat(a, reps, axis=1)
+#     ind = np.add.accumulate(reps)
+#     a[j, ind[:-1]] = 1-reps[1:]
+#     a[j, 0] = j
+#     a[j] = np.add.accumulate(a[j])
+#print(a.T)
 for subset in itertools.combinations(sorttuple, nr):
     count+=1
-    teamcost = sum(j for i, j in subset) 
-    if teamcost > 950 and teamcost < 1000:
-        if sum(i for i,j in subset) > bestteampoints[0]:
-            bestteampoints[0] = sum(i for i,j in subset)  
-            print(bestteampoints)
-    elif teamcost > 900 and teamcost < 950:
-        if sum(i for i,j in subset) > bestteampoints[1]:
-            bestteampoints[1] = sum(i for i,j in subset)  
-            print(bestteampoints)        
-    elif teamcost > 850 and teamcost < 900:
-        if sum(i for i,j in subset) > bestteampoints[2]:
-            bestteampoints[2] = sum(i for i,j in subset)  
-            print(bestteampoints)
-    elif teamcost > 800 and teamcost < 850:
-        if sum(i for i,j in subset) > bestteampoints[3]:
-            bestteampoints[3] = sum(i for i,j in subset)  
-            print(bestteampoints)
-    elif teamcost > 750 and teamcost < 800:
-        if sum(i for i,j in subset) > bestteampoints[4]:
-            bestteampoints[4] = sum(i for i,j in subset)  
-            print(bestteampoints)
-    elif teamcost > 700 and teamcost < 750:
-        if sum(i for i,j in subset) > bestteampoints[5]:
-            bestteampoints[5] = sum(i for i,j in subset)  
-            print(bestteampoints)        
-   
-    elif teamcost > 650 and teamcost < 700:
-        if sum(i for i,j in subset) > bestteampoints[6]:
-            bestteampoints[6] = sum(i for i,j in subset)  
-            print(bestteampoints)    
-    
-    
-    
+    # teamvalues = [sum(x) for x in zip(*subset)]
+    # if teamvalues[0]<1800:
+    #     continue
+    # index = sum(1 for x in budgets if teamvalues[1] > x)
+    # if 0 < index > 10:
+    #    pass 
+    # elif teamvalues[0] >= bestteampoints[index]:
+    #     bestteampoints[index] = teamvalues[0]
+    #     print(bestteampoints)
+       
     if count%10000000 == 0:
         print(count/10000000)
-print(i)        
+        
+#%%        
+test = list(range(108))
+count=0
+for sub in itertools.combinations(test, nr):
+    count+=1
+    # teamvalues = [sum(x) for x in zip(*subset)]
+    # if teamvalues[0]<1800:
+    #     continue
+    # index = sum(1 for x in budgets if teamvalues[1] > x)
+    # if 0 < index > 10:
+    #    pass 
+    # elif teamvalues[0] >= bestteampoints[index]:
+    #     bestteampoints[index] = teamvalues[0]
+    #     print(bestteampoints)
+       
+    if count%10000000 == 0:
+        print(count/10000000)
+        
+       
