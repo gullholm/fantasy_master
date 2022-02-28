@@ -187,21 +187,30 @@ nr = 11
 #     a[j, 0] = j
 #     a[j] = np.add.accumulate(a[j])
 #print(a.T)
+
+import time
+start_time = time.time()
+
 for subset in itertools.combinations(sorttuple, nr):
     count+=1
-    # teamvalues = [sum(x) for x in zip(*subset)]
-    # if teamvalues[0]<1800:
-    #     continue
-    # index = sum(1 for x in budgets if teamvalues[1] > x)
-    # if 0 < index > 10:
-    #    pass 
-    # elif teamvalues[0] >= bestteampoints[index]:
-    #     bestteampoints[index] = teamvalues[0]
-    #     print(bestteampoints)
+    teamvalues = [sum(x) for x in zip(*subset)]
+    if teamvalues[0]<1800:
+        continue
+    index = sum(1 for x in budgets if teamvalues[1] > x)
+    if 0 < index > 10:
+        pass 
+    elif teamvalues[0] >= bestteampoints[index]:
+        bestteampoints[index] = teamvalues[0]
+        print(bestteampoints)
        
     if count%10000000 == 0:
         print(count/10000000)
-        
+    if count/10000000 == 3:
+        break
+
+print("--- %s seconds ---" % (time.time() - start_time))
+
+       
 #%%        
 test = list(range(108))
 count=0
