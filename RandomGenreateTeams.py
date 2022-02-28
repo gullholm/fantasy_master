@@ -478,4 +478,26 @@ def combineAllSeasonsPl():
 #Klart
 PLCombined = combineAllSeasonsPl()  
 
-     
+#%%
+
+for lists in PLCombined: 
+    if lists is not None: 
+        sortlists = lists.sort() 
+        print(lists[-11:])
+        
+#%%
+seasons=[1617,1718,1819,1920,2021]
+all_filenames = ["data/pl_csv/players_raw_" + str(season) + ".csv" for season in seasons]
+combined_csv = pd.concat([pd.read_csv(f) for f in all_filenames ])
+add= 0
+newIDs = []
+for idxes, rows in combined_csv.iterrows():
+    
+    if idxes == 0:
+        add += 1000 
+    #print(rows['id']+add)
+    newIDs.append(rows['id']+add)
+    
+    #print(rows['id'])
+combined_csv['id'] = newIDs
+combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')        

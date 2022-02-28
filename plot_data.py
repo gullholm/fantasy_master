@@ -558,4 +558,9 @@ plotDifferentResults(budgetResults, 'Assists')
 plotDifferentResults(budgetResults, 'Total minutes')
 plotDifferentResults(budgetResults, 'Clean Sheets')
    
-    
+
+#%%
+
+allres = getResultsPerSeason('all') 
+for i in range(11):  
+    plt.plot(list(range(1,12)),ast.literal_eval(allres[i]['Sorted individual costs']), 'o') 
