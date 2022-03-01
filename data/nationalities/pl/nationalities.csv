@@ -1,8 +1,8 @@
 Nation	Names
-eng England	Harry Kane, Patrick Bamford, Ollie Watkins, Jamie Vardy, James Ward-Prowse, Marcus Rashford, Dominic Calvert-Lewin, Jack Harrison, Raheem Sterling, Ashley Westwood, Ademola Lookman, Rhian Brewster, Rob Holding, Ezri Konsa Ngoyo, Lewis Dunk, Sam Johnstone, Emile Smith Rowe, Matt Targett, Trent Alexander-Arnold, Aaron Cresswell, Peter Crouch, Junior Stanislas, Ben Mee, Adam Smith, Ben Gibson, Lee Grant, Bamidele Alli, Gary Cahill, Tom Heaton, Charlie Daniels, Jermain Defoe, Tom Carroll, Jack Cork, James Tomkins, Jamaal Lascelles
+eng England	Harry Kane, Patrick Bamford, Ollie Watkins, Jamie Vardy, James Ward-Prowse, Marcus Rashford, Dominic Calvert-Lewin, Jack Harrison, Raheem Sterling, Ashley Westwood, Ademola Lookman, Rhian Brewster, Rob Holding, Ezri Konsa Ngoyo, Lewis Dunk, Sam Johnstone, Emile Smith Rowe, Matt Targett, Trent Alexander-Arnold, Aaron Cresswell, Peter Crouch, Junior Stanislas, Ben Mee, Adam Smith, Ben Gibson, Lee Grant, Bamidele Alli, Gary Cahill, Tom Heaton, Charlie Daniels, Jermain Defoe, Tom Carroll, Jack Cork, James Tomkins, Jamaal Lascelles, Ryan Bennett, Aaron Wan-Bissaka
 fr France	Hugo Lloris, Neal Maupay, Lucas Digne, Alexandre Lacazette, Alphonse Areola, Illan Meslier, Abdoulaye Doucouré, Tanguy Ndombele, Kurt Zouma, Paul Pogba, Etienne Capoue
-es Spain	Pablo Fornals, Vicente Guaita, Rodri, Adama Traoré, Sergio Reguilón, César Azpilicueta, Robert Sánchez, Héctor Bellerín, David De Gea, Ferrán Torres, Marcos Alonso, Fernando Llorente, Pedro Rodríguez Ledesma, Ayoze Pérez
-ie Republic of Ireland	David McGoldrick, Enda Stevens, John Egan, Dara O'Shea, Callum Robinson, Ciaran Clark, Séamus Coleman, Jeff Hendrick, Matt Doherty, Robbie Brady
+es Spain	Pablo Fornals, Vicente Guaita, Rodri, Adama Traoré, Sergio Reguilón, César Azpilicueta, Robert Sánchez, Héctor Bellerín, David De Gea, Ferrán Torres, Marcos Alonso, Fernando Llorente, Pedro Rodríguez Ledesma, Ayoze Pérez, Víctor Camarasa, Jonathan Castro Otto
+ie Republic of Ireland	David McGoldrick, Enda Stevens, John Egan, Dara O'Shea, Callum Robinson, Ciaran Clark, Séamus Coleman, Jeff Hendrick, Matt Doherty, Robbie Brady, Shane Long, Shane Duffy
 br Brazil	Roberto Firmino, Richarlison, Raphael Dias Belloli, Ederson, Gabriel Jesus, Alisson, Douglas Luiz, Fabinho, Joelinton, Fred, Fernando Luiz Rosa
 pt Portugal	Bruno Miguel Borges Fernandes, Matheus Pereira, Pedro Neto, Rui Patrício, Rúben Neves, Nélson Semedo, Rúben Dias, Bernardo Silva, João Cancelo, Ivan Cavaleiro 
 sct Scotland	Andrew Robertson, John McGinn, Che Adams, Stuart Armstrong, John Fleck, Kieran Tierney, Scott McTominay, Liam Cooper, Matt Phillips, James McArthur, Darren Fletcher
@@ -10,7 +10,7 @@ nl Netherlands	Georginio Wijnaldum, Anwar El Ghazi, Joël Veltman, Pascal Struij
 wls Wales	Gareth Bale, Ethan Ampadu, Tyler Roberts, Ben Davies, Paul Dummett, Daniel James, Hal Robson-Kanu, Joe Rodon, Neco Williams, Niall Huggins, Marten de Roon, Joe Allen, Sam Vokes
 be Belgium	Youri Tielemans, Kevin De Bruyne, Leandro Trossard, Christian Benteke, Timothy Castagne, Leander Dendoncker, Toby Alderweireld, Michy Batshuayi, Dennis Praet, Denis Odoi, Romelu Lukaku, Eden Hazard
 de Germany	Timo Werner, Pascal Groß, Ilkay Gündogan, Bernd Leno, Kai Havertz, Antonio Rüdiger, Robin Koch, Shkodran Mustafi, Reda Khadra, Max Meyer, Christopher Schindler
-dk Denmark	Pierre Højbjerg, Kasper Schmeichel, Joachim Andersen, Jannik Vestergaard, Andreas Christensen, Oskar Buur, Jonas Lössl, Andreas Søndergaard, Frederik Ibsen, William Osula, Christian Eriksen, Mathias Jorgensen
+dk Denmark	Pierre-Emile Højbjerg, Kasper Schmeichel, Joachim Andersen, Jannik Vestergaard, Andreas Christensen, Oskar Buur, Jonas Lössl, Andreas Søndergaard, Frederik Ibsen, William Osula, Christian Eriksen, Mathias Jorgensen
 pl Poland	Jan Bednarek, Mateusz Klich, Lukasz Fabianski, Matty Cash, Jakub Moder, Kamil Grosicki, Michał Karbownik, Mateusz Bogusz, Jakub Ojrzynski
 ci Côte d'Ivoire	Wilfried Zaha, Nicolas Pépé, Willy Boly, Serge Aurier, Sébastien Haller, Eric Bailly, Amad Diallo, Jean-Philippe Gbamin, Cédric Kipré
 ar Argentina	Emiliano Martínez, Federico Fernández, Alexis Mac Allister, Giovani Lo Celso, Sergio Agüero, Érik Lamela, Manuel Lanzini, Willy Caballero, Nicolás Otamendi
@@ -67,3 +67,4 @@ ro Romania	Florin Andone
 th Thailand	Thanawat Suengchitthawon
 ch Chile	Alexis Sánchez
 et Estonia	Ragnar Klavan
+ph Philippines	Neil Etheridge
