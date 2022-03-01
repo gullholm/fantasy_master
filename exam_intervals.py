@@ -93,9 +93,14 @@ def flatten(l):
 #a = det_a(data, all_ids)
 
 import random
+import calculations as calc
+import getters
+
 #inter = thry_interval(a, 700)
 players = pd.read_csv("data/pl_csv/players_raw_1617.csv")
-cost_list = players["now_cost"].to_list()
+playerspl = players.to_dict('index')
+playerspldata = getters.get_players_feature_pl(playerspl)
+cost_list = calc.createCostList(playerspldata, False)
 budget = 700
 ones = filter_df(one, budget-50, budget)
 all_teams = one["indexes"].to_list()
@@ -112,8 +117,8 @@ for ind in indexes_div:
     tot_points.append(one.iloc[ind]['points_total'])
     tot_cost.append(one.iloc[ind]['cost'])
     
-print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
-print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
+print((sum(tot_cost)/len(tot_cost)/ one['cost'].mean()))
+print((sum(tot_points)/len(tot_points))/ one['points_total'].mean())
 
 
 #%%
