@@ -365,7 +365,7 @@ print('All values are correct: ' + str((teamlist == correctcase).all()))
 
 #%%
 
-
+# n = 23 choose 11
 n = 23
 templistA = sorttuple[:n]
 countB = 0

@@ -17,8 +17,8 @@ data = get.get_data()
 one = pd.read_csv("data_cleaned/pl/1617/[4, 4, 2].csv", converters = conv)
 #%%
 def filter_df(df, lwr, upper):
-    df = df[df['cost'] < upper]
-    df_new = df[df['cost'] > lwr]
+    df = df[df['cost'] <= upper]
+    df_new = df[df['cost'] >= lwr]
     return(df_new)
 
 def lower_bound(df_list):
@@ -61,8 +61,8 @@ def is_diverse_ed2(team_id, full_data):
     theory_int = np.linspace(a, b, 11, dtype=int).tolist()
 #    print(theory_int)
     c = int(math.ceil((theory_int[1]-theory_int[0])))
-    theory_int_l = [x - c for x in theory_int]
-    theory_int_h = [x + c for x in theory_int]
+    theory_int_l = [x - c/2 for x in theory_int]
+    theory_int_h = [x + c/2 for x in theory_int]
     counts = [0]*11
 #    print(c)
 #    print(theory_int_l)
@@ -105,6 +105,7 @@ budget = 700
 ones = filter_df(one, budget-50, budget)
 all_teams = one["indexes"].to_list()
 #all_teams = random.sample(all_teams, 50)
+#%%
 is_dev_or_not = [is_diverse_ed2(team_id, cost_list) for team_id in all_teams]
 sum(is_dev_or_not)
 
