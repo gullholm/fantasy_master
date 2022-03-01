@@ -78,7 +78,6 @@ def createCostList(players = players2, fill_out = True):
     costList = n*[0]
     #print(players.keys())
     for i in list(players.keys()):
-        print(i)
         #costList.append(players[i]["now_cost"])
         costList[i-1] = players[i]["now_cost"]
     #for player in players:
