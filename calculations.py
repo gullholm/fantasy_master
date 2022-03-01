@@ -69,15 +69,16 @@ def costPerTeam4(team, costList):
         teamcost = teamcost + costList[key-1]
     return teamcost  
 
-def createCostList(players = players2):
-    costList =[]
+def createCostList(players = players2, fill_out = True):
     #Pick a larger number than largest key, some spots are missing / 0
-    n = max(6000,len(players))
-    for i in range(n):
-        costList.append(0)
+    n = len(players)
+    if(fill_out):
+        n = max(6000,len(players))
+
+    costList = n*[0]
     #print(players.keys())
     for i in list(players.keys()):
-        #print(i)
+        print(i)
         #costList.append(players[i]["now_cost"])
         costList[i-1] = players[i]["now_cost"]
     #for player in players:
