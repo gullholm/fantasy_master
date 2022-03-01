@@ -14,12 +14,10 @@ import parsers
 
 def clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/",  clean_all = True, ns = 3):
     
-    csv_file = str(bas) + str(season) + ".csv"
-    playerspl = pd.read_csv(csv_file) 
-    playerspl = playerspl.to_dict('index')
-    playerspldata = getters.get_players_feature_pl(playerspl)
+    playerspldata = getters.get_players_feature_pl(bas, season)
     formations = [[3,4,5],[3,4,5],[1,2,3]]
     form_name = ["df", "mf", "fw"]
+    csv_file = str(bas) + str(season) + ".csv"
     all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
     
     
@@ -69,7 +67,7 @@ clean_all = False # if True, clean combinations of players as well
 
 for season in seasons:
     print("cleaning season " + str(season))
-    clean_all_data_pl(season, clean_all, 3)
+    clean_all_data_pl(season)
     
 #%%'
 

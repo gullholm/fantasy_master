@@ -10,6 +10,7 @@ import calculations as calc
 import getters
 import pandas as pd
 import cleaners
+import os
 
 def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for each formation part
     """
@@ -106,25 +107,25 @@ def write_full_teams(loc):
 
 def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/",  clean_all = True):
     
-    csv_file = str(bas) + str(season) + ".csv"
-    playerspl = pd.read_csv(csv_file) 
-    playerspl = playerspl.to_dict('index')
-    playerspldata = getters.get_players_feature_pl(playerspl)
+    playerspldata = getters.get_players_feature_pl(bas,season)
     formations = [[3,4,5],[3,4,5],[1,2,3]]
     form_name = ["df", "mf", "fw"]
-    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
-    
-    
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(bas, season)[1:]
+    new_dest = os.path.join(dest, str(season))
+    os.makedirs(new_dest, exist_ok = True)
     for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
         #print(part)
         #print(df)
-        print(pos)
+        print(len(df))
+        os.makedirs(os.path.join(new_dest, pos) , exist_ok = True)
+
         for p in part:
             print(p)
             all_cleaned = cleaners.run_all_cleans(df, p)
-            
             if clean_all: 
+                print(len(playerspldata))
                 combs = create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                print(combs.head(5))
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 
