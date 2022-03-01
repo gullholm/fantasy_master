@@ -1,67 +1,68 @@
-Rk,Nation, Players
-1,England,253
-2,France,35
-3,Spain,30
-4,Republic of Ireland,28
-5,Brazil,26
-6,Portugal,22
-7,Scotland,20
-8,Netherlands,19
-9,Wales,16
-10,Belgium,12
-11,Denmark,10
-12,Germany,10
-13,Poland,9
-14,Côte d'Ivoire,9
-15,Argentina,9
-16,Nigeria,8
-17,Northern Ireland,7
-18,Switzerland,7
-19,United States,6
-20,Italy,6
-21,Turkey,5
-22,Senegal,5
-23,Sweden,5
-24,Ghana,5
-25,Egypt,5
-26,Colombia,5
-27,Serbia,4
-28,Norway,4
-29,Jamaica,4
-30,Iceland,3
-31,Croatia,3
-32,Algeria,3
-33,Czech Republic,3
-34,Australia,3
-35,Zimbabwe,2
-36,South Africa,2
-37,Ukraine,2
-38,Slovakia,2
-39,Paraguay,2
-40,Mali,2
-41,Morocco,2
-42,Gabon,2
-43,Cameroon,2
-44,Congo DR,2
-45,Uruguay,1
-46,Tunisia,1
-47,Thailand,1
-48,Romania,1
-49,New Zealand,1
-50,Mexico,1
-51,Mauritania,1
-52,North Macedonia,1
-53,Korea Republic,1
-54,St. Kitts and Nevis,1
-55,Japan,1
-56,IR Iran,1
-57,Greece,1
-58,Guinea,1
-59,Ecuador,1
-60,Canada,1
-61,Bulgaria,1
-62,Burkina Faso,1
-63,Bosnia and Herzegovina,1
-64,Austria,1
-65,Angola,1
-66,Albania,1
+
+Rk,Nation,Players,List
+1,England,253,Harry Kane Patrick Bamford Ollie Watkins Jamie Vardy James Ward-Prowse Marcus Rashford Dominic Calvert-Lewin Jack Harrison Raheem Sterling Ashley Westwood ...
+2,France,35,Hugo Lloris Neal Maupay Lucas Digne Alexandre Lacazette Alphonse Areola Illan Meslier Abdoulaye Doucouré Tanguy Ndombele Kurt Zouma Paul Pogba ...
+3,Spain,30,Pablo Fornals Vicente Guaita Rodri Adama Traoré Sergio Reguilón César Azpilicueta Robert Sánchez Héctor Bellerín David de Gea Ferrán Torres ...
+4,Republic of Ireland,28,David McGoldrick Enda Stevens John Egan Dara O'Shea Callum Robinson Ciaran Clark Séamus Coleman Jeff Hendrick Matt Doherty Robbie Brady ...
+5,Brazil,26,Roberto Firmino Richarlison Raphael Dias Belloli Ederson Gabriel Jesus Alisson Douglas Luiz Fabinho Joelinton Fred ...
+6,Portugal,22,Bruno Fernandes Matheus Pereira Pedro Neto Rui Patrício Rúben Neves Nélson Semedo Rúben Dias Bernardo Silva João Cancelo Ivan Cavaleiro ...
+7,Scotland,20,Andrew Robertson John McGinn Che Adams Stuart Armstrong John Fleck Kieran Tierney Scott McTominay Liam Cooper Matt Phillips James McArthur ...
+8,Netherlands,19,Georginio Wijnaldum Anwar El Ghazi Joël Veltman Pascal Struijk Jaïro Riedewald Patrick van Aanholt Kenny Tete Steven Bergwijn Erik Pieters Nathan Aké ...
+9,Wales,16,Gareth Bale Ethan Ampadu Tyler Roberts Ben Davies Paul Dummett Daniel James Hal Robson-Kanu Joe Rodon Neco Williams Niall Huggins ...
+10,Belgium,12,Youri Tielemans Kevin De Bruyne Leandro Trossard Christian Benteke Timothy Castagne Leander Dendoncker Toby Alderweireld Michy Batshuayi Dennis Praet Denis Odoi ...
+11,Germany,10,Timo Werner Pascal Groß İlkay Gündoğan Bernd Leno Kai Havertz Antonio Rüdiger Robin Koch Shkodran Mustafi Reda Khadra Max Meyer
+12,Denmark,10,Pierre Højbjerg Kasper Schmeichel Joachim Andersen Jannik Vestergaard Andreas Christensen Oskar Buur Jonas Lössl Andreas Søndergaard Frederik Ibsen William Osula
+13,Poland,9,Jan Bednarek Mateusz Klich Łukasz Fabiański Matty Cash Jakub Moder Kamil Grosicki Michał Karbownik Mateusz Bogusz Jakub Ojrzynski
+14,Côte d'Ivoire,9,Wilfried Zaha Nicolas Pépé Willy Boly Serge Aurier Sébastien Haller Eric Bailly Amad Diallo Jean-Philippe Gbamin Cédric Kipré
+15,Argentina,9,Emiliano Martínez Federico Fernández Alexis Mac Allister Giovani Lo Celso Sergio Agüero Érik Lamela Manuel Lanzini Willy Caballero Nicolás Otamendi
+16,Nigeria,8,Semi Ajayi Ola Aina Kelechi Iheanacho Wilfred Ndidi Alex Iwobi Josh Maja Odion Ighalo Ademipo Odubeko
+17,Northern Ireland,7,Stuart Dallas Jonny Evans Oliver Norwood Jamal Lewis Bailey Peacock-Farrell Liam Hughes Isaac Price
+18,Switzerland,7,Granit Xhaka Fabian Schär Xherdan Shaqiri Andi Zeqiri Gaetano Berardi Alexandre Jankewitz Christian Marques
+19,United States,6,Christian Pulisic Antonee Robinson Tim Ream DeAndre Yedlin Owen Otasowie Zack Steffen
+20,Italy,6,Angelo Ogbonna Jorginho Emerson Palmieri Patrick Cutrone Moise Kean Elia Caprile
+21,Senegal,5,Sadio Mané Cheikhou Kouyaté Edouard Mendy Mbaye Diagne Nampalys Mendy
+22,Egypt,5,Mohamed Salah Mohamed Elneny Trézéguet Ahmed Elmohamady Ahmed Hegazi
+23,Ghana,5,Jordan Ayew Jeffrey Schlupp Thomas Partey Mohammed Salisu Daniel Amartey
+24,Colombia,5,James Rodríguez Yerry Mina Davinson Sánchez Steven Alzate José Izquierdo
+25,Sweden,5,Victor Lindelöf Emil Krafth Robin Olsen Anthony Elanga Joel Mumbongo
+26,Turkey,5,Çağlar Söyüncü Okay Yokuşlu Ozan Kabak Cengiz Ünder Cenk Tosun
+27,Serbia,4,Luka Milivojević Aleksandar Mitrović Nemanja Matić Branislav Ivanović
+28,Jamaica,4,Michail Antonio Bobby Reid Michael Hector Wes Morgan
+29,Norway,4,Sander Berge Martin Ødegaard Joshua King Stefan Johansen
+30,Czech Republic,3,Tomáš Souček Vladimír Coufal Matěj Vydra
+31,Iceland,3,Gylfi Sigurðsson Jóhann Berg Guðmundsson Rúnar Alex Rúnarsson
+32,Algeria,3,Riyad Mahrez Saïd Benrahma Islam Slimani
+33,Croatia,3,Mateo Kovačić Filip Krovinović Karlo Ziger
+34,Australia,3,Mathew Ryan Caleb Watts Tyrese Francois
+35,Mali,2,Yves Bissouma Moussa Djenepo
+36,Gabon,2,Pierre-Emerick Aubameyang Mario Lemina
+37,Paraguay,2,Miguel Almirón Fabián Balbuena
+38,Morocco,2,Romain Saïss Hakim Ziyech
+39,Cameroon,2,Andre-Frank Zambo Anguissa Joël Matip
+40,Ukraine,2,Oleksandr Zinchenko Andriy Yarmolenko
+41,Slovakia,2,Martin Dúbravka Marek Rodák
+42,Congo DR,2,Arthur Masuaku Neeskens Kebano
+43,Zimbabwe,2,Marvelous Nakamba Tawanda Maswanhise
+44,South Africa,2,Percy Tau Khanya Leshabela
+45,Korea Republic,1,Son Heung-min
+46,New Zealand,1,Chris Wood
+47,North Macedonia,1,Ezgjan Alioski
+48,Burkina Faso,1,Bertrand Traoré
+49,St. Kitts and Nevis,1,Romaine Sawyers
+50,Uruguay,1,Edinson Cavani
+51,Angola,1,Hélder Costa
+52,Japan,1,Takumi Minamino
+53,Mexico,1,Raúl Jiménez
+54,Austria,1,Christian Fuchs
+55,IR Iran,1,Alireza Jahanbakhsh
+56,Guinea,1,Naby Keïta
+57,Mauritania,1,Aboubakar Kamara
+58,Bosnia and Herzegovina,1,Sead Kolašinac
+59,Canada,1,Theo Corbeanu
+60,Tunisia,1,Hannibal Mejbri
+61,Greece,1,Kostas Tsimikas
+62,Albania,1,Meritan Shabani
+63,Bulgaria,1,Sylvester Jasper
+64,Ecuador,1,Moisés Caicedo
+65,Romania,1,Florin Andone
+66,Thailand,1,Thanawat Suengchitthawon
