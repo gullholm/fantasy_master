@@ -14,46 +14,33 @@ import pandas as pd
 import ast
 
 
-csv_file= "data/nationalities/pl/2021/players2021.csv" 
 csv_file2 = "data/nationalities/pl/2021/players2021test.csv"  
-nationalitiespl = pd.read_csv(csv_file)
 nationalitiespltest = pd.read_csv(csv_file2, sep='\t')
 
 tot_play = [int(nationalitiespltest['Players'][j]) for j in range(len(nationalitiespltest))]
 total_players= sum(tot_play)
 nationalitiespltest['Percentage']= [nationalitiespltest['Players'][i]/total_players for i in range(len(nationalitiespltest))]
 
-playerspernat= []
-for j in range(len(nationalitiespl)):
-    nation = nationalitiespl['List'][j].split(" ")
-    playerspernat.append([nation[i] +' '+ nation[i+1] for i in range(0,int((len(nation)))-1,2)])
-
-
-plpernat = [ast.literal_eval(nationalitiespltest['Names'][j]) for j in range(len(nationalitiespltest))] 
-print('aa')
+plpernat = [nationalitiespltest['Names'][j].split(', ') for j in range(len(nationalitiespltest))] 
    
-
-results = pd.read_csv('results/pl/2021/best.csv')
-
-names = [ast.literal_eval(results['Name'][i]) for i in range(len(results))]
-
-def checkNationality(namelist):
+def checkNationality(namelist, playerspernat):
     
     for name in namelist:
-        for nat in playerspernat: 
+        for i, nat in enumerate(playerspernat): 
             for pl in nat:
                 if pl==name: 
-                    print(name)
+                    print(str(name) + ' is from ' +str(nationalitiespltest['Nation'][i]))
                     break
-        
-        
-
-
 
 
 #%%
 
-checkNationality(names[0])
+results = pd.read_csv('results/pl/2021/''best.csv')
+names = [ast.literal_eval(results['Name'][i]) for i in range(len(results))]
+
+for i in range(len(names)):
+    print(i)
+    checkNationality(names[i], plpernat)
     
     
  
