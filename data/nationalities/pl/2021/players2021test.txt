@@ -1,0 +1,68 @@
+eng England	253	Harry Kane, Patrick Bamford, Ollie Watkins, Jamie Vardy, James Ward-Prowse, Marcus Rashford, Dominic Calvert-Lewin, Jack Harrison, Raheem Sterling, Ashley Westwood ...
+fr France	35	Hugo Lloris, Neal Maupay, Lucas Digne, Alexandre Lacazette, Alphonse Areola, Illan Meslier, Abdoulaye Doucouré, Tanguy Ndombele, Kurt Zouma, Paul Pogba ...
+es Spain	30	Pablo Fornals, Vicente Guaita, Rodri, Adama Traoré, Sergio Reguilón, César Azpilicueta, Robert Sánchez, Héctor Bellerín, David de Gea, Ferrán Torres ...
+ie Republic of Ireland	28	David McGoldrick, Enda Stevens, John Egan, Dara O'Shea, Callum Robinson, Ciaran Clark, Séamus Coleman, Jeff Hendrick, Matt Doherty, Robbie Brady ...
+br Brazil	26	Roberto Firmino, Richarlison, Raphael Dias Belloli, Ederson, Gabriel Jesus, Alisson, Douglas Luiz, Fabinho, Joelinton, Fred ...
+pt Portugal	22	Bruno Fernandes, Matheus Pereira, Pedro Neto, Rui Patrício, Rúben Neves, Nélson Semedo, Rúben Dias, Bernardo Silva, João Cancelo, Ivan Cavaleiro ...
+sct Scotland	20	Andrew Robertson, John McGinn, Che Adams, Stuart Armstrong, John Fleck, Kieran Tierney, Scott McTominay, Liam Cooper, Matt Phillips, James McArthur ...
+nl Netherlands	19	Georginio Wijnaldum, Anwar El Ghazi, Joël Veltman, Pascal Struijk, Jaïro Riedewald, Patrick van Aanholt, Kenny Tete, Steven Bergwijn, Erik Pieters, Nathan Aké ...
+wls Wales	16	Gareth Bale, Ethan Ampadu, Tyler Roberts, Ben Davies, Paul Dummett, Daniel James, Hal Robson-Kanu, Joe Rodon, Neco Williams, Niall Huggins ...
+be Belgium	12	Youri Tielemans, Kevin De Bruyne, Leandro Trossard, Christian Benteke, Timothy Castagne, Leander Dendoncker, Toby Alderweireld, Michy Batshuayi, Dennis Praet, Denis Odoi ...
+de Germany	10	Timo Werner, Pascal Groß, İlkay Gündoğan, Bernd Leno, Kai Havertz, Antonio Rüdiger, Robin Koch, Shkodran Mustafi, Reda Khadra, Max Meyer
+dk Denmark	10	Pierre Højbjerg, Kasper Schmeichel, Joachim Andersen, Jannik Vestergaard, Andreas Christensen, Oskar Buur, Jonas Lössl, Andreas Søndergaard, Frederik Ibsen, William Osula
+pl Poland	9	Jan Bednarek, Mateusz Klich, Łukasz Fabiański, Matty Cash, Jakub Moder, Kamil Grosicki, Michał Karbownik, Mateusz Bogusz, Jakub Ojrzynski
+ci Côte d'Ivoire	9	Wilfried Zaha, Nicolas Pépé, Willy Boly, Serge Aurier, Sébastien Haller, Eric Bailly, Amad Diallo, Jean-Philippe Gbamin, Cédric Kipré
+ar Argentina	9	Emiliano Martínez, Federico Fernández, Alexis Mac Allister, Giovani Lo Celso, Sergio Agüero, Érik Lamela, Manuel Lanzini, Willy Caballero, Nicolás Otamendi
+ng Nigeria	8	Semi Ajayi, Ola Aina, Kelechi Iheanacho, Wilfred Ndidi, Alex Iwobi, Josh Maja, Odion Ighalo, Ademipo Odubeko
+nir Northern Ireland	7	Stuart Dallas, Jonny Evans, Oliver Norwood, Jamal Lewis, Bailey Peacock-Farrell, Liam Hughes, Isaac Price
+ch Switzerland	7	Granit Xhaka, Fabian Schär, Xherdan Shaqiri, Andi Zeqiri, Gaetano Berardi, Alexandre Jankewitz, Christian Marques
+us United States	6	Christian Pulisic, Antonee Robinson, Tim Ream, DeAndre Yedlin, Owen Otasowie, Zack Steffen
+it Italy	6	Angelo Ogbonna, Jorginho, Emerson Palmieri, Patrick Cutrone, Moise Kean, Elia Caprile
+sn Senegal	5	Sadio Mané, Cheikhou Kouyaté, Edouard Mendy, Mbaye Diagne, Nampalys Mendy
+eg Egypt	5	Mohamed Salah, Mohamed Elneny, Trézéguet, Ahmed Elmohamady, Ahmed Hegazi
+gh Ghana	5	Jordan Ayew, Jeffrey Schlupp, Thomas Partey, Mohammed Salisu, Daniel Amartey
+co Colombia	5	James Rodríguez, Yerry Mina, Davinson Sánchez, Steven Alzate, José Izquierdo
+se Sweden	5	Victor Lindelöf, Emil Krafth, Robin Olsen, Anthony Elanga, Joel Mumbongo
+Nation	# Players	List
+tr Turkey	5	Çağlar Söyüncü, Okay Yokuşlu, Ozan Kabak, Cengiz Ünder, Cenk Tosun
+rs Serbia	4	Luka Milivojević, Aleksandar Mitrović, Nemanja Matić, Branislav Ivanović
+jm Jamaica	4	Michail Antonio, Bobby Reid, Michael Hector, Wes Morgan
+no Norway	4	Sander Berge, Martin Ødegaard, Joshua King, Stefan Johansen
+cz Czech Republic	3	Tomáš Souček, Vladimír Coufal, Matěj Vydra
+is Iceland	3	Gylfi Sigurðsson, Jóhann Berg Guðmundsson, Rúnar Alex Rúnarsson
+dz Algeria	3	Riyad Mahrez, Saïd Benrahma, Islam Slimani
+hr Croatia	3	Mateo Kovačić, Filip Krovinović, Karlo Ziger
+au Australia	3	Mathew Ryan, Caleb Watts, Tyrese Francois
+ml Mali	2	Yves Bissouma, Moussa Djenepo
+ga Gabon	2	Pierre-Emerick Aubameyang, Mario Lemina
+py Paraguay	2	Miguel Almirón, Fabián Balbuena
+ma Morocco	2	Romain Saïss, Hakim Ziyech
+cm Cameroon	2	Andre-Frank Zambo Anguissa, Joël Matip
+ua Ukraine	2	Oleksandr Zinchenko, Andriy Yarmolenko
+sk Slovakia	2	Martin Dúbravka, Marek Rodák
+cd Congo DR	2	Arthur Masuaku, Neeskens Kebano
+zw Zimbabwe	2	Marvelous Nakamba, Tawanda Maswanhise
+za South Africa	2	Percy Tau, Khanya Leshabela
+kr Korea Republic	1	Son Heung-min
+nz New Zealand	1	Chris Wood
+mk North Macedonia	1	Ezgjan Alioski
+bf Burkina Faso	1	Bertrand Traoré
+kn St. Kitts and Nevis	1	Romaine Sawyers
+uy Uruguay	1	Edinson Cavani
+Nation	# Players	List
+ao Angola	1	Hélder Costa
+jp Japan	1	Takumi Minamino
+mx Mexico	1	Raúl Jiménez
+at Austria	1	Christian Fuchs
+ir IR Iran	1	Alireza Jahanbakhsh
+gn Guinea	1	Naby Keïta
+mr Mauritania	1	Aboubakar Kamara
+ba Bosnia and Herzegovina	1	Sead Kolašinac
+ca Canada	1	Theo Corbeanu
+tn Tunisia	1	Hannibal Mejbri
+gr Greece	1	Kostas Tsimikas
+al Albania	1	Meritan Shabani
+bg Bulgaria	1	Sylvester Jasper
+ec Ecuador	1	Moisés Caicedo
+ro Romania	1	Florin Andone
+th Thailand	1	Thanawat Suengchitthawon
