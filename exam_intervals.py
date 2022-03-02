@@ -12,9 +12,8 @@ import getters as get
 import ast
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
-data = get.get_data()
 
-one = pd.read_csv("data_cleaned/pl/1617/[4, 4, 2].csv", converters = conv)
+one = pd.read_csv("data_cleaned/pl/incnew/1819/[4, 4, 2].csv", converters = conv)
 #%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] <= upper]
@@ -49,8 +48,9 @@ def is_diverse(team_id, full_data, budget, c = 5):
         return(1)
 import math
 
-def is_diverse_ed2(team_id, full_data):
-    team_cost = get.get_cost_team(full_data, team_id)
+def is_diverse_ed2(team_id, cost_list):
+    team_cost = get.get_cost_team(cost_list, team_id)
+#    print(team_id)
     team_cost.sort()
 #    print(team_cost)
 #    a = det_a(full_data, team_id
@@ -60,28 +60,31 @@ def is_diverse_ed2(team_id, full_data):
 #    print(a)
     theory_int = np.linspace(a, b, 11, dtype=int).tolist()
 #    print(theory_int)
-    c = int(math.ceil((theory_int[1]-theory_int[0])))
-    theory_int_l = [x - c/2 for x in theory_int]
-    theory_int_h = [x + c/2 for x in theory_int]
+    c = int(theory_int[1]-theory_int[0])
+    theory_int_l = [x - math.ceil(c/2) for x in theory_int]
+    theory_int_h = [x + math.ceil(c/2) for x in theory_int]
     counts = [0]*11
 #    print(c)
 #    print(theory_int_l)
 #    print(theory_int_h)
 #    save_empty_indices = []
 #    print(theory_int_l)
-#    print(theory_int)
 #    print(team_cost)
+#    print(theory_int_l)
+#    print(theory_int_h)    
+    
     for re in team_cost:
         
         for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
             if(re >= low and re <= up):
                 counts[i] += 1
 #    print(counts)
+
+    
     if(counts.count(0) < 3): # zeros implicates amount that interval doesn't cover
         return(1)
     else:
         return(0)
-    return(counts)
 
 def flatten(l):
     flattened = []
@@ -97,17 +100,17 @@ import calculations as calc
 import getters
 
 #inter = thry_interval(a, 700)
-players = pd.read_csv("data/pl_csv/players_raw_1617.csv")
-playerspl = players.to_dict('index')
-playerspldata = getters.get_players_feature_pl(playerspl)
+#players = pd.read_csv("data/pl_csv/players_incnew_1819.csv")
+#playerspl = players.to_dict('index')
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_incnew_", 1819)
 cost_list = calc.createCostList(playerspldata, False)
 budget = 700
 ones = filter_df(one, budget-50, budget)
-all_teams = one["indexes"].to_list()
+all_teams = ones["indexes"].to_list()
 #all_teams = random.sample(all_teams, 50)
 #%%
 is_dev_or_not = [is_diverse_ed2(team_id, cost_list) for team_id in all_teams]
-sum(is_dev_or_not)
+print(sum(is_dev_or_not))
 
 #%%
 print(sum(is_dev_or_not))

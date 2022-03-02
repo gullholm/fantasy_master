@@ -9,8 +9,8 @@ import numpy as np
 import getters
 import parsers
 
-data2 = getters.get_data()
-players2 = getters.get_players_feature(data2)
+#data2 = getters.get_data()
+#players2 = getters.get_players_feature(data2)
 
 
 def nump2(n, k):
@@ -69,7 +69,7 @@ def costPerTeam4(team, costList):
         teamcost = teamcost + costList[key-1]
     return teamcost  
 
-def createCostList(players = players2, fill_out = True):
+def createCostList(players, fill_out = True):
     #Pick a larger number than largest key, some spots are missing / 0
     n = len(players)
     if(fill_out):
@@ -84,7 +84,7 @@ def createCostList(players = players2, fill_out = True):
     #    costList.append(player["now_cost"])    
     return tuple(costList)
 
-def createPointsList(players = players2):
+def createPointsList(players):
     pointsList =[]
     #Pick a larger number than largest key, some spots are missing / 0
     n = max(6000,len(players))

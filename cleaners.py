@@ -122,6 +122,32 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
     df_part.sort_values(by=['now_cost','total_points'], 
                         ascending=[True, False], inplace = True)
     
+#    print(df_part.head(10))
+    tot_points = df_part["total_points"].to_list()
+    indexes = list(df_part.index)
+    best = tot_points[:n_form]
+#    print(tot_points[:10])
+#    print(indexes[:10])
+#    print(best)
+    
+    ind_to_del = []
+
+    for point, ind in zip(tot_points[n_form:], indexes[n_form:]):
+        if point > min(best):
+            best.remove(min(best))
+            best.append(point)
+        else: 
+            ind_to_del.append(ind)
+            
+    return(dropRows(df_part, ind_to_del))
+
+
+"""
+def delete_worse_points_when_increasing_cost(df_part, n_form):
+    
+    df_part.sort_values(by=['now_cost','total_points'], 
+                        ascending=[True, False], inplace = True)
+    
     best = df_part.head(n_form)['total_points'].to_list()
     ind_to_del = []
 
@@ -130,8 +156,9 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
             best.remove(min(best))
             best.append(df_part.iloc[i]['total_points'])
         else: 
+#            print(df_part.iloc[i].name)
             ind_to_del.append(df_part.iloc[i].name)
+#    print(ind_to_del)
     return(dropRows(df_part, ind_to_del))
-
-
-             
+"""
+            
