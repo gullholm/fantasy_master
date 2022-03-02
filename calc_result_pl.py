@@ -8,9 +8,14 @@ Created on Tue Feb  8 14:20:12 2022
 
 import pandas as pd
 import getters
-import calculations as calc
+#import calculations as calc
 import cleaners
 import parsers
+import numpy as np
+import itertools
+import time
+
+#%%
 
 def clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/",  clean_all = True, ns = 3):
     
@@ -122,8 +127,8 @@ def clean_all_data_pl_place_indep(season, bas = "data/pl_csv/players_raw_", dest
     csv_file = str(bas) + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file) 
     playerspl = playerspl.to_dict('index')
-    playerspldata = getters.get_players_feature_pl(playerspl)
-    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
+    playerspldata = getters.get_players_feature_pl(bas, season)
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(bas, season)[1:]
     all_df_but_goalie = pd.concat(all_parts_but_goalie)
     
     gk, df,mf,fw = getters.get_diff_pos(playerspldata)
@@ -150,9 +155,6 @@ flat_list = clean_all_data_pl_place_indep(1617)
  
 
 #%%
-import numpy as np
-import itertools
-
 points =[]
 costs = []
 for i in range(len(flat_list)): 
@@ -169,24 +171,11 @@ bestteampoints =[1170,1397,1565,1705,1824,1930,2020,2107,2170,2231,2249] # for f
 budgets=list(range(500, 1001, 50))
 nr = 11
 
+#%%
 # try to create all combinations in a tree structure and see how many you get and how fast it will take
 # probably in for-loops...
 
-#k = 11
-#n = 107
 
-#a = np.ones((k, n-k+1), dtype=np.int8)
-# a[0] = np.arange(n-k+1)
-# for j in range(1, k):
-#     reps = (n-k+j) - a[j-1]
-#     a = np.repeat(a, reps, axis=1)
-#     ind = np.add.accumulate(reps)
-#     a[j, ind[:-1]] = 1-reps[1:]
-#     a[j, 0] = j
-#     a[j] = np.add.accumulate(a[j])
-#print(a.T)
-
-import time
 start_time = time.time()
 
 for subset in itertools.combinations(sorttuple, nr):
@@ -226,9 +215,10 @@ for sub in itertools.combinations(test, nr):
        
     if count%10000000 == 0:
         print(count/10000000)
+        
 #%%
 
-#Works for range  
+#Works for range and faster , half as many loops
     
 k = 11
 n = 23
@@ -251,129 +241,247 @@ templistA = list(range(n))
 countB = 0
 team , teamlist = [], []
 
+#Count how many times we are in a loop
+a,b,c,d,e,f,g,h,i,j,k =0,0,0,0,0,0,0,0,0,0,0
+
 start_time = time.time()
 
-while len(templistA) >1:
+while len(templistA) >10:
+    a+=1
     team.append(templistA[0])
-    countB +=1
-    templistB=list(range(n))
-    countC = countB
+    templistA.pop(0)
+    templistB = templistA.copy()
     
-    while len(templistB)>countB:
+    while len(templistB)>9:
+        b+=1
         tempteamB = team.copy() 
-        team.append(templistB[countB])               
-        countC +=1
-        templistC=list(range(n))
-        countD = countC
+        team.append(templistB[0])  
+        templistB.pop(0)             
+        templistC=templistB.copy()
         
-        while len(templistC)>countC:
+        while len(templistC)>8:
+            c+=1
             tempteamC = team.copy() 
-            team.append(templistC[countC])
-            countD += 1
-            templistD=list(range(n))
-            countE=countD
+            team.append(templistC[0])
+            templistC.pop(0)
+            templistD=templistC.copy()
         
-            while len(templistD)>countD:
+            while len(templistD)>7:
+                d+=1
                 tempteamD = team.copy() 
-                team.append(templistD[countD])
-                countE += 1
-                templistE=list(range(n))
-                countF=countE
+                team.append(templistD[0])
+                templistD.pop(0)
+                templistE=templistD.copy()
                 
-                while len(templistE)>countE:
+                while len(templistE)>6:
+                    e+=1
                     tempteamE = team.copy() 
-                    team.append(templistE[countE])
-                    countF += 1
-                    templistF=list(range(n))
-                    countG=countF
+                    team.append(templistE[0])
+                    templistE.pop(0)
+                    templistF=templistE.copy()
                     
-                    while len(templistF)>countF:
+                    while len(templistF)>5:
+                        f+=1
                         tempteamF = team.copy() 
-                        team.append(templistF[countF])
-                        countG += 1
-                        templistG=list(range(n))
-                        countH=countG
+                        team.append(templistF[0])
+                        templistF.pop(0)
+                        templistG=templistF.copy()
                     
-                        while len(templistG)>countG:
+                        while len(templistG)>4:
+                            g+=1
                             tempteamG = team.copy() 
-                            team.append(templistG[countG])
-                            countH += 1
-                            templistH=list(range(n))
-                            countI=countH
+                            team.append(templistG[0])
+                            templistG.pop(0)
+                            templistH=templistG.copy()
                             
-                            while len(templistH)>countH:
+                            while len(templistH)>3:
+                                h+=1
                                 tempteamH = team.copy() 
-                                team.append(templistH[countH])
-                                countI += 1
-                                templistI=list(range(n))
-                                countJ=countI
+                                team.append(templistH[0])
+                                templistH.pop(0)
+                                templistI=templistH.copy()
+
                                 
-                                while len(templistI)>countI:
+                                while len(templistI)>2:
+                                    i+=1
                                     tempteamI = team.copy() 
-                                    team.append(templistI[countI])
-                                    countJ += 1
-                                    templistJ=list(range(n))
-                                    countK=countJ
+                                    team.append(templistI[0])
+                                    templistI.pop(0)
+                                    templistJ=templistI.copy()
+
                                     
-                                    while len(templistJ)>countJ:
+                                    while len(templistJ)>1:
+                                        j+=1
                                         tempteamJ = team.copy() 
-                                        team.append(templistJ[countJ])
-                                        countK += 1
-                                        templistK=list(range(n))
+                                        team.append(templistJ[0])
+                                        templistJ.pop(0)
+                                        templistK=templistJ.copy()
+
                                         
-                                        while len(templistK)>countK:
+                                        while len(templistK)>0:
+                                            k+=1
                                             tempteamK = team.copy() 
-                                            team.append(templistK[countK])
+                                            team.append(templistK[0])
 
                                             teamlist.append(team)
                                             templistK.pop(0)
                                             team = tempteamK 
                                         
-                                        templistJ.pop(0)
                                         team = tempteamJ 
                                     
-                                    templistI.pop(0)
                                     team = tempteamI    
                                 
-                                templistH.pop(0)
                                 team = tempteamH
                             
-                            templistG.pop(0)
                             team = tempteamG
                     
-                        templistF.pop(0)
                         team = tempteamF
                                           
-                    templistE.pop(0)
                     team = tempteamE
                        
-                templistD.pop(0)
                 team = tempteamD
             
-            templistC.pop(0)
             team = tempteamC
             
-        templistB.pop(0)
         team = tempteamB
-            
-    templistA.pop(0)
+
     team = []
 
 print("--- %s seconds ---" % (time.time() - start_time))
-
 print('All values are correct: ' + str((teamlist == correctcase).all()))
+print("Total loops: " + str(sum([a,b,c,d,e,f,g,h,i,j,k])))
+        
 
 #%%
 
-# n = 23 choose 11
-n = 23
+# For our values
+n = 12
+
 templistA = sorttuple[:n]
 countB = 0
 team , teamlist = [], []
 
+#Count how many times we are in a loop
+a,b,c,d,e,f,g,h,i,j,k =0,0,0,0,0,0,0,0,0,0,0
+
 start_time = time.time()
 
-while len(templistA) >1:
+while len(templistA) >10:
+    a+=1
+    team.append(templistA[0])
+    templistA.pop(0)
+    templistB = templistA.copy()
+    
+    while len(templistB)>9:
+        b+=1
+        tempteamB = team.copy() 
+        team.append(templistB[0])  
+        templistB.pop(0)             
+        templistC=templistB.copy()
+        
+        while len(templistC)>8:
+            c+=1
+            tempteamC = team.copy() 
+            team.append(templistC[0])
+            templistC.pop(0)
+            templistD=templistC.copy()
+        
+            while len(templistD)>7:
+                d+=1
+                tempteamD = team.copy() 
+                team.append(templistD[0])
+                templistD.pop(0)
+                templistE=templistD.copy()
+                
+                while len(templistE)>6:
+                    e+=1
+                    tempteamE = team.copy() 
+                    team.append(templistE[0])
+                    templistE.pop(0)
+                    templistF=templistE.copy()
+                    
+                    while len(templistF)>5:
+                        f+=1
+                        tempteamF = team.copy() 
+                        team.append(templistF[0])
+                        templistF.pop(0)
+                        templistG=templistF.copy()
+                    
+                        while len(templistG)>4:
+                            g+=1
+                            tempteamG = team.copy() 
+                            team.append(templistG[0])
+                            templistG.pop(0)
+                            templistH=templistG.copy()
+                            
+                            while len(templistH)>3:
+                                h+=1
+                                tempteamH = team.copy() 
+                                team.append(templistH[0])
+                                templistH.pop(0)
+                                templistI=templistH.copy()
+
+                                
+                                while len(templistI)>2:
+                                    i+=1
+                                    tempteamI = team.copy() 
+                                    team.append(templistI[0])
+                                    templistI.pop(0)
+                                    templistJ=templistI.copy()
+
+                                    
+                                    while len(templistJ)>1:
+                                        j+=1
+                                        tempteamJ = team.copy() 
+                                        team.append(templistJ[0])
+                                        templistJ.pop(0)
+                                        templistK=templistJ.copy()
+
+                                        
+                                        while len(templistK)>0:
+                                            k+=1
+                                            tempteamK = team.copy() 
+                                            team.append(templistK[0])
+
+                                            teamlist.append(team)
+                                            templistK.pop(0)
+                                            team = tempteamK 
+                                        
+                                        team = tempteamJ 
+                                    
+                                    team = tempteamI    
+                                
+                                team = tempteamH
+                            
+                            team = tempteamG
+                    
+                        team = tempteamF
+                                          
+                    team = tempteamE
+                       
+                team = tempteamD
+            
+            team = tempteamC
+            
+        team = tempteamB
+
+    team = []
+
+print("--- %s seconds ---" % (time.time() - start_time))
+print("Total loops: " + str(sum([a,b,c,d,e,f,g,h,i,j,k])))
+#%%
+
+# n = 23 choose 11
+n = 12
+templistA = sorttuple[:n]
+countB = 0
+team , teamlistCorr = [], []
+teamCost, teampoints = 0,0
+
+
+start_time = time.time()
+
+while len(templistA) >10:
     team.append(templistA[0])
     countB +=1
     templistB=sorttuple[:n]
@@ -445,6 +553,161 @@ while len(templistA) >1:
                                             tempteamK = team.copy() 
                                             team.append(templistK[countK])
 
+                                            teamlistCorr.append(team)
+                                            templistK.pop(0)
+                                            team = tempteamK 
+                                        
+                                        templistJ.pop(0)
+                                        team = tempteamJ 
+                                    
+                                    templistI.pop(0)
+                                    team = tempteamI    
+                                
+                                templistH.pop(0)
+                                team = tempteamH
+                            
+                            templistG.pop(0)
+                            team = tempteamG
+                    
+                        templistF.pop(0)
+                        team = tempteamF
+                                          
+                    templistE.pop(0)
+                    team = tempteamE
+                       
+                templistD.pop(0)
+                team = tempteamD
+            
+            templistC.pop(0)
+            team = tempteamC
+            
+        templistB.pop(0)
+        team = tempteamB
+            
+    templistA.pop(0)
+    team = []
+
+print("--- %s seconds ---" % (time.time() - start_time))
+print('All values are correct: ' + str((teamlist == teamlistCorr).all()))
+
+
+
+
+
+
+
+
+#%%
+
+#Bara spara men inte bästa 
+#Works for range - slow  
+    
+k = 11
+n = 23
+start_time = time.time()
+
+a = np.ones((k, n-k+1), dtype=np.int8)
+a[0] = np.arange(n-k+1)
+for j in range(1, k):
+    reps = (n-k+j) - a[j-1]
+    a = np.repeat(a, reps, axis=1)
+    ind = np.add.accumulate(reps)
+    a[j, ind[:-1]] = 1-reps[1:]
+    a[j, 0] = j
+    a[j] = np.add.accumulate(a[j])
+
+correctcase = a.T   
+print("--- %s seconds ---" % (time.time() - start_time))
+
+templistA = list(range(n))
+countB = 0
+team , teamlist = [], []
+a,b,c,d,e,f,g,h,i,j,k = 0,0,0,0,0,0,0,0,0,0,0
+start_time = time.time()
+
+while len(templistA) >10:
+    a+=1
+    team.append(templistA[0])
+    countB +=1
+    templistB=list(range(n))
+    countC = countB
+    
+    while len(templistB)>countB:
+        b+=1
+        tempteamB = team.copy() 
+        team.append(templistB[countB])               
+        countC +=1
+        templistC=list(range(n))
+        countD = countC
+        
+        while len(templistC)>countC:
+            c+=1
+            tempteamC = team.copy() 
+            team.append(templistC[countC])
+            countD += 1
+            templistD=list(range(n))
+            countE=countD
+        
+            while len(templistD)>countD:
+                d+=1
+                tempteamD = team.copy() 
+                team.append(templistD[countD])
+                countE += 1
+                templistE=list(range(n))
+                countF=countE
+                
+                while len(templistE)>countE:
+                    e+=1
+                    tempteamE = team.copy() 
+                    team.append(templistE[countE])
+                    countF += 1
+                    templistF=list(range(n))
+                    countG=countF
+                    
+                    while len(templistF)>countF:
+                        f+=1
+                        tempteamF = team.copy() 
+                        team.append(templistF[countF])
+                        countG += 1
+                        templistG=list(range(n))
+                        countH=countG
+                    
+                        while len(templistG)>countG:
+                            g+=1
+                            tempteamG = team.copy() 
+                            team.append(templistG[countG])
+                            countH += 1
+                            templistH=list(range(n))
+                            countI=countH
+                            
+                            while len(templistH)>countH:
+                                h+=1
+                                tempteamH = team.copy() 
+                                team.append(templistH[countH])
+                                countI += 1
+                                templistI=list(range(n))
+                                countJ=countI
+                                
+                                while len(templistI)>countI:
+                                    i+=1
+                                    tempteamI = team.copy() 
+                                    team.append(templistI[countI])
+                                    countJ += 1
+                                    templistJ=list(range(n))
+                                    countK=countJ
+                                    
+                                    while len(templistJ)>countJ:
+                                        j+=1
+                                        tempteamJ = team.copy() 
+                                        team.append(templistJ[countJ])
+                                        countK += 1
+                                        templistK=list(range(n))
+                                        
+                                        while len(templistK)>countK:
+                                            k+=1
+                                            tempteamK = team.copy() 
+                                            team.append(templistK[countK])
+
                                             teamlist.append(team)
                                             templistK.pop(0)
                                             team = tempteamK 
@@ -481,4 +744,5 @@ while len(templistA) >1:
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
-
+print('All values are correct: ' + str((teamlist == correctcase).all()))
+print(a+b+c+d+e+f+g+h+i+j+k)
