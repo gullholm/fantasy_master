@@ -41,19 +41,45 @@ for season in seasons:
     results = pd.read_csv(csv_file)
     names = [ast.literal_eval(results['Name'][i]) for i in range(len(results))]
 
-    for i in range(len(names)):
-        print('--------------------------------------')
-        nations = checkNationality(names[i], plpernat)
-        #print(len(nations))
-        print(Counter(nations))
+    csv_file2 = "data/nationalities/pl/" + str(season) + ".csv"  
+    statsnations = pd.read_csv(csv_file2)   
+    totLeague  = sum([nr for nr in statsnations['# Players']])
+    statsnations['Percentage'] = [round(nr/totLeague,3) for nr in statsnations['# Players']]
 
- 
-#%%
-csv_file = "data/nationalities/pl/2021.csv"  
-statsnations = pd.read_csv(csv_file)
-#tot_play = [int(nationalitiespltest['Players'][j]) for j in range(len(nationalitiespltest))]
-#total_players= sum(tot_play)
-#nationalitiespltest['Percentage']= [nationalitiespltest['Players'][i]/total_players for i in range(len(nationalitiespltest))]
+    allData = pd.DataFrame(columns = ['Budget', 'Nation', 'Count', 'Team percentage', 'League percentage', 'Ratio', 'Amount as dist'])
+    budget = 500
+    for i in range(len(names)):
+        
+        #print('--------------------------------------')
+        nations = checkNationality(names[i], plpernat)
     
- 
+        natPlayers = pd.DataFrame.from_dict(Counter(nations), orient='index').reset_index()
+        natPlayers =natPlayers.rename(columns={'index':'Nation', 0:'Count'})
+        natPlayers['Team percentage'] = [round(temp/11,3) for temp in natPlayers['Count']]
+    
+        lPercentage = []
+        for i in range(len(natPlayers)):
+            idx = [nat for nat in statsnations['Nation']].index(natPlayers.iloc[i]['Nation'])
+            lPercentage.append(statsnations['Percentage'][idx])
+    
+        #lPercentage.append(statsnations)    
+        natPlayers['League percentage'] = lPercentage
+        natPlayers['Ratio'] = round(natPlayers['Team percentage']/natPlayers['League percentage'],3)
+        natPlayers['Amount as dist'] = [round(lp*11,3) for lp in natPlayers['League percentage']]
+        
+        test = [None]*7
+        for i, (columnName, columnData) in zip(range(7),natPlayers.iteritems()):
+            test[i+1] = list(columnData)
+
+        test[0] = budget
+        allData_length = len(allData)
+        allData.loc[allData_length] = test
+        
+        budget+=50
+
+
+    allData.to_csv("results/pl/" + str(season) +"/nationality_diversity.csv")
+    
+    
+    
     
