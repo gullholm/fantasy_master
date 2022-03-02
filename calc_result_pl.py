@@ -30,6 +30,7 @@ def clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cle
             all_cleaned = cleaners.run_all_cleans(df, p)
             
             if clean_all: 
+                print(len(all_cleaned))
                 combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
