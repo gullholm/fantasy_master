@@ -739,9 +739,7 @@ def calculatePositonlessBest(sorttuple, budget, bestPoints, n):
 #%%
 
 budgets = list(range(500,1050,50))
-seasons = [1920,2021]
-
-positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
+seasons = [2021]
 
 for season in seasons: 
     print('-------------------------------------------------')
@@ -753,6 +751,7 @@ for season in seasons:
         tuplist.append((tup[0],tup[1]))
     sorttuple=sorted(tuplist)
     n = len(sorttuple) 
+    positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
     
     bestresults = pd.read_csv('results/pl/' + str(season)+ '/best.csv')
     bestteampoints = bestresults['Best total points'].tolist()
@@ -765,9 +764,9 @@ for season in seasons:
     if season == 1819:
         bestteampoints= [1319, 1580, 1797, 1950, 2026, 2097, 2150, 2218, 2271, 2307, 2319]
     if season == 1920:
-        bestteampoints = bestteampoints
+        bestteampoints = [1320, 1573, 1699, 1805, 1904, 1990, 2065, 2127, 2192, 2232, 2273]
     if season == 2021:
-        bestteampoints = bestteampoints
+        bestteampoints = [1344, 1610, 1768, 1864, 1940, 1993, 2069, 2125, 2165, 2185, 2192]
     dfindex=0
     for idx in range(11):
             
@@ -789,7 +788,48 @@ for season in seasons:
     #positionlessdf.sort_index(inplace=True)
     positionlessdf.to_csv('results/pl/' + str(season) + '/Positionless.csv')
 
+#%%
+import matplotlib.pyplot as plt
+import ast
 
+def testIfLinear(data, budget):
+    x=range(1,12)
+    print(budget)
+   # low = data[0]
+    #high = data[len(data)-1]
+    for degree in range(1,4):
+        poly= np.polyfit(x,data,degree)
+        ypred = np.polyval(poly,x)
+        plt.plot(x, ypred)
+        #print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
+        #print('RMSPE deg ' + str(degree) +  ': ' + str(rmspe(data,ypred)))
 
+    plt.title("mean for: " + str(budget))
+    plt.xlabel("Player")
+    plt.ylabel("Normalized cost")
+    plt.plot(x, data, 'o')
+    plt.legend(["Linear", "Quadtratic", "Third degree polynomial", "Data"])
+    plt.show()
+     
+bestresults = pd.read_csv('results/pl/2021/Positionless.csv')
 
+sortedindcosts = bestresults['Sorted individual costs'].tolist()
+
+budget = 450
+for indcosts in sortedindcosts:
+    budget+=50
+    testIfLinear(ast.literal_eval(indcosts), budget)
  
+#%%    
+import scipy.stats as stats
+
+for indcosts in sortedindcosts:
+    
+    h= ast.literal_eval(indcosts)
+    fit = stats.norm.pdf(h, np.mean(h), np.std(h))  #this is a fitting indeed
+
+    plt.plot(h,fit,'-o')
+
+    plt.hist(h,11)      #use this to draw histogram of your data
+
+    plt.show()                   #use may also need add this  

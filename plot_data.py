@@ -17,7 +17,7 @@ import ast
 Get the data
 """
 #PL
-seasons=[0, 1617,1718,1819,1920,2021]
+seasons=[1617,1718,1819,1920,2021]
 
 for season in seasons:
 #As
@@ -380,7 +380,7 @@ def testIfLinear(data, budget):
         poly= np.polyfit(x,data,degree)
         ypred = np.polyval(poly,x)
         plt.plot(x, ypred)
-        print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
+        #print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
         #print('RMSPE deg ' + str(degree) +  ': ' + str(rmspe(data,ypred)))
 
     plt.title("mean for: " + str(budget))

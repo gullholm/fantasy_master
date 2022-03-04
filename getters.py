@@ -14,17 +14,18 @@ import ast
 """
 Get all data for the current season in allsvenskan
 """
+# Uppdaterad hemsida , kommentera bort om vi vill hämta nästa 
 
-def get_data(serie = "allsvenskan", landskod = "se"):
-    """ Retrieve the fpl player data from the hard-coded url
-    """
-        ### Fixa så det kan bli PL också
-    response = requests.get("https://fantasy." + serie + "." + landskod + "/api/bootstrap-static/")
-    if response.status_code != 200:
-        raise Exception("Response was code " + str(response.status_code))
-    responseStr = response.text
-    data = json.loads(responseStr)
-    return data
+# def get_data(serie = "allsvenskan", landskod = "se"):
+#     """ Retrieve the fpl player data from the hard-coded url
+#     """
+#         ### Fixa så det kan bli PL också
+#     response = requests.get("https://fantasy." + serie + "." + landskod + "/api/bootstrap-static/")
+#     if response.status_code != 200:
+#         raise Exception("Response was code " + str(response.status_code))
+#     responseStr = response.text
+#     data = json.loads(responseStr)
+#     return data
 
 """
 Get given feature for all players for the current season
