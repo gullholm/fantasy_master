@@ -13,7 +13,7 @@ import ast
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 
-one = pd.read_csv("data_cleaned/pl/incnew/1819/[4, 4, 2].csv", converters = conv)
+one = pd.read_csv("data_cleaned/pl/incnew/1819/[3, 5, 2].csv", converters = conv)
 #%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] <= upper]
@@ -68,9 +68,9 @@ def is_diverse_ed2(team_id, cost_list):
 #    print(theory_int_l)
 #    print(theory_int_h)
 #    save_empty_indices = []
-#    print(theory_int_l)
-#    print(team_cost)
-#    print(theory_int_l)
+#    print(theory_int_l) 
+    print(team_cost)
+#    print(theory_int)
 #    print(theory_int_h)    
     
     for re in team_cost:
@@ -78,19 +78,43 @@ def is_diverse_ed2(team_id, cost_list):
         for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
             if(re >= low and re <= up):
                 counts[i] += 1
-#    print(counts)
+    #print(counts)
 
     
-    if(counts.count(0) < 3): # zeros implicates amount that interval doesn't cover
-        return(1)
+    if(counts.count(0) < 4): # zeros implicates amount that interval doesn't cover
+        return([1, counts])
     else:
-        return(0)
+        return([0, counts])
 
 def flatten(l):
     flattened = []
     for sublist in l:
         flattened.extend(sublist)
     return flattened
+import matplotlib.pyplot as plt
+def rmse(actual, predicted):
+    return np.sqrt(np.square(np.subtract(np.array(actual), np.array(predicted))).mean())
+
+def testIfLinear(data, budget):
+    x=range(1,12)
+    print(budget)
+    low = data[0]
+    high = data[len(data)-1]
+    for degree in range(1,4):
+        poly= np.polyfit(x,data,degree)
+        ypred = np.polyval(poly,x)
+        plt.plot(x, ypred)
+        print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
+        #print('RMSPE deg ' + str(degree) +  ': ' + str(rmspe(data,ypred)))
+
+    plt.title("mean for: " + str(budget))
+    plt.xlabel("Player")
+    plt.ylabel("Normalized cost")
+    plt.plot(x, data, 'o')
+    plt.legend(["Linear", "Quadtratic", "Third degree polynomial", "Data"])
+    plt.show()
+     
+
 #%%
 #all_ids = list(flatten_all_ids(one["indexes"].to_list()))
 #a = det_a(data, all_ids)
@@ -104,14 +128,26 @@ import getters
 #playerspl = players.to_dict('index')
 playerspldata = getters.get_players_feature_pl("data/pl_csv/players_incnew_", 1819)
 cost_list = calc.createCostList(playerspldata, False)
-budget = 700
-ones = filter_df(one, budget-50, budget)
-all_teams = ones["indexes"].to_list()
-#all_teams = random.sample(all_teams, 50)
 #%%
-is_dev_or_not = [is_diverse_ed2(team_id, cost_list) for team_id in all_teams]
-print(sum(is_dev_or_not))
 
+budget = 500
+ones = filter_df(one, 0, budget)
+ones.sort_values(by ="points_total", inplace = True, ascending = False)
+all_teams = ones["indexes"].to_list()
+all_teams_cost_list = [get.get_cost_team(cost_list, team_id) for team_id in all_teams]
+testIfLinear(all_teams_cost_list[0], budget)
+
+
+all_teams = random.sample(all_teams, budget)
+#%%
+from collections import Counter
+is_dev_or_not = [is_diverse_ed2(team_id, cost_list) for team_id in all_teams]
+
+print(sum([is_dev_or_not[x][0] for x in range(len(is_dev_or_not))]))
+
+enum = [[i for (i,x) in enumerate(is_dev_or_not[y][1]) if x == 0]  for y in range(len(is_dev_or_not))]
+
+cunt = Counter(flatten(enum)).most_common()
 #%%
 print(sum(is_dev_or_not))
 indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
