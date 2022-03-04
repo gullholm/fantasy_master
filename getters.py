@@ -140,6 +140,7 @@ def get_cost_player(full_data, corr_id):
 
 def get_cost_team(cost_list, team_id): # Team is list with id's
     team_cost = [cost_list[player_id] for player_id in team_id]
+    team_cost.sort()
     return team_cost
 
 # PL
