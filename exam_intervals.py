@@ -118,11 +118,11 @@ indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
 tot_points = []
 tot_cost = []
 for ind in indexes_div:
-    tot_points.append(one.iloc[ind]['points_total'])
-    tot_cost.append(one.iloc[ind]['cost'])
+    tot_points.append(ones.iloc[ind]['points_total'])
+    tot_cost.append(ones.iloc[ind]['cost'])
     
-print((sum(tot_cost)/len(tot_cost)/ one['cost'].mean()))
-print((sum(tot_points)/len(tot_points))/ one['points_total'].mean())
+print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
+print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
 
 
 #%%
