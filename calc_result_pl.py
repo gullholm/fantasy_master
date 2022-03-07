@@ -812,7 +812,6 @@ def testIfLinear(data, budget):
     plt.show()
      
 bestresults = pd.read_csv('results/pl/2021/Positionless.csv')
-
 sortedindcosts = bestresults['Sorted individual costs'].tolist()
 
 budget = 450
@@ -830,6 +829,196 @@ for indcosts in sortedindcosts:
 
     plt.plot(h,fit,'-o')
 
-    plt.hist(h,11)      #use this to draw histogram of your data
+    #plt.hist(h,11)      #use this to draw histogram of your data
 
     plt.show()                   #use may also need add this  
+    
+#%%
+
+for season in seasons: 
+    budget =450
+    bestresults = pd.read_csv('results/pl/'+ str(season) + '/Positionless.csv')
+    sortedindcosts = bestresults['Sorted individual costs'].tolist()
+
+    for indcosts in sortedindcosts:
+        budget += 50
+        h= ast.literal_eval(indcosts)
+        
+        print('Season is:', season, 'and budget is:', budget)
+#%%        
+def testNormal(h, plot=True):       
+    mu = np.mean(h)
+    #mu = np.median(h) # antingen mean eller median... 
+    sigma = np.std(h)
+    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    
+    high = mu+3*sigma
+    low= mu+- 3*sigma
+    nrinter = round((high-low)/len(h))
+    
+    low1 = mu-sigma
+    high1 = mu+sigma
+    
+    tot=0
+    for p in h:
+    
+        if low1 < p < high1:
+            tot+=1
+        perc1 = int(tot/len(h)*100)
+        if perc1 > 68:
+            norm1 = 'Normal' #should be higher than 68%
+        else:
+            norm1='Not normal'
+    
+    if plot:    
+        plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
+        plt.axvline(x=low1, color='r', ls='--')
+        plt.axvline(x=high1, color='r', ls='--')
+        
+        #plt.axvline(x=mu+2*sigma, color='b', ls='--') # *1.645 for 90%
+        #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
+        
+        #plt.hist(h,nrinter, density = True)
+        plt.hist(h,len(h),density=True)
+        plt.title(norm1)
+        plt.show()
+    
+    return perc1, norm1
+    
+    
+    
+    
+    
+#%%
+
+#Calculate if  normal distributed    
+    
+    
+# μ±σ includes approximately 68% of the observations
+#μ±2⋅σ includes approximately 95% of the observations
+#μ±3⋅σ includes almost all of the observations (99.7% to be more precise)    
+     
+
+        
+        
+#%%
+import pandas as pd
+import numpy as np
+import math
+import operator
+import matplotlib.pyplot as plt
+
+def linR2(h, ax, plot=True):
+    
+    X=range(len(h))
+    Y= h
+    
+    mean_x = np.mean(X)
+    mean_y = np.mean(Y)
+    
+    m = len(X)
+    
+    # using the formula to calculate m & c
+    numer = 0
+    denom = 0
+    for i in range(m):
+      numer += (X[i] - mean_x) * (Y[i] - mean_y)
+      denom += (X[i] - mean_x) ** 2
+    m = numer / denom
+    c = mean_y - (m * mean_x)
+    
+    # calculating line values x and y
+    x = range(len(h))
+    y = c + m * x
+        
+    # calculating R-squared value for measuring goodness of our model. 
+    
+    ss_t = 0 #total sum of squares
+    ss_r = 0 #total sum of square of residuals
+    
+    for i in range(len(h)): # val_count represents the no.of input x values
+      ss_t += (Y[i] - mean_y) ** 2
+      ss_r += (Y[i] - y[i]) ** 2
+    r2 = 1 - (ss_r/ss_t)
+    
+    
+    if r2> 0.9:
+        norm = 'Not normal'
+    else:
+        norm = 'Normal'
+    #Plot residuals
+    #plt.plot(x, [Y[i]-y[i]for i in range(11)], 'o')
+    #plt.plot(x,[0]*11,'-')
+    #plt.title(norm)
+    #plt.show()
+    
+    if plot:
+        ax.plot(x, y, color='r', label='Regression Line')
+        ax.scatter(X, Y, c='b', label='Data points')
+        ax.set_title(norm)
+        ax.legend()
+    return r2, norm
+    
+    
+#%%
+
+
+seasons =[1617, 1718, 1819, 1920, 2021]
+i=0   
+similar=0 
+for season in seasons: 
+       
+       budget =450
+       bestresults = pd.read_csv('results/pl/'+ str(season) + '/Positionless.csv')
+       sortedindcosts = bestresults['Sorted individual costs'].tolist()
+
+       for indcosts in sortedindcosts:
+           i+=1
+           budget += 50
+           h= ast.literal_eval(indcosts)
+           #h.pop(10)
+           #h.pop(0)
+           plot=False
+           if plot:
+               fig, (ax1, ax2) = plt.subplots(1, 2)
+               fig.suptitle(i)
+           val1, norm1 = linR2(h, ax1, plot)
+           val2, norm2 = testNormal(h, plot)
+           
+           if norm1==norm2:
+               print(i, norm1 == norm2)
+               similar+=1
+           else: 
+               print(i, norm1==norm2, norm1, val1, norm2, val2)
+               #if val1 > 0.93 or val1 < 0.87: # då äf vi säkra på normal/not normal även om olika
+                #   similar+=1
+print(similar/i)
+#%%
+i=0
+similar=0
+budgets= range(500,1050,50)
+h=[]
+for budget in budgets:
+    bestresults= pd.read_csv('results/pl/budget/' + str(budget)+ '.csv')
+    sortedindcosts = bestresults['Sorted individual costs'].tolist()
+    h=[]
+    for indcosts in sortedindcosts:
+        i+=1
+        j= ast.literal_eval(indcosts)
+        h.extend(j)
+    h = sorted(h)    
+    plot=True
+    if plot:
+        fig, (ax1, ax2) = plt.subplots(1, 2)
+        fig.suptitle(i)
+    val1, norm1 = linR2(h, ax1, plot)
+    val2, norm2 = testNormal(h, plot)
+       
+    if norm1==norm2:
+       print(i, norm1 == norm2)
+       similar+=1
+    else: 
+       print(i, norm1==norm2, norm1, val1, norm2, val2)
+     #  if val1 > 0.93 or val1 < 0.87: # då äf vi säkra på normal/not normal även om olika
+      #     similar+=1
+print(similar/11)
