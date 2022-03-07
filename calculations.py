@@ -77,9 +77,10 @@ def createCostList(players, fill_out = True):
 
     costList = n*[0]
     #print(players.keys())
-    for i in list(players.keys()):
+    for i,(k,v) in enumerate(players.items()):
         #costList.append(players[i]["now_cost"])
-        costList[i-1] = players[i]["now_cost"]
+      #  print(i)
+        costList[i] = v.get("now_cost")
     #for player in players:
     #    costList.append(player["now_cost"])    
     return tuple(costList)
@@ -90,9 +91,10 @@ def createPointsList(players):
     n = max(6000,len(players))
     for i in range(n):
         pointsList.append(0)
-    for i in list(players.keys()):
+    for i, (k,v) in enumerate(players.items()):
+        
         #costList.append(players[i]["total_points"])
-        pointsList[i-1] = players[i]["total_points"]
+        pointsList[i] = v.get("total_points")
     #for player in players:
     #    costList.append(player["now_cost"])    
     return tuple(pointsList)

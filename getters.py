@@ -131,16 +131,18 @@ def get_full_name_team(full_data, team_id): # Team is list with id's
     team_names = [get_full_name(full_data, player_id) for player_id in team_id]
     return team_names
 
-def get_cost_player(full_data, corr_id):
-    players = full_data["elements"] 
-    
-    for player in players:
-        if (player['id'] == corr_id):
-            return player['now_cost']
+def get_cost_player(players, player_id):
+#    print(type(players)
+    for (k,v) in players.items():
+        if (k == player_id):
+            return v.get("now_cost")
     return 0
 
-def get_cost_team(cost_list, team_id): # Team is list with id's
-    team_cost = [cost_list[player_id] for player_id in team_id]
+def get_cost_team(playersdata, team_id): # Team is list with id's
+
+    team_cost = [get_cost_player(playersdata, ids) for ids in team_id]
+    #team_cost = [cost_list[player_id] for player_id in team_id]
+#    print(team_cost)
     team_cost.sort()
     return team_cost
 
