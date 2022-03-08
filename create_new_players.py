@@ -18,7 +18,7 @@ playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", seaso
 costs = [v.get("now_cost") for (k,v) in playerspldata.items()]
 points = [v.get("total_points") for (k,v) in playerspldata.items()]
 pos = [v.get("element_type") for (k,v) in playerspldata.items()]
-ids = [v.get("id") for (k,v) in playerspldata.items()]
+
 counts = Counter()
 counts.update({x:0 for x in range(min(costs),max(costs)+1)})
 counts.update(costs)
@@ -43,9 +43,10 @@ for i, (k,v) in enumerate(counts.items()):
     else: # If we have no players at that cost
         count_before += 1 # Keep order of distance (in cost) to where there are players
         count_after = [j for (j,x) in enumerate(count_list[i:]) if x > 0 ][0]
-        inds_before = [i for (i,x) in enumerate(costs) if x == k-count_before] # Find the players at closest distance wrt cost
-        inds_after = [i for (i,x) in enumerate(costs) if x == k+count_after]
-                
+        inds_before = [j for (j,x) in enumerate(costs) if x == k-count_before] # Find the players at closest distance wrt cost
+        inds_after = [j for (j,x) in enumerate(costs) if x == k+count_after]
+        print(k-count_before)
+        print(inds_before)
         w_before = count_before / (count_before+count_after)
         w_after = count_after / (count_before+count_after)
         
