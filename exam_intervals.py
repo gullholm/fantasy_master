@@ -272,15 +272,16 @@ def printpercent(title, diverselist, nperc, divperc, undefperc):
     print(title + "nr undefined:", diverselist.count(-1), "percent:", undefperc)
 
 def calcpercent(divlist):
-    nor = round(100*divlist.count(1)/len(divlist))
-    div = round(100*divlist.count(0)/len(divlist))
-    und = round(100*divlist.count(-1)/len(divlist))   
+    if len(divlist)>0:
+        nor = round(100*divlist.count(1)/len(divlist))
+        div = round(100*divlist.count(0)/len(divlist))
+        und = round(100*divlist.count(-1)/len(divlist))   
     
-    return nor, div, und 
-
+        return nor, div, und 
+    else:
+        return 0,0,0
 #%%
 seasons= [1617,1718,1819,1920,2021]
-
 formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
 season= seasons[0]
 formation= formations[0]
@@ -288,7 +289,11 @@ one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', con
 
 #%%
 #Create df for saving results 
+seasons= [1617,1718,1819,1920,2021]
+#Formations without 343 for the monment since it is already done
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
 
+season= seasons[0]
 for formation in formations: 
     print('Preparing data')
     one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
@@ -316,7 +321,11 @@ for formation in formations:
         allpoints= ones['points_total'].to_list() 
         
         #Take 50 best 
-        best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+        if len(ones)>50:
+    
+            best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+        else:
+            best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
         
         best_div=[]
         i=0
@@ -337,7 +346,12 @@ for formation in formations:
         #printpercent('Best 50', best_div, bnor, bdiv, bund)
         
         #Take 50 worst 
-        w_50 = [ones.iloc[-i]['indexes'] for i in range(50)]
+        if len(ones)>50:
+    
+            w_50 = [ones.iloc[-i]['indexes'] for i in range(50)]       
+        else:
+            w_50 = [ones.iloc[-i]['indexes'] for i in range(len(ones))]
+        
         w_div=[]
         
         for team in w_50:
@@ -377,6 +391,39 @@ for ind in indexes_div:
     tot_cost.append(ones.iloc[ind]['cost'])
     
 print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
-print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())    
+print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean()) 
+
+#%%
+
+#Plot piechart of results    
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]']
+
+fig, axs = plt.subplots(2,3)
+    
+x=0
+y=0
+
+for formation in formations:
+    if y==3:
+        y=0
+        x+=1
+    res = pd.read_csv('results/pl/1617/perc_' + str(formation) + '.csv')
+    ressize = ast.literal_eval(res['Worst 50'][4])
+    # Pie chart, where the slices will be ordered and plotted counter-clockwise:
+    labels = 'Normal', 'Diverse', 'Undefined'
+    sizes = ressize
+    # explode = (0, 0.1, 0)  # only "explode" the 2nd slice (i.e. 'Hogs')
+
+    
+    axs[x,y].pie(sizes,  labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90)
+    axs[x,y].axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
+    
+    y+=1
+    
+fig.suptitle('Worst 50, Budget: 650 to 700')  
+plt.show()
+
+
 
 
