@@ -44,6 +44,7 @@ def get_players_feature_pl(loc, season, list_feature = ['element_type', 'now_cos
     csv_file = str(loc) + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file) 
     playerspl = playerspl.to_dict('index')
+
     players_feature = {}
 
     for k,v in playerspl.items():

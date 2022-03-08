@@ -12,12 +12,13 @@ from bisect import bisect_right, bisect_left
 import numpy as np
 import pandas as pd
 
-playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", 1819, ['element_type', 'now_cost', 'total_points', 'id'])
+season =1819
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season, ['element_type', 'now_cost', 'total_points', 'id'])
 
 costs = [v.get("now_cost") for (k,v) in playerspldata.items()]
 points = [v.get("total_points") for (k,v) in playerspldata.items()]
 pos = [v.get("element_type") for (k,v) in playerspldata.items()]
-
+ids = [v.get("id") for (k,v) in playerspldata.items()]
 counts = Counter()
 counts.update({x:0 for x in range(min(costs),max(costs)+1)})
 counts.update(costs)
@@ -68,6 +69,6 @@ points2 = [v.get("total_points") for (k,v) in new_players.items()]
 
 pl = pd.DataFrame.from_dict(new_players, orient = "index")
 
-pl.to_csv("data/pl_csv/players_incnew_1819.csv")
+pl.to_csv("data/pl_csv/players_incnew_" + str(season) + ".csv")
 
 counts2 = Counter(costs2)

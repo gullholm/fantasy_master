@@ -11,6 +11,8 @@ import getters
 import pandas as pd
 import cleaners
 import os
+import ast
+
 
 def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for each formation part
     """
@@ -88,7 +90,6 @@ def calc_full_teams(all_combs):
         
     full_teams_df = pd.DataFrame({"cost": costs_total, "points_total": points_total, "indexes": indexes})
     return(full_teams_df)
-import ast
 
 def write_full_teams(loc):
     generic = lambda x: ast.literal_eval(x)
@@ -106,7 +107,7 @@ def write_full_teams(loc):
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
 
 
-def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/",  clean_all = True):
+def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/", k = "0.2" clean_all = True):
     
     playerspldata = getters.get_players_feature_pl(bas,season)
     formations = [[3,4,5],[3,4,5],[1,2,3]]
