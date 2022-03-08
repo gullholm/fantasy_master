@@ -55,19 +55,10 @@ def createFormation(gk, df, mf, fw, d = 4, m = 4, f = 2, n = 100, seed = 123): #
     return goalkeepers, defenders, midfielders, forwards
 
 def pointsPerTeam4(team, pointsList):
-    teampoints = 0
-    #teampoints = np.sum(pointsList[team])
-    for key in team: 
-        teampoints = teampoints + pointsList[key-1]
-     
-    return teampoints
-
+    return sum([pointsList[x-1] for x in team]) 
 
 def costPerTeam4(team, costList):
-    teamcost = 0
-    for key in team:
-        teamcost = teamcost + costList[key-1]
-    return teamcost  
+    return sum([costList[x-1] for x in team])  
 
 def createCostList(players, fill_out = True):
     #Pick a larger number than largest key, some spots are missing / 0
