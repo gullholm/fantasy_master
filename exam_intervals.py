@@ -200,13 +200,13 @@ def testNormalInter(h, plot=False):
         plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
         plt.axvline(x=low1, color='r', ls='--')
         plt.axvline(x=high1, color='r', ls='--')
-           # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
-            #plt.plot(h,fit,'-o')
+    #        # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
+    #         #plt.plot(h,fit,'-o')
             
-            #plt.axvline(x=mu+2*sigma, color='b', ls='--') # *1.645 for 90%
-            #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
+    #         #plt.axvline(x=mu+2*sigma, color='b', ls='--') # *1.645 for 90%
+    #         #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
             
-            #plt.hist(h,nrinter, density = True)
+    #         #plt.hist(h,nrinter, density = True)
         plt.hist(h,len(h),density=True)
         plt.title(norm1)
         plt.show()    
@@ -248,10 +248,10 @@ def linR2Inter(h, ax, plot=False):
         ret=1
         norm = 'Normal'
     if plot:
-        ax.plot(x, y, color='r', label='Regression Line')
-        ax.scatter(X, Y, c='b', label='Data points')
-        ax.set_title(norm)
-        ax.legend()    
+         ax.plot(x, y, color='r', label='Regression Line')
+         ax.scatter(X, Y, c='b', label='Data points')
+         ax.set_title(norm)
+         ax.legend()    
     return r2, ret
 
 def checkdiversity(playersdata, team_ids, ax=None, plot=False) : 
@@ -266,32 +266,119 @@ def checkdiversity(playersdata, team_ids, ax=None, plot=False) :
     else:
         return -1
 
-#%%
-one = pd.read_csv('data_cleaned/pl/1617/[3, 4, 3].csv', converters =conv)
+def printpercent(title, diverselist, nperc, divperc, undefperc):
+    print(title + "nr normal:", diverselist.count(1), "percent:",nperc)
+    print(title + "nr diverse:", diverselist.count(0), "percent:", divperc)
+    print(title + "nr undefined:", diverselist.count(-1), "percent:", undefperc)
+
+def calcpercent(divlist):
+    nor = round(100*divlist.count(1)/len(divlist))
+    div = round(100*divlist.count(0)/len(divlist))
+    und = round(100*divlist.count(-1)/len(divlist))   
+    
+    return nor, div, und 
 
 #%%
-budget= 800
-low = 750
-ones = filter_df(one, low, budget)
-ones.sort_values(by ="points_total", inplace = True, ascending = False)
-playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", 1617)
+season= 1617
+formation= '[3, 4, 3]'
+one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
 
 #%%
-#ones = ones.sample(n = 50)
-all_teams = ones["indexes"].to_list()
-ss = Counter(flatten(all_teams)).most_common()
+#Create df for saving results 
+
+dfres = pd.DataFrame(columns=['Budget interval', 'Best 50', 'Worst 50', 'All'])
+
+startlow =450
+endlow =1000
+idx=0
+for low in range(startlow, endlow,50):
+    
+    budget = low+50
+    print('-------------------------------------')
+    print(budget)
+    ones = filter_df(one, low, budget)
+    ones.sort_values(by ="points_total", inplace = True, ascending = False)
+    playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", 1617)
+    all_teams = ones["indexes"].to_list()
+    ss = Counter(flatten(all_teams)).most_common()
+    allpoints= ones['points_total'].to_list() 
+    
+    #Take 50 best 
+    best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+    
+    best_div=[]
+    i=0
+    plot= False
+    for team in best_50:
+        #for plotting
+        #if plot==True:
+        #    i+=1
+        #    fig, (ax1, ax2) = plt.subplots(1, 2)
+        #    fig.suptitle(i)
+        # then add ax = ax1 in next row
+        best_div.append(checkdiversity(playerspldata,team, plot))
+        
+    bnor, bdiv, bund = calcpercent(best_div)
+    b50  = [bnor,bdiv,bund]
+    
+    #For printing
+    #printpercent('Best 50', best_div, bnor, bdiv, bund)
+    
+    #Take 50 worst 
+    w_50 = [ones.iloc[-i]['indexes'] for i in range(50)]
+    w_div=[]
+    
+    for team in w_50:
+        w_div.append(checkdiversity(playerspldata,team))
+    
+    wnormperc =round(100*w_div.count(1)/len(w_div))
+    wdivperc= round(100*w_div.count(0)/len(w_div))
+    wundefperc=round(100*w_div.count(-1)/len(w_div))  
+    w50 = [wnormperc, wdivperc, wundefperc]
+    
+
+    #print("Worst 50 nr normal:", w_div.count(1), "percent:",wnormperc)
+    #print("Worst 50 nr diverse:", w_div.count(0), "percent:", wdivperc)
+    #print("Worst 50 nr undefined:", w_div.count(-1), "percent:", wundefperc)
+    
+    diverse=[]
+    
+    for team_id in all_teams:
+        #i+=1
+        #fig, (ax1, ax2) = plt.subplots(1, 2)
+        #fig.suptitle(i)
+        diverse.append(checkdiversity(playerspldata, team_id))
+    
+    anorm =round(100*diverse.count(1)/len(diverse))
+    adiv=round(100*diverse.count(0)/len(diverse))
+    aundef = round(100*diverse.count(-1)/len(diverse))
+    #print("Nr normal:", diverse.count(1), "percent:", round(100*diverse.count(1)/len(diverse)))
+    #print("Nr diverse:", diverse.count(0), "percent:", round(100*diverse.count(0)/len(diverse)))
+    #print("Nr undefined:", diverse.count(-1), "percent:", round(100*diverse.count(-1)/len(diverse)))
+    
+    a=[anorm, adiv, aundef]
+
+    dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,w50,a]
+    idx+=1
+
+
+dfres.to_csv('results/pl/'+ str(season) +'/perc_' +str(formation)+ '.csv')
+
+#%%   
+indexes_div = [i for (i,x) in enumerate(best_div) if x==0]
+tot_points = []
+tot_cost = []
+for ind in indexes_div:
+    tot_points.append(ones.iloc[ind]['points_total'])
+    tot_cost.append(ones.iloc[ind]['cost'])
+    
+print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
+print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())    
+
 
 #%%
-diverse=[]
-#i=0  
-for team_id in all_teams:
-    #i+=1
-    #fig, (ax1, ax2) = plt.subplots(1, 2)
-    #fig.suptitle(i)
-    diverse.append(checkdiversity(playerspldata, team_id))
+print("Nr normal:", diverse.count(1), "percent:", round(100*diverse.count(1)/len(diverse)))
+print("Nr diverse:", diverse.count(0), "percent:", round(100*diverse.count(0)/len(diverse)))
+print("Nr undefined:", diverse.count(-1), "percent:", round(100*diverse.count(-1)/len(diverse)))
 
-#print(sum([is_dev_or_not[x][0] for x in range(len(is_dev_or_not))]))
-#%%
-print("Nr normal:", diverse.count(1), diverse.count(1)/len(diverse))
-print("Nr diverse:", diverse.count(0), diverse.count(0)/len(diverse))
-print("Nr undefined:", diverse.count(-1), diverse.count(-1)/len(diverse))
+
