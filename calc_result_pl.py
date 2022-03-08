@@ -25,7 +25,7 @@ def clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cle
     formations = [[3,4,5],[3,4,5],[1,2,3]]
     form_name = ["df", "mf", "fw"]
     csv_file = str(bas) + str(season) + ".csv"
-    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(season)[1:]
     
     
     for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
@@ -555,7 +555,9 @@ import math
 import operator
 import matplotlib.pyplot as plt
 
-def linR2(h, ax, plot=True):
+fig, (ax1, ax2) = plt.subplots(1, 2)
+
+def linR2(h, ax=ax1, plot=True):
     
     X=range(len(h))
     Y= h
@@ -672,3 +674,22 @@ for budget in budgets:
      #  if val1 > 0.93 or val1 < 0.87: # då äf vi säkra på normal/not normal även om olika
       #     similar+=1
 print(similar/11)
+
+
+
+#%%
+# trying to clean with created players 1819
+season  = 1819
+print('-------------------------------------------------')
+print('Preprocessing data for season: ' + str(season))
+
+flat_listnew = clean_all_data_pl_place_indep(season, bas='data/pl_csv/players_incnew_')   
+tuplist= []
+for tup in flat_listnew.values:
+    tuplist.append((tup[0],tup[1]))
+sorttuple=sorted(tuplist)
+n = len(sorttuple) 
+positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
+
+bestresults = pd.read_csv('results/pl/' + str(season)+ '/best.csv')
+bestteampoints = bestresults['Best total points'].tolist()

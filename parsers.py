@@ -107,7 +107,7 @@ def write_full_teams(loc):
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
 
 
-def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/", k = "0.2" clean_all = True):
+def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/", k = "0.2", clean_all = True):
     
     playerspldata = getters.get_players_feature_pl(bas,season)
     formations = [[3,4,5],[3,4,5],[1,2,3]]

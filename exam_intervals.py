@@ -10,9 +10,14 @@ import pandas as pd
 import numpy as np
 import getters as get
 import ast
+import random
+import calculations as calc
+import getters
+from collections import Counter
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 
+#%%
 one = pd.read_csv("data_cleaned/pl/noexp/0.1/1819/[4, 3, 3].csv", converters = conv)
 #%%%
 def filter_df(df, lwr, upper):
@@ -123,7 +128,7 @@ def testIfLinear(data, budget):
 import random
 import calculations as calc
 import getters
-
+from collections import Counter
 #inter = thry_interval(a, 700)
 #players = pd.read_csv("data/pl_csv/players_incnew_1819.csv")
 #playerspl = players.to_dict('index')
@@ -144,7 +149,7 @@ ss = Counter(flatten(all_teams)).most_common()
 #all_teams = random.sample(all_teams, 50)
 
 #%%
-from collections import Counter
+
 is_dev_or_not = [is_diverse_ed2(playerspldata, team_id, s = 1) for team_id in all_teams]
 
 #print(sum([is_dev_or_not[x][0] for x in range(len(is_dev_or_not))]))
@@ -165,3 +170,128 @@ print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
 
 
 #%%
+
+##JONTE TESTAR
+import scipy.stats as stats      
+import matplotlib.pyplot as plt
+
+def testNormalInter(h, plot=False):       
+    mu = np.mean(h)
+    sigma = np.std(h)
+    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    
+    high = mu+3*sigma
+    low= mu+- 3*sigma
+    
+    low1 = mu-sigma
+    high1 = mu+sigma
+    tot=0
+    for p in h:
+        if low1 < p < high1:
+            tot+=1
+        perc1 = int(tot/len(h)*100)
+        if perc1 > 68:
+            norm1 = 'Normal' #should be higher than 68%
+            ret=1
+        else:
+            norm1='Not normal'
+            ret=0
+    if plot:    
+        plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
+        plt.axvline(x=low1, color='r', ls='--')
+        plt.axvline(x=high1, color='r', ls='--')
+           # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
+            #plt.plot(h,fit,'-o')
+            
+            #plt.axvline(x=mu+2*sigma, color='b', ls='--') # *1.645 for 90%
+            #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
+            
+            #plt.hist(h,nrinter, density = True)
+        plt.hist(h,len(h),density=True)
+        plt.title(norm1)
+        plt.show()    
+    return perc1, ret
+     
+def linR2Inter(h, ax, plot=False):
+    
+    X=range(len(h))
+    Y= h
+    
+    mean_x = np.mean(X)
+    mean_y = np.mean(Y)
+    m = len(X)
+    
+    numer = 0
+    denom = 0
+    for i in range(m):
+      numer += (X[i] - mean_x) * (Y[i] - mean_y)
+      denom += (X[i] - mean_x) ** 2
+    m = numer / denom
+    c = mean_y - (m * mean_x)
+    
+    x = range(len(h))
+    y = c + m * x
+            
+    ss_t = 0 #total sum of squares
+    ss_r = 0 #total sum of square of residuals
+    
+    for i in range(len(h)): # val_count represents the no.of input x values
+      ss_t += (Y[i] - mean_y) ** 2
+      ss_r += (Y[i] - y[i]) ** 2
+    r2 = 1 - (ss_r/ss_t)
+    
+    
+    if r2> 0.9:
+        ret = 0
+        norm = 'Not normal'
+    else:
+        ret=1
+        norm = 'Normal'
+    if plot:
+        ax.plot(x, y, color='r', label='Regression Line')
+        ax.scatter(X, Y, c='b', label='Data points')
+        ax.set_title(norm)
+        ax.legend()    
+    return r2, ret
+
+def checkdiversity(playersdata, team_ids, ax=None, plot=False) : 
+    h = get.get_cost_team(playersdata, team_ids)
+
+    _, ret1 = linR2Inter(h, ax, plot)
+    _, ret2 = testNormalInter(h,plot)
+    
+    if ret1==ret2:
+        return ret1
+    
+    else:
+        return -1
+
+#%%
+one = pd.read_csv('data_cleaned/pl/1617/[3, 4, 3].csv', converters =conv)
+
+#%%
+budget= 800
+low = 750
+ones = filter_df(one, low, budget)
+ones.sort_values(by ="points_total", inplace = True, ascending = False)
+playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", 1617)
+
+#%%
+#ones = ones.sample(n = 50)
+all_teams = ones["indexes"].to_list()
+ss = Counter(flatten(all_teams)).most_common()
+
+#%%
+diverse=[]
+#i=0  
+for team_id in all_teams:
+    #i+=1
+    #fig, (ax1, ax2) = plt.subplots(1, 2)
+    #fig.suptitle(i)
+    diverse.append(checkdiversity(playerspldata, team_id))
+
+#print(sum([is_dev_or_not[x][0] for x in range(len(is_dev_or_not))]))
+#%%
+print("Nr normal:", diverse.count(1), diverse.count(1)/len(diverse))
+print("Nr diverse:", diverse.count(0), diverse.count(0)/len(diverse))
+print("Nr undefined:", diverse.count(-1), diverse.count(-1)/len(diverse))
