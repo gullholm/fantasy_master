@@ -485,7 +485,68 @@ for season in seasons:
     positionlessdf.to_csv('results/pl/' + str(season) + '/Positionless.csv')
 
 #%%
+# FOR NEW PLAYERS AND REMOVE EXPENSIVE
+budgets = list(range(500,1050,50))
+seasons = [1617,1819]
 
+for season in seasons: 
+    print('-------------------------------------------------')
+    print('Preprocessing data for season: ' + str(season))
+
+    flat_list = clean_all_data_pl_place_indep(season, bas='data/pl_csv/players_noexp_0.1_')   
+    tuplist= []
+    for tup in flat_list.values:
+        tuplist.append((tup[0],tup[1]))
+    sorttuple=sorted(tuplist)
+    n = len(sorttuple) 
+    positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
+    
+    # bestresults = pd.read_csv('results/pl/' + str(season)+ '/best.csv')
+    # bestteampoints = bestresults['Best total points'].tolist()
+    bestteampoints = [0]*11
+    
+    bestteampoints = [1260,1462,1462,1462,1462,1462,1462,1462,1462,1462,1462]    
+
+    # One possible best that we have achieved that can fasten up the computations:
+    if season == 1617: 
+         bestteampoints = [1260,1462,1577,1609,1609,1609,1609,1609,1609,1609,1609]    
+    # if season == 1718:
+    #     bestteampoints= [1277, 1522, 1667,1821, 1939, 2012, 2073, 2127,2166, 2204, 2230]
+    if season == 1819:
+         bestteampoints= [1319, 1580, 1763, 1799, 1799, 1799, 1799, 1799, 1799, 1799, 1799]
+    # if season == 1920:
+    #     bestteampoints = [1320, 1573, 1699, 1805, 1904, 1990, 2065, 2127, 2192, 2232, 2273]
+    # if season == 2021:
+    #     bestteampoints = [1344, 1610, 1768, 1864, 1940, 1993, 2069, 2125, 2165, 2185, 2192]
+    dfindex=0
+    for idx in range(11):
+            
+        budget = budgets[idx]
+        bestPoints = bestteampoints[idx] 
+        bestcost, bestpoints, bestteam = calculatePositonlessBest(sorttuple, budget, bestPoints, n)
+        if len(bestteam)==1:
+            indcosts = [j for _,j in bestteam[0]]
+            sortindcosts  = sorted(indcosts)
+            positionlessdf.loc[dfindex] = [budget, bestcost[0], bestpoints[0], sortindcosts,indcosts]
+            dfindex+=1
+        else:    
+            for i, team in enumerate(bestteam):
+                indcosts = [j for _,j in team]
+                sortindcosts  = sorted(indcosts)
+                positionlessdf.loc[dfindex] = [budget, bestcost[i], bestpoints[i], sortindcosts,indcosts]
+                dfindex+=1
+            
+    #positionlessdf.sort_index(inplace=True)
+    positionlessdf.to_csv('results/pl/' + str(season) + '/0.1_Positionless.csv')
+
+
+
+
+#%%
+
+#SHOW RESULTS
+
+seasons= [1617,1718]
 for season in seasons: 
     budget =450
     bestresults = pd.read_csv('results/pl/'+ str(season) + '/Positionless.csv')
@@ -496,16 +557,21 @@ for season in seasons:
         h= ast.literal_eval(indcosts)
         
         print('Season is:', season, 'and budget is:', budget)
-#%%        
+        
+        
+        
+#%%
+
+#### TEST NORMALITY OR LINEAR         
 def testNormal(h, plot=True):       
     mu = np.mean(h)
-    #mu = np.median(h) # antingen mean eller median... 
+    #mu = np.median(h) # antingen mean eller median... '
     sigma = np.std(h)
     x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
     
     high = mu+3*sigma
     low= mu+- 3*sigma
-    nrinter = round((high-low)/len(h))
+    #nrinter = round((high-low)/len(h))
     
     low1 = mu-sigma
     high1 = mu+sigma
