@@ -18,7 +18,7 @@ generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 
 #%%
-one = pd.read_csv("data_cleaned/pl/noexp/0.1/1819/[4, 3, 3].csv", converters = conv)
+one = pd.read_csv("data_cleaned/pl/incnew/1617/[4, 3, 3].csv", converters = conv)
 #%%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] <= upper]
@@ -53,7 +53,7 @@ def is_diverse(team_id, full_data, budget, c = 5):
         return(1)
 import math
 
-def is_diverse_ed2(playersdata, team_ids, s = 1/2, z_count = 4): # s determines interval length
+def is_diverse_ed2(playersdata, team_ids, s = 1, z_count = 4): # s determines interval length
     team_cost = get.get_cost_team(playersdata, team_ids)
 #    print(team_id)
     team_cost.sort()
@@ -73,23 +73,23 @@ def is_diverse_ed2(playersdata, team_ids, s = 1/2, z_count = 4): # s determines 
 #    print(theory_int_l)
 #    print(theory_int_h)
 #    save_empty_indices = []
-    print(team_cost)
-    print(theory_int_l)
-    print(theory_int_h)    
-    
+#    print(team_cost)
+#    print(theory_int_l)
+#    print(theory_int_h)    
+#    
     for re in team_cost:
         
         for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
             if(re >= low and re <= up):
                 counts[i] += 1
-    print(counts)
+#    print(counts)
 
     
     if(counts.count(0) < z_count): # zeros implicates amount that interval doesn't cover
-        print(1)
+#        print(1)
         return(0)
     else:
-        print(0)
+#        print(0)
         return(1)
 
 def flatten(l):
@@ -132,41 +132,43 @@ from collections import Counter
 #inter = thry_interval(a, 700)
 #players = pd.read_csv("data/pl_csv/players_incnew_1819.csv")
 #playerspl = players.to_dict('index')
-playerspldata = getters.get_players_feature_pl("data/pl_csv/players_noexp_0.1_", 1819)
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_incnew_", 1617)
 #cost_list = calc.createCostList(playerspldata, False)
 #%%
 
-budget= 500
-ones = filter_df(one, 0, budget)
-ones.sort_values(by ="points_total", inplace = True, ascending = False)
 
-ones = ones.sample(n = 50)
-all_teams = ones["indexes"].to_list()
+budget= [550,600,650,700,750,800,850]
+
+for budg in budget:
+    ones = filter_df(one, 0, budg)
+    ones.sort_values(by ="points_total", inplace = True, ascending = False)
+
+
+#ones = ones.sample(n = 50)
+    all_teams = ones["indexes"].to_list()
 #all_teams_cost_list = [get.get_cost_team(cost_list, team_id) for team_id in all_teams]
 #testIfLinear(all_teams_cost_list[0], budget)
 
-ss = Counter(flatten(all_teams)).most_common()
+    ss = Counter(flatten(all_teams)).most_common()
 #all_teams = random.sample(all_teams, 50)
 
-#%%
-
-is_dev_or_not = [is_diverse_ed2(playerspldata, team_id, s = 1) for team_id in all_teams]
+    is_dev_or_not = [is_diverse_ed2(playerspldata, team_id, s = 1) for team_id in all_teams]
 
 #print(sum([is_dev_or_not[x][0] for x in range(len(is_dev_or_not))]))
-print(sum(is_dev_or_not))
+    print(sum(is_dev_or_not))
 #enum = [[i for (i,x) in enumerate(is_dev_or_not[y][1]) if x == 0]  for y in range(len(is_dev_or_not))]
 #cunt = Counter(flatten(enum)).most_common()
-#%%
+
 #print(sum(is_dev_or_not))
-indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
-tot_points = []
-tot_cost = []
-for ind in indexes_div:
-    tot_points.append(ones.iloc[ind]['points_total'])
-    tot_cost.append(ones.iloc[ind]['cost'])
-    
-print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
-print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
+    indexes_div = [i for (i,x) in enumerate(is_dev_or_not) if x==1]
+    tot_points = []
+    tot_cost = []
+    for ind in indexes_div:
+        tot_points.append(ones.iloc[ind]['points_total'])
+        tot_cost.append(ones.iloc[ind]['cost'])
+    print(budget)
+    print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
+    print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
 
 
 #%%
