@@ -64,30 +64,31 @@ def createCostList(players, fill_out = True):
     #Pick a larger number than largest key, some spots are missing / 0
     n = len(players)
     if(fill_out):
-        n = max(6000,len(players))
+        n = max(10000,len(players))
 
-    costList = n*[0]
+    costList = n*[-1]
     #print(players.keys())
     for (k,v) in players.items():
         #costList.append(players[i]["now_cost"])
       #  print(i)
         costList[k-1] = v.get("now_cost")
     #for player in players:
-    #    costList.append(player["now_cost"])    
+    #    costList.append(player["now_cost"])  
+    costList = [i for i in costList if i != -1]
+
     return tuple(costList)
 
 def createPointsList(players):
-    pointsList =[]
     #Pick a larger number than largest key, some spots are missing / 0
-    n = max(6000,len(players))
-    for i in range(n):
-        pointsList.append(0)
+    n = max(10000,len(players))
+    pointsList = [-1]*n
     for k,v in players.items():
         
         #costList.append(players[i]["total_points"])
         pointsList[k-1] = v.get("total_points")
     #for player in players:
-    #    costList.append(player["now_cost"])    
+    #    costList.append(player["now_cost"])   
+    pointsList = [i for i in pointsList if i != -1]
     return tuple(pointsList)
 
 

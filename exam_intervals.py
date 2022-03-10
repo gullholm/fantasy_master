@@ -391,7 +391,6 @@ fig, axs = plt.subplots(2,3)
     
 x=0
 y=0
-
 for formation in formations:
     if y==3:
         y=0
@@ -418,5 +417,33 @@ plt.show()
 import parsers
 getformations = parsers.write_full_teams('data_cleaned/pl/1718/')
 
+#%%
+season = 1617
+allworst = []
+allbest = []
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]']
 
+for formation in formations:
 
+    idx=4
+    res = pd.read_csv('results/pl/' +str(season) + '/perc_' + str(formation) + '.csv')
+    wor = ast.literal_eval(res['Worst 50'][idx])
+    bes = ast.literal_eval(res['Best 50'][idx])
+    al =  ast.literal_eval(res['All'][idx])
+    
+    worratio = [i/j for i,j in zip(wor, al)]
+    besratio = [i/j for i,j in zip(bes, al)]
+    
+    allworst.append(worratio)
+    allbest.append(besratio)
+    
+def mean(a):
+    return sum(a) / len(a)
+
+aa = map(mean, zip(*allworst))
+  
+print(aa)
+    
+    
+    
+    
