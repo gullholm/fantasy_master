@@ -180,10 +180,10 @@ import matplotlib.pyplot as plt
 def testNormalInter(h, plot=False):       
     mu = np.mean(h)
     sigma = np.std(h)
-    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    #x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
     
-    high = mu+3*sigma
-    low= mu+- 3*sigma
+    #high = mu+3*sigma
+    #low= mu+- 3*sigma
     
     low1 = mu-sigma
     high1 = mu+sigma
@@ -193,15 +193,15 @@ def testNormalInter(h, plot=False):
             tot+=1
         perc1 = int(tot/len(h)*100)
         if perc1 > 68:
-            norm1 = 'Normal' #should be higher than 68%
+     #       norm1 = 'Normal' #should be higher than 68%
             ret=1
         else:
-            norm1='Not normal'
+    #        norm1='Not normal'
             ret=0
-    if plot:    
-        plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
-        plt.axvline(x=low1, color='r', ls='--')
-        plt.axvline(x=high1, color='r', ls='--')
+    #if plot:    
+    #    plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
+    #    plt.axvline(x=low1, color='r', ls='--')
+    #    plt.axvline(x=high1, color='r', ls='--')
     #        # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
     #         #plt.plot(h,fit,'-o')
             
@@ -209,9 +209,9 @@ def testNormalInter(h, plot=False):
     #         #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
             
     #         #plt.hist(h,nrinter, density = True)
-        plt.hist(h,len(h),density=True)
-        plt.title(norm1)
-        plt.show()    
+    #    plt.hist(h,len(h),density=True)
+    #    plt.title(norm1)
+    #    plt.show()    
     return perc1, ret
      
 def linR2Inter(h, ax, plot=False):
@@ -245,15 +245,15 @@ def linR2Inter(h, ax, plot=False):
     
     if r2> 0.9:
         ret = 0
-        norm = 'Not normal'
+    #    norm = 'Not normal'
     else:
         ret=1
-        norm = 'Normal'
-    if plot:
-         ax.plot(x, y, color='r', label='Regression Line')
-         ax.scatter(X, Y, c='b', label='Data points')
-         ax.set_title(norm)
-         ax.legend()    
+    #    norm = 'Normal'
+    #if plot:
+    #     ax.plot(x, y, color='r', label='Regression Line')
+    #     ax.scatter(X, Y, c='b', label='Data points')
+    #     ax.set_title(norm)
+    #     ax.legend()    
     return r2, ret
 
 def checkdiversity(playersdata, team_ids, ax=None, plot=False) : 
@@ -291,13 +291,13 @@ one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', con
 
 #%%
 #Create df for saving results 
-seasons= [1617, 1718, 1819,1920,2021]
+seasons= [1718]
 #Formations without 343 for the monment since it is already done
 formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
 
 for season in seasons:
     for formation in formations: 
-        print('Preparing data')
+        print('Preparing data', str(formation))
         one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
         print('Done')
     
@@ -393,7 +393,6 @@ fig, axs = plt.subplots(2,3)
     
 x=0
 y=0
-
 for formation in formations:
     if y==3:
         y=0
@@ -418,7 +417,63 @@ plt.show()
 
 #create teams
 import parsers
-getformations = parsers.write_full_teams('data_cleaned/pl/2021/')
+getformations = parsers.write_full_teams('data_cleaned/pl/1718/')
+
+#%%
+dfRes = pd.DataFrame()
+seasons=[1617,1718,1819,1920,2021]
+
+allworstlist =[[0,0,0]]*11
+allbestlist = [[0,0,0]]*11
+
+for season in seasons: 
+    
+    meanworstlist= []
+    meanbestlist = []
+    
+    for idx in range(11):
+        print(idx)
+        formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]']
+        allworst = []
+        allbest = []
+        
+        for formation in formations:
+        
+            #idx=3
+            res = pd.read_csv('results/pl/' +str(season) + '/perc_' + str(formation) + '.csv')
+            wor = ast.literal_eval(res['Worst 50'][idx])
+            bes = ast.literal_eval(res['Best 50'][idx])
+            al =  ast.literal_eval(res['All'][idx])
+            
+            worratio = [i/j if j!=0 else None for i,j in zip(wor, al)]
+            besratio = [i/j if j!=0 else None for i,j in zip(bes, al)] 
+            
+            allworst.append(worratio)
+            allbest.append(besratio)
+        
+        #print(allbest)
+        sumbest =[-1]*3
+        sumworst = [-1]*3
+        for i in range(3):    
+            sumbest[i] = [j[i] for j in allbest if j[i] != None]
+            sumworst[i] = [j[i] for j in allworst if j[i]!=None]
+            
+        #print(sumbest)    
+        meanbest = [sum(k)/len(sumbest) for k in sumbest]  
+        meanworst = [sum(k)/len(sumworst) for k in sumworst]    
+        
+        meanworstlist.append(meanworst)
+        meanbestlist.append(meanbest)
+    
+    
+    for i,j in enumerate(meanworstlist):
+
+        allworstlist[i] = [(a+b)/5 for a,b in zip(j,allworstlist[i])]
+        allbestlist[i] = [(c+d)/5 for c,d in zip(j,allbestlist[i])]
+    
+    dfRes[str(season) + ' worst'] = meanworstlist
+    dfRes[str(season) + ' best'] = meanbestlist
 
 
-
+dfRes.to_csv('results/pl/ratio_normal')    
+    
