@@ -157,7 +157,7 @@ def clean_all_data_pl_place_indep(season, bas = "data/pl_csv/players_raw_", dest
 
 # BEST ONE, FASTEST ONE
 
-def calculatePositonlessBest(sorttuple, budget, bestPoints, n):
+def calculatePositonlessBest(sorttuple, budget, bestPoints, n, saved=1):
 
     print('Calculating budget: '+ str(budget))
     sorttuplepoints = sorted([(j,i) for i,j in sorttuple], reverse=True) 
@@ -485,7 +485,7 @@ for season in seasons:
     positionlessdf.to_csv('results/pl/' + str(season) + '/Positionless.csv')
 
 #%%
-# FOR NEW PLAYERS AND REMOVE EXPENSIVE
+# FOR REMOVE EXPENSIVE
 budgets = list(range(500,1050,50))
 seasons = [1617,1819]
 
@@ -500,12 +500,6 @@ for season in seasons:
     sorttuple=sorted(tuplist)
     n = len(sorttuple) 
     positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
-    
-    # bestresults = pd.read_csv('results/pl/' + str(season)+ '/best.csv')
-    # bestteampoints = bestresults['Best total points'].tolist()
-    bestteampoints = [0]*11
-    
-    bestteampoints = [1260,1462,1462,1462,1462,1462,1462,1462,1462,1462,1462]    
 
     # One possible best that we have achieved that can fasten up the computations:
     if season == 1617: 
@@ -540,6 +534,54 @@ for season in seasons:
     positionlessdf.to_csv('results/pl/' + str(season) + '/0.1_Positionless.csv')
 
 
+#%%
+# FOR NES PLAYERS
+budgets = list(range(500,1050,50))
+seasons = [1617,1819]
+
+for season in seasons: 
+    print('-------------------------------------------------')
+    print('Preprocessing data for season: ' + str(season))
+
+    flat_list = clean_all_data_pl_place_indep(season, bas='data/pl_csv/players_incnew_')   
+    tuplist= []
+    for tup in flat_list.values:
+        tuplist.append((tup[0],tup[1]))
+    sorttuple=sorted(tuplist)
+    n = len(sorttuple) 
+    positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
+    
+    # One possible best that we have achieved that can fasten up the computations:
+    if season == 1617: 
+        bestteampoints = [1260,1462,1608,1735,1843,1944,2033,2113,2189,2239,2289]    
+#    if season == 1718:
+ #       bestteampoints= [1277, 1522, 1667,1821, 1939, 2012, 2073, 2127,2166, 2204, 2230]
+    if season == 1819:
+        bestteampoints= [1319, 1580, 1797, 1950, 2026, 2097, 2150, 2218, 2271, 2307, 2319]
+    # if season == 1920:
+    #     bestteampoints = [1320, 1573, 1699, 1805, 1904, 1990, 2065, 2127, 2192, 2232, 2273]
+    # if season == 2021:
+    #     bestteampoints = [1344, 1610, 1768, 1864, 1940, 1993, 2069, 2125, 2165, 2185, 2192]
+    dfindex=0
+    for idx in range(10,11):
+            
+        budget = budgets[idx]
+        bestPoints = bestteampoints[idx] 
+        bestcost, bestpoints, bestteam = calculatePositonlessBest(sorttuple, budget, bestPoints, n)
+        if len(bestteam)==1:
+            indcosts = [j for _,j in bestteam[0]]
+            sortindcosts  = sorted(indcosts)
+            positionlessdf.loc[dfindex] = [budget, bestcost[0], bestpoints[0], sortindcosts,indcosts]
+            dfindex+=1
+        else:    
+            for i, team in enumerate(bestteam):
+                indcosts = [j for _,j in team]
+                sortindcosts  = sorted(indcosts)
+                positionlessdf.loc[dfindex] = [budget, bestcost[i], bestpoints[i], sortindcosts,indcosts]
+                dfindex+=1
+            
+    #positionlessdf.sort_index(inplace=True)
+    positionlessdf.to_csv('results/pl/' + str(season) + '/incnew_Positionless.csv')
 
 
 #%%
@@ -759,3 +801,42 @@ positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total 
 
 bestresults = pd.read_csv('results/pl/' + str(season)+ '/best.csv')
 bestteampoints = bestresults['Best total points'].tolist()
+
+#%%
+import calculations
+import matplotlib.pyplot as plt
+
+season=1617
+players = getters.get_players_feature_pl("data/pl_csv/players_raw_", 1617)
+allcosts = calculations.createCostList(players)
+allpoints = calculations.createPointsList(players)
+
+plt.plot(allcosts,allpoints, 'o')
+
+X=allcosts
+Y=allpoints
+mean_x = np.mean(X)
+mean_y = np.mean(Y)
+
+m = len(X)
+
+# using the formula to calculate m & c
+numer = 0
+denom = 0
+for i in range(m):
+  numer += (X[i] - mean_x) * (Y[i] - mean_y)
+  denom += (X[i] - mean_x) ** 2
+m = numer / denom
+c = mean_y - (m * mean_x)
+
+# calculating line values x and y
+x = range(0,140)
+y = c + m * x
+    
+
+plt.plot(x, y, color='r', label='Regression Line')
+plt.scatter(X, Y, c='b', label='Data points')
+plt.title(season)
+plt.legend()
+
+   

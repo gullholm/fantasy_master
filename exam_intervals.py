@@ -418,32 +418,60 @@ import parsers
 getformations = parsers.write_full_teams('data_cleaned/pl/1718/')
 
 #%%
-season = 1617
-allworst = []
-allbest = []
-formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]']
+dfRes = pd.DataFrame()
+seasons=[1617,1718,1819,1920,2021]
 
-for formation in formations:
+allworstlist =[[0,0,0]]*11
+allbestlist = [[0,0,0]]*11
 
-    idx=4
-    res = pd.read_csv('results/pl/' +str(season) + '/perc_' + str(formation) + '.csv')
-    wor = ast.literal_eval(res['Worst 50'][idx])
-    bes = ast.literal_eval(res['Best 50'][idx])
-    al =  ast.literal_eval(res['All'][idx])
+for season in seasons: 
     
-    worratio = [i/j for i,j in zip(wor, al)]
-    besratio = [i/j for i,j in zip(bes, al)]
+    meanworstlist= []
+    meanbestlist = []
     
-    allworst.append(worratio)
-    allbest.append(besratio)
+    for idx in range(11):
+        print(idx)
+        formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]']
+        allworst = []
+        allbest = []
+        
+        for formation in formations:
+        
+            #idx=3
+            res = pd.read_csv('results/pl/' +str(season) + '/perc_' + str(formation) + '.csv')
+            wor = ast.literal_eval(res['Worst 50'][idx])
+            bes = ast.literal_eval(res['Best 50'][idx])
+            al =  ast.literal_eval(res['All'][idx])
+            
+            worratio = [i/j if j!=0 else None for i,j in zip(wor, al)]
+            besratio = [i/j if j!=0 else None for i,j in zip(bes, al)] 
+            
+            allworst.append(worratio)
+            allbest.append(besratio)
+        
+        #print(allbest)
+        sumbest =[-1]*3
+        sumworst = [-1]*3
+        for i in range(3):    
+            sumbest[i] = [j[i] for j in allbest if j[i] != None]
+            sumworst[i] = [j[i] for j in allworst if j[i]!=None]
+            
+        #print(sumbest)    
+        meanbest = [sum(k)/len(sumbest) for k in sumbest]  
+        meanworst = [sum(k)/len(sumworst) for k in sumworst]    
+        
+        meanworstlist.append(meanworst)
+        meanbestlist.append(meanbest)
     
-def mean(a):
-    return sum(a) / len(a)
+    
+    for i,j in enumerate(meanworstlist):
 
-aa = map(mean, zip(*allworst))
-  
-print(aa)
+        allworstlist[i] = [(a+b)/5 for a,b in zip(j,allworstlist[i])]
+        allbestlist[i] = [(c+d)/5 for c,d in zip(j,allbestlist[i])]
     
-    
-    
+    dfRes[str(season) + ' worst'] = meanworstlist
+    dfRes[str(season) + ' best'] = meanbestlist
+
+
+dfRes.to_csv('results/pl/ratio_normal')    
     
