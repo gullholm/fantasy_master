@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+data_cleaned/pl/incnew/1819/[3, 4, 3].csv
+data_cleaned/pl/1819/[3, 5, 2].csv
+data_cleaned/pl/1819/[3, 5, 2].csv
+data_cleaned/pl/1819/[4, 3, 3].csv
+data_cleaned/pl/1819/[5, 4, 1].csv
+data_cleaned/pl/1819/[3, 4, 3].csv
