@@ -435,7 +435,7 @@ def calculatePositonlessBest(sorttuple, budget, bestPoints, n):
 #%%
 
 budgets = list(range(500,1050,50))
-seasons = [2021]
+seasons = [1617,1718,1819,1920,2021]
 
 for season in seasons: 
     print('-------------------------------------------------')
@@ -453,8 +453,8 @@ for season in seasons:
     bestteampoints = bestresults['Best total points'].tolist()
     
     # One possible best that we have achieved that can fasten up the computations:
-    if season == 1617: 
-        bestteampoints = [1260,1462,1608,1735,1843,1944,2033,2113,2189,2239,2289]    
+    #if season == 1617: 
+        #bestteampoints = [1260,1462,1608,1735,1843,1944,2033,2113,2189,2239,2289]    
     if season == 1718:
         bestteampoints= [1277, 1522, 1667,1821, 1939, 2012, 2073, 2127,2166, 2204, 2230]
     if season == 1819:
@@ -469,6 +469,10 @@ for season in seasons:
         budget = budgets[idx]
         bestPoints = bestteampoints[idx] 
         bestcost, bestpoints, bestteam = calculatePositonlessBest(sorttuple, budget, bestPoints, n)
+        tcost, tpoints, tteam = calculatePositionlessBestTEST(sorttuple, budget, bestPoints, n)
+        print('All values are correct: ' + str((bestcost == tcost)))
+        print('All values are correct: ' + str((bestpoints == tpoints)))
+        print('All values are correct: ' + str((bestteam == tteam)))
         if len(bestteam)==1:
             indcosts = [j for _,j in bestteam[0]]
             sortindcosts  = sorted(indcosts)
@@ -516,7 +520,7 @@ for season in seasons:
         bestteampoints = [1344, 1610, 1768, 1864, 1940, 1993, 2069, 2125, 2165, 2185, 2192]
     dfindex=0
     dfindex=0
-    for idx in range(1,10):
+    for idx in range(11):
             
         budget = budgets[idx]
         bestPoints = bestteampoints[idx] 
@@ -534,7 +538,7 @@ for season in seasons:
                 dfindex+=1
             
     #positionlessdf.sort_index(inplace=True)
-    # positionlessdf.to_csv('results/pl/' + str(season) + '/lin_incnew_Positionless.csv')
+    positionlessdf.to_csv('results/pl/' + str(season) + '/lin_incnew_Positionless.csv')
 
 
 #%%
@@ -1068,8 +1072,8 @@ def calculatePositonlessXBest(sorttuple, budget, xBestPoints, n, saved = 1):
                                                     teamPoints+= pl[0]
                                                     teamCost += pl[1]
                                                     xBestPoints[0] = teamPoints 
-                                                    xBestpoints = sorted(xBestPoints)
-                                                    
+                                                    xBestPoints = sorted(xBestPoints)
+                                                    #print(xBestPoints)
                                                     team.append(pl)
                                     
                                                     allPointsList.append(teamPoints)
@@ -1123,3 +1127,354 @@ def calculatePositonlessXBest(sorttuple, budget, xBestPoints, n, saved = 1):
         print('Best points: ' + str(max(allPointsList)))
     return allCostsList, allPointsList, teamlist
 
+#%%
+
+# Test to save more than 1 
+
+budgets = list(range(500,1050,50))
+seasons = [2021]
+
+for season in seasons: 
+    print('-------------------------------------------------')
+    print('Preprocessing data for season: ' + str(season))
+
+    flat_list = clean_all_data_pl_place_indep(season)   
+    tuplist= []
+    for tup in flat_list.values:
+        tuplist.append((tup[0],tup[1]))
+    sorttuple=sorted(tuplist)
+    n = len(sorttuple) 
+    positionlessdf=pd.DataFrame(columns = ['Budget', 'Best total cost', 'Best total points', 'Sorted individual costs', 'Individual costs'])
+    
+    for idx in range(11):
+            
+        budget = budgets[idx]
+        bestPoints = [1344]*1
+        bestcost, bestpoints, bestteam = calculatePositonlessXBest(sorttuple, budget, bestPoints, n)
+        if len(bestteam)==1:
+            indcosts = [j for _,j in bestteam[0]]
+            sortindcosts  = sorted(indcosts)
+            positionlessdf.loc[dfindex] = [budget, bestcost[0], bestpoints[0], sortindcosts,indcosts]
+            dfindex+=1
+        else:    
+            for i, team in enumerate(bestteam):
+                indcosts = [j for _,j in team]
+                sortindcosts  = sorted(indcosts)
+                positionlessdf.loc[dfindex] = [budget, bestcost[i], bestpoints[i], sortindcosts,indcosts]
+                dfindex+=1
+            
+    #positionlessdf.sort_index(inplace=True)
+    #positionlessdf.to_csv('results/pl/' + str(season) + '/Positionless.csv')
+
+
+#%%
+
+# BEST ONE, FASTEST ONE
+
+def calculatePositionlessBestTEST(sorttuple, budget, bestPoints, n):
+
+    print('Calculating budget: '+ str(budget))
+    sorttuplepoints = sorted([(j,i) for i,j in sorttuple], reverse=True) 
+    
+    templistA= sorttuplepoints[-n:]
+    templistACost = [j for _,j in templistA]
+    templistAPoints = [i for i,_ in templistA]
+    team , teamlist = [], []
+    teamPoints, teamCost = 0,0
+    allPointsList, allCostsList =[],[]
+    
+    #Count how many times we are in a loop
+    a,b,c,d,e,f,g,h,i,j,k =0,0,0,0,0,0,0,0,0,0,0
+    
+    start_time = time.time()
+    
+    while len(templistACost) >10:
+        a+=1 
+        if teamPoints + (sum(templistAPoints[:11])) < bestPoints:
+            break
+        if budget < (teamCost + templistACost[0] + (sum(sorted(templistACost)[:10]))):
+            templistACost.pop(0)
+            templistAPoints.pop(0)
+            continue 
+        else:
+            teamPoints+= templistAPoints[0]
+            teamCost += templistACost[0]
+            team.append((templistAPoints[0], templistACost[0]))
+            templistACost.pop(0)
+            templistAPoints.pop(0)
+            templistBCost = templistACost.copy()
+            templistBPoints = templistAPoints.copy()
+            
+        while len(templistBCost) >9:
+            a+=1 
+            if teamPoints + (sum(templistBPoints[:10])) < bestPoints:
+                break
+            if budget < (teamCost + templistBCost[0] + (sum(sorted(templistBCost)[:9]))):
+                templistBCost.pop(0)
+                templistBPoints.pop(0)
+                continue 
+            else:
+                tempteamB = team.copy() 
+                tempCostB = teamCost.copy()
+                tempPointsB = teamPoints.copy()
+                teamPoints+= templistBPoints[0]
+                teamCost += templistBCost[0]
+                team.append((templistBPoints[0], templistBCost[0]))
+                templistBCost.pop(0)
+                templistBPoints.pop(0)
+                templistCCost = templistBCost.copy()
+                templistCPoints = templistBPoints.copy()
+            
+            while len(templistCCost) >8:
+                a+=1 
+                if teamPoints + (sum(templistCPoints[:9])) < bestPoints:
+                    break
+                if budget < (teamCost + templistCCost[0] + (sum(sorted(templistCCost)[:8]))):
+                    templistCCost.pop(0)
+                    templistCPoints.pop(0)
+                    continue 
+                else:
+                    tempteamC = team.copy() 
+                    tempCostC = teamCost.copy()
+                    tempPointsC = teamPoints.copy()
+                    teamPoints+= templistCPoints[0]
+                    teamCost += templistCCost[0]
+                    team.append((templistCPoints[0], templistCCost[0]))
+                    templistCCost.pop(0)
+                    templistCPoints.pop(0)
+                    templistDCost = templistCCost.copy()
+                    templistDPoints = templistCPoints.copy()
+            
+                while len(templistDCost) >7:
+                    a+=1 
+                    if teamPoints + (sum(templistDPoints[:8])) < bestPoints:
+                        break
+                    if budget < (teamCost + templistDCost[0] + (sum(sorted(templistDCost)[:7]))):
+                        templistDCost.pop(0)
+                        templistDPoints.pop(0)
+                        continue 
+                    else:
+                        tempteamD = team.copy() 
+                        tempCostD = teamCost.copy()
+                        tempPointsD = teamPoints.copy()
+                        teamPoints+= templistDPoints[0]
+                        teamCost += templistDCost[0]
+                        team.append((templistDPoints[0], templistDCost[0]))
+                        templistDCost.pop(0)
+                        templistDPoints.pop(0)
+                        templistECost = templistDCost.copy()
+                        templistEPoints = templistDPoints.copy()
+                    
+                    while len(templistECost) >6:
+                        a+=1 
+                        if teamPoints + (sum(templistEPoints[:7])) < bestPoints:
+                            break
+                        if budget < (teamCost + templistECost[0] + (sum(sorted(templistECost)[:6]))):
+                            templistECost.pop(0)
+                            templistEPoints.pop(0)
+                            continue 
+                        else:
+                            tempteamE = team.copy() 
+                            tempCostE = teamCost.copy()
+                            tempPointsE = teamPoints.copy()
+                            teamPoints+= templistEPoints[0]
+                            teamCost += templistECost[0]
+                            team.append((templistEPoints[0], templistECost[0]))
+                            templistECost.pop(0)
+                            templistEPoints.pop(0)
+                            templistFCost = templistECost.copy()
+                            templistFPoints = templistEPoints.copy()
+                        
+                        while len(templistFCost) >5:
+                            a+=1 
+                            if teamPoints + (sum(templistFPoints[:6])) < bestPoints:
+                                break
+                            if budget < (teamCost + templistFCost[0] + (sum(sorted(templistFCost)[:5]))):
+                                templistFCost.pop(0)
+                                templistFPoints.pop(0)
+                                continue 
+                            else:
+                                tempteamF = team.copy() 
+                                tempCostF = teamCost.copy()
+                                tempPointsF = teamPoints.copy()
+                                teamPoints+= templistFPoints[0]
+                                teamCost += templistFCost[0]
+                                team.append((templistFPoints[0], templistFCost[0]))
+                                templistFCost.pop(0)
+                                templistFPoints.pop(0)
+                                templistGCost = templistFCost.copy()
+                                templistGPoints = templistFPoints.copy()
+                        
+                            while len(templistGCost) >4:
+                                a+=1 
+                                if teamPoints + (sum(templistGPoints[:5])) < bestPoints:
+                                    break
+                                if budget < (teamCost + templistGCost[0] + (sum(sorted(templistGCost)[:4]))):
+                                    templistGCost.pop(0)
+                                    templistGPoints.pop(0)
+                                    continue 
+                                else:
+                                    tempteamG = team.copy() 
+                                    tempCostG = teamCost.copy()
+                                    tempPointsG = teamPoints.copy()
+                                    teamPoints+= templistGPoints[0]
+                                    teamCost += templistGCost[0]
+                                    team.append((templistGPoints[0], templistGCost[0]))
+                                    templistGCost.pop(0)
+                                    templistGPoints.pop(0)
+                                    templistHCost = templistGCost.copy()
+                                    templistHPoints = templistGPoints.copy()
+                                
+                                while len(templistHCost) >3:
+                                    a+=1 
+                                    if teamPoints + (sum(templistHPoints[:4])) < bestPoints:
+                                        break
+                                    if budget < (teamCost + templistHCost[0] + (sum(sorted(templistHCost)[:3]))):
+                                        templistHCost.pop(0)
+                                        templistHPoints.pop(0)
+                                        continue 
+                                    else:
+                                        tempteamH = team.copy() 
+                                        tempCostH = teamCost.copy()
+                                        tempPointsH = teamPoints.copy()
+                                        teamPoints+= templistHPoints[0]
+                                        teamCost += templistHCost[0]
+                                        team.append((templistHPoints[0], templistHCost[0]))
+                                        templistHCost.pop(0)
+                                        templistHPoints.pop(0)
+                                        templistICost = templistHCost.copy()
+                                        templistIPoints = templistHPoints.copy()
+    
+                                    
+                                    while len(templistICost) >2:
+                                        a+=1 
+                                        if teamPoints + (sum(templistIPoints[:3])) < bestPoints:
+                                            break
+                                        if budget < (teamCost + templistICost[0] + (sum(sorted(templistICost)[:2]))):
+                                            templistICost.pop(0)
+                                            templistIPoints.pop(0)
+                                            continue 
+                                        else:
+                                            tempteamI = team.copy() 
+                                            tempCostI = teamCost.copy()
+                                            tempPointsI = teamPoints.copy()
+                                            teamPoints+= templistIPoints[0]
+                                            teamCost += templistICost[0]
+                                            team.append((templistIPoints[0], templistICost[0]))
+                                            templistICost.pop(0)
+                                            templistIPoints.pop(0)
+                                            templistJCost = templistICost.copy()
+                                            templistJPoints = templistIPoints.copy()
+    
+                                        
+                                        while len(templistJCost) >1:
+                                            a+=1 
+                                            if teamPoints + (sum(templistJPoints[:2])) < bestPoints:
+                                                break
+                                            if budget < (teamCost + templistJCost[0] + (sum(sorted(templistJCost)[:1]))):
+                                                templistJCost.pop(0)
+                                                templistJPoints.pop(0)
+                                                continue 
+                                            else:
+                                                tempteamJ = team.copy() 
+                                                tempCostJ = teamCost.copy()
+                                                tempPointsJ = teamPoints.copy()
+                                                teamPoints+= templistJPoints[0]
+                                                teamCost += templistJCost[0]
+                                                team.append((templistJPoints[0], templistJCost[0]))
+                                                templistJCost.pop(0)
+                                                templistJPoints.pop(0)
+                                                templistKCost = templistJCost.copy()
+                                                templistKPoints = templistJPoints.copy()
+    
+                                            
+                                            while len(templistKCost)>0:
+                                                k+=1
+                                                tempteamK = team.copy() 
+                                                tempCostK = teamCost.copy()
+                                                tempPointsK = teamPoints.copy()
+    
+                                                if teamPoints + (sum(templistKPoints[:1])) < bestPoints:
+                                                    break                                            
+                                                elif budget < (teamCost + templistKCost[0]):
+                                                    templistKCost.pop(0)
+                                                    templistKPoints.pop(0)
+                                                    continue
+                                                
+                                                else:
+
+                                                    teamPoints+= templistKPoints[0]
+                                                    teamCost += templistKCost[0]
+                                                    bestPoints = teamPoints 
+                                                    
+                                                    team.append((templistKPoints[0], templistKCost[0]))
+                                    
+                                                    allPointsList.append(teamPoints)
+                                                    allCostsList.append(teamCost)
+                                                    teamlist.append(team)
+                                                
+                                                templistKCost.pop(0)
+                                                templistKPoints.pop(0)
+                                                team = tempteamK 
+                                                teamCost, teamPoints = tempCostK, tempPointsK                                      
+                                            team = tempteamJ 
+                                            teamCost, teamPoints = tempCostJ, tempPointsJ
+                                            
+                                        team = tempteamI    
+                                        teamCost, teamPoints = tempCostI, tempPointsI
+                                        
+                                    team = tempteamH
+                                    teamCost, teamPoints = tempCostH, tempPointsH
+                                
+                                team = tempteamG
+                                teamCost, teamPoints = tempCostG, tempPointsG
+                        
+                            team = tempteamF
+                            teamCost, teamPoints = tempCostF, tempPointsF
+                                              
+                        team = tempteamE
+                        teamCost, teamPoints = tempCostE, tempPointsE
+                           
+                    team = tempteamD
+                    teamCost, teamPoints = tempCostD, tempPointsD
+                
+                team = tempteamC
+                teamCost, teamPoints = tempCostC, tempPointsC
+            
+            team = tempteamB
+            teamCost, teamPoints = tempCostB, tempPointsB
+        
+        teamCost, teamPoints = 0, 0    
+        team = []
+    
+    print("--- %s seconds ---" % (time.time() - start_time))
+    print("Total loops: " + str(sum([a,b,c,d,e,f,g,h,i,j,k])))
+    
+    print('Nr of saved teams: '+ str(len(teamlist)))
+    if len(teamlist) ==1: 
+        print('Cost: ' + str(max(allCostsList)))
+        print('Best points: ' + str(max(allPointsList)))
+    else: 
+        print('Min cost: ' +str(min(allCostsList)))
+        print('Max cost: ' + str(max(allCostsList)))
+        print('Lowest saved points: ' + str(min(allPointsList)))
+        print('Best points: ' + str(max(allPointsList)))
+    return allCostsList, allPointsList, teamlist
+
+
+# def whileloop(pointslist, costlist, bestp, teamc, teamp, budget=budget):
+
+#     if teamp + (sum(pointslist[:11])) < bestp:
+#         return 0
+#     if budget < (teamc + costlist[0] + (sum(sorted(costlist)[:10]))):
+#         costlist.pop(0)
+#         pointslist.pop(0)
+#         return 1
+#     else:
+#         teamp += pointslist[0]
+#         teamc += costlist[0]
+#         team.append((pointslist[0], costlist[0]))
+#         costlist.pop(0)
+#         pointslist.pop(0)
+#         #templistBCost = templistACost.copy()
+#         #templistBPoints = templistAPoints.copy()
