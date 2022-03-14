@@ -18,7 +18,7 @@ generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 
 #%%
-one = pd.read_csv("data_cleaned/pl/incnew/1617/[4, 3, 3].csv", converters = conv)
+one = pd.read_csv("data_cleaned/pl/1718/[3, 4, 3].csv", converters = conv)
 #%%%
 def filter_df(df, lwr, upper):
     df = df[df['cost'] <= upper]
@@ -132,7 +132,7 @@ from collections import Counter
 #inter = thry_interval(a, 700)
 #players = pd.read_csv("data/pl_csv/players_incnew_1819.csv")
 #playerspl = players.to_dict('index')
-playerspldata = getters.get_players_feature_pl("data/pl_csv/players_incnew_", 1617)
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", 1718)
 #cost_list = calc.createCostList(playerspldata, False)
 #%%
 
@@ -242,10 +242,11 @@ def linR2Inter(h, ax, plot=False):
       ss_r += (Y[i] - y[i]) ** 2
     r2 = 1 - (ss_r/ss_t)
     
-    
+    res = [i-I for (i,I) in zip(y,Y)]
     if r2> 0.9:
         ret = 0
     #    norm = 'Not normal'
+    #    return r2, ret, res
     else:
         ret=1
     #    norm = 'Normal'
@@ -254,7 +255,7 @@ def linR2Inter(h, ax, plot=False):
     #     ax.scatter(X, Y, c='b', label='Data points')
     #     ax.set_title(norm)
     #     ax.legend()    
-    return r2, ret
+    return r2, ret, res
 
 def checkdiversity(playersdata, team_ids, ax=None, plot=False) : 
     h = get.get_cost_team(playersdata, team_ids)
@@ -289,6 +290,15 @@ season= seasons[0]
 formation= formations[0]
 one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
 
+#%% josef testar
+
+c_list = []
+for team in all_teams:
+    cc = get.get_cost_team(playerspldata, team)
+    if (cc[1] == 1):
+        c_list.extend(get.get_cost_team(playerspldata, team)[2])
+
+
 #%%
 #Create df for saving results 
 seasons= [1718]
@@ -301,7 +311,7 @@ for season in seasons:
         one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
         print('Done')
     
-        useall = True
+        useall = True   # T -> alla, F -> bara 50 bästa
         if useall:
             dfres = pd.DataFrame(columns=['Budget interval', 'Best 50', 'Worst 50', 'All'])
         else: 
