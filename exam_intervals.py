@@ -177,7 +177,7 @@ for budg in budget:
 import scipy.stats as stats      
 import matplotlib.pyplot as plt
 
-def testNormalInter(h, plot=False):       
+def testNormalInter(h, plot=False, intervals= 1):       
     mu = np.mean(h)
     sigma = np.std(h)
     #x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
@@ -187,17 +187,37 @@ def testNormalInter(h, plot=False):
     
     low1 = mu-sigma
     high1 = mu+sigma
-    tot=0
+    tot1=0
     for p in h:
         if low1 < p < high1:
-            tot+=1
-        perc1 = int(tot/len(h)*100)
+            tot1+=1
+    perc1 = int(tot1/len(h)*100)
+        
+        
+    if intervals == 1:
         if perc1 > 68:
-     #       norm1 = 'Normal' #should be higher than 68%
+            #       norm1 = 'Normal' #should be higher than 68%
             ret=1
         else:
     #        norm1='Not normal'
             ret=0
+    elif intervals==2:
+        low2= mu - 1.645*sigma
+        high2= mu + 1.645*sigma
+        tot1=0
+        tot2=0
+        for p in h:
+            if low2 < p < high2:
+                tot2+=1
+        perc2 = int(tot2/len(h)*100)
+        
+        if perc1 > 68 and perc2 > 90:
+            #       norm1 = 'Normal' #should be higher than 68%
+            ret=1
+        else:
+    #        norm1='Not normal'
+            ret=0
+             
     #if plot:    
     #    plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
     #    plt.axvline(x=low1, color='r', ls='--')
@@ -398,7 +418,7 @@ for formation in formations:
         y=0
         x+=1
     res = pd.read_csv('results/pl/1617/perc_' + str(formation) + '.csv')
-    ressize = ast.literal_eval(res['Worst 50'][4])
+    ressize = ast.literal_eval(res['Best 50'][4])
     # Pie chart, where the slices will be ordered and plotted counter-clockwise:
     labels = 'Normal', 'Diverse', 'Undefined'
     sizes = ressize
@@ -412,6 +432,7 @@ for formation in formations:
     
 fig.suptitle('Worst 50, Budget: 650 to 700')  
 plt.show()
+
 
 #%%
 
@@ -456,7 +477,7 @@ for season in seasons:
         sumworst = [-1]*3
         for i in range(3):    
             sumbest[i] = [j[i] for j in allbest if j[i] != None]
-            sumworst[i] = [j[i] for j in allworst if j[i]!=None]
+            sumworst[i] = [j[i] for j in allworst if j[i] != None]
             
         #print(sumbest)    
         meanbest = [sum(k)/len(sumbest) for k in sumbest]  
@@ -476,4 +497,22 @@ for season in seasons:
 
 
 dfRes.to_csv('results/pl/ratio_normal')    
+
+
+#%%
+
+#Calc ratios 
+
+
+#Plot piechart of results    
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+
+
+for formation in formations:
+
+    res = pd.read_csv('results/pl/1617/perc_' + str(formation) + '.csv')
+    for i in range(11):
+        resbest = ast.literal_eval(res['Best 50'][i])
+        resworst = ast.literal_eval(res['Worst 50'][i]) 
+        resall = ast.literal_eval(res['All'][i])
     

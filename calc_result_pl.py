@@ -434,6 +434,8 @@ def calculatePositonlessBest(sorttuple, budget, bestPoints, n):
 
 #%%
 
+# all seasons positionless best 
+
 budgets = list(range(500,1050,50))
 seasons = [1617,1718,1819,1920,2021]
 
@@ -453,8 +455,8 @@ for season in seasons:
     bestteampoints = bestresults['Best total points'].tolist()
     
     # One possible best that we have achieved that can fasten up the computations:
-    #if season == 1617: 
-        #bestteampoints = [1260,1462,1608,1735,1843,1944,2033,2113,2189,2239,2289]    
+    if season == 1617: 
+        bestteampoints = [1260,1462,1608,1735,1843,1944,2033,2113,2189,2239,2289]    
     if season == 1718:
         bestteampoints= [1277, 1522, 1667,1821, 1939, 2012, 2073, 2127,2166, 2204, 2230]
     if season == 1819:
@@ -519,7 +521,6 @@ for season in seasons:
     if season == 2021:
         bestteampoints = [1344, 1610, 1768, 1864, 1940, 1993, 2069, 2125, 2165, 2185, 2192]
     dfindex=0
-    dfindex=0
     for idx in range(11):
             
         budget = budgets[idx]
@@ -542,7 +543,7 @@ for season in seasons:
 
 
 #%%
-# FOR NES PLAYERS
+# FOR NEW PLAYERS
 budgets = list(range(500,1050,50))
 seasons = [1617,1819]
 
@@ -550,7 +551,7 @@ for season in seasons:
     print('-------------------------------------------------')
     print('Preprocessing data for season: ' + str(season))
 
-    flat_list = clean_all_data_pl_place_indep(season, bas='data/pl_csv/players_incnew_')   
+    flat_list = clean_all_data_pl_place_indep(season, bas='data/pl_csv/players_incnew_lin_')   
     tuplist= []
     for tup in flat_list.values:
         tuplist.append((tup[0],tup[1]))
@@ -574,7 +575,7 @@ for season in seasons:
             
         budget = budgets[idx]
         bestPoints = bestteampoints[idx] 
-        bestcost, bestpoints, bestteam = calculatePositonlessBest(sorttuple, budget, bestPoints, n)
+        bestcost, bestpoints, bestteam = calculatePositonlessBestTEST(sorttuple, budget, bestPoints, n)
         if len(bestteam)==1:
             indcosts = [j for _,j in bestteam[0]]
             sortindcosts  = sorted(indcosts)
@@ -588,7 +589,7 @@ for season in seasons:
                 dfindex+=1
             
     #positionlessdf.sort_index(inplace=True)
-    positionlessdf.to_csv('results/pl/' + str(season) + '/incnew_Positionless.csv')
+    positionlessdf.to_csv('results/pl/' + str(season) + '/incnew_lin_Positionless.csv')
 
 
 #%%
@@ -852,7 +853,7 @@ plt.legend()
 
 # TRY TO SAVE MORE THAN BEST
 #xBestpoints is now a list with len nr of saved. sort when appending, delete smallest
-def calculatePositonlessXBest(sorttuple, budget, xBestPoints, n, saved = 1):
+def calculatePositonlessXBest(sorttuple, budget, xBestPoints, n):
 
     print('Calculating budget: '+ str(budget))
     sorttuplepoints = sorted([(j,i) for i,j in sorttuple], reverse=True) 

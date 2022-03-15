@@ -90,7 +90,7 @@ season = 1617
 csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
 playerspl = pd.read_csv(csv_file) 
 playerspl = playerspl.to_dict('index')
-playerspldata = getters.get_players_feature_pl(playerspl)
+playerspldata = getters.get_players_feature_pl('data/pl_csv/players_raw_',season)
 
 allpositions = getters.get_diff_pos(playerspldata)
 
@@ -159,11 +159,11 @@ def cleanAllPositions(season):
     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
     playerspl = pd.read_csv(csv_file) 
     playerspl = playerspl.to_dict('index')
-    playerspldata = getters.get_players_feature_pl(playerspl)
+    playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
     
     formations = [[3,4,5],[3,4,5],[1,2,3]]
     form_name = ["df", "mf", "fw"]
-    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(csv_file)[1:]
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl("data/pl_csv/players_raw_",season)[1:]
     
     individualCleansPerPosition =[]
     
@@ -197,11 +197,11 @@ def cleanAllPositions(season):
 import collections
 
 
-season=1819
+season=1617
 csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
 playerspl = pd.read_csv(csv_file) 
 playerspl = playerspl.to_dict('index')
-playerspldata = getters.get_players_feature_pl(playerspl)
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
 gk, df, mf,fw = getters.get_diff_pos(playerspldata)
 
 allmfCost=[]
@@ -229,6 +229,7 @@ value = -1
 theList = [None]*128 #127 highest value for cost
 templist=[]
 for key in test_dictionary.values(): 
+    print(key['now_cost'])
     if key['now_cost'] <= value:
         templist.append(key['total_points'])
         #print(key)
@@ -501,3 +502,31 @@ for idxes, rows in combined_csv.iterrows():
     #print(rows['id'])
 combined_csv['id'] = newIDs
 combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')        
+
+
+#%%
+import numpy as np
+import random 
+
+# Costs 38 to 127 in season 1617
+127-38
+mu = 75
+sigma = 20
+x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+
+high = mu+3*sigma
+low= mu+- 3*sigma
+#nrinter = round((high-low)/len(h))
+
+low1 = mu-sigma
+high1 = mu+sigma
+a = random.randint(75,85)
+test = [75, 75, 75, 85,85, 65,65, 55, 95, 105, 45]
+ 
+plt.plot(x, stats.norm.pdf(x, mu, sigma)*1.5)
+plt.axvline(x=low1, color='r', ls='--')
+plt.axvline(x=high1, color='r', ls='--')
+# fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
+#plt.plot(h,fit,'-o')
+plt.hist(test,7,density=True)
+plt.show()
