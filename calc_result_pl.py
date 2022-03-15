@@ -626,18 +626,34 @@ def testNormal(h, plot=True):
     low1 = mu-sigma
     high1 = mu+sigma
     
-    tot=0
+
+    #For second interval
+    low2= mu - 1.645*sigma
+    high2= mu + 1.645*sigma
+    tot1=0
+    tot2=0
     for p in h:
-    
+        
         if low1 < p < high1:
-            tot+=1
-        perc1 = int(tot/len(h)*100)
-        if perc1 > 68:
+            tot1+=1
+        if low2 < p < high2:
+            tot2+=1    
+    perc1 = int(tot1/len(h)*100)
+    if perc1 > 68:
             norm1 = 'Normal' #should be higher than 68%
             ret=1
-        else:
+    else:
             norm1='Not normal'
             ret=0
+
+    perc2 = round(tot2/len(h)*100)
+        
+    if perc1 > 68 and perc2 > 90:
+        norm1 = 'Normal' #should be higher than 68%
+        ret=1
+    else:
+        norm1='Not normal'
+        ret=0    
     if plot:    
         plt.plot(x, stats.norm.pdf(x, mu, sigma)*2)
         plt.axvline(x=low1, color='r', ls='--')
@@ -645,8 +661,8 @@ def testNormal(h, plot=True):
        # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
         #plt.plot(h,fit,'-o')
         
-        #plt.axvline(x=mu+2*sigma, color='b', ls='--') # *1.645 for 90%
-        #plt.axvline(x=mu-2*sigma, color='b', ls='--') # *1.960 for 95 %
+        plt.axvline(x=mu+1.645*sigma, color='b', ls='--') # *1.645 for 90%
+        plt.axvline(x=mu-1.645*sigma, color='b', ls='--') # *1.960 for 95 %
         
         #plt.hist(h,nrinter, density = True)
         plt.hist(h,len(h),density=True)
@@ -730,7 +746,7 @@ def linR2(h, ax=ax1, plot=True):
 #%%
 
 
-seasons =[1617, 1718, 1819, 1920, 2021]
+seasons =[1718, 1819, 1920, 2021]
 i=0   
 similar=0 
 for season in seasons: 
@@ -758,8 +774,8 @@ for season in seasons:
                similar+=1
            else: 
                print(i, ret1==ret2, ret1, val1, ret2, val2)
-               #if val1 > 0.93 or val1 < 0.87: # då äf vi säkra på normal/not normal även om olika
-                #   similar+=1
+               if val1 > 0.93 or val1 < 0.87: # då äf vi säkra på normal/not normal även om olika
+                   similar+=1
 print(similar/i)
 #%%
 i=0

@@ -242,6 +242,11 @@ for key in test_dictionary.values():
             theList[value] = templist
 
 print(choice(theList[38]))
+#%%
+possibleCosts=[]
+for i,item in enumerate(theList):
+    if item != None:
+        possibleCosts.append(i)
 
 #%%
 
@@ -508,25 +513,107 @@ combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')
 import numpy as np
 import random 
 
-# Costs 38 to 127 in season 1617
-127-38
-mu = 75
-sigma = 20
-x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+budget= 1000
 
-high = mu+3*sigma
-low= mu+- 3*sigma
-#nrinter = round((high-low)/len(h))
+# Costs 38 to 127 in season 1617 - interval of 89, little right scew is ok
+def generateRandomNormal(budget):
+    mu = round(budget/11)
+    sigma = round((mu-38)/1.645)
+    step=round(2*sigma/5)
+    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    
+    # random generate
+    test=[] 
+    #7 intervals with distr 1 1 2 3 2 1 1
+    intervals= [1, 1, 2, 3, 2, 1, 1]
+    binstest=[]
+    
+    for i, idx in enumerate(intervals):
+        if i == 0 :
+            templist=[]
+            for j in range(38, mu-sigma-1):
+                if j in possibleCosts:
+                    templist.append(j)
+            
+            #b=randint(38, mu-sigma-1)
+            b=choice(templist)
+            binstest.append(38)
+            binstest.append(mu-1.3125*sigma)
+            test.append(b)
+        elif i == 6:
+            #up to highest we can buy from 
+            templist=[]
+            if budget-sum(test) > mu+sigma+1:
+                for j in range(mu+sigma+1, budget-sum(test)):
+                    if j in possibleCosts:
+                        templist.append(j)
+                        
+                #b=randint(mu+sigma+1, budget-sum(test))
+                if len(templist)>0:
+                    b=choice(templist)
+                else:
+                    b=mu
+                test.append(b)
+                binstest.append(mu+sigma+1)
+                add= mu+sigma+1+sigma*0.3125
 
-low1 = mu-sigma
-high1 = mu+sigma
-a = random.randint(75,85)
-test = [75, 75, 75, 85,85, 65,65, 55, 95, 105, 45]
- 
-plt.plot(x, stats.norm.pdf(x, mu, sigma)*1.5)
-plt.axvline(x=low1, color='r', ls='--')
-plt.axvline(x=high1, color='r', ls='--')
+                while add < b:
+                    binstest.append(add)
+                    add+=sigma*0.3125
+                binstest.append(b+1)
+            else:
+                for j in range(budget-sum(test)-10, budget-sum(test)):
+                    if j in possibleCosts:
+                        templist.append(j)
+                #b=randint(budget-sum(test)-10,budget-sum(test))
+                b=choice(templist)
+                test.append(b)
+                binstest.append((mu+1.3125*sigma))
+                
+        else:
+            binstest.append((mu-sigma)+(i-1)*step)
+            templist=[]
+            for j in range((mu-sigma)+(i-1)*step, (mu-sigma-1)+(i)*step):
+                if j in possibleCosts:
+                    templist.append(j)
+            a=1 
+            while a <= idx :
+                
+                #b= randint((mu-sigma)+(i-1)*step, (mu-sigma-1)+(i)*step)
+                b=choice(templist)
+                test.append(b)
+                a+=1
+        
+    #a = random.randint(75,85)
+    # test = [75, 75, 75, 85,85, 65,65, 55, 95, 105, 45]
+    teampoints=[]
+    for cost in test: 
+        teampoints.append(choice(theList[cost]))
+    return test, sum(test), sum(teampoints)    
+#%% 
+budget = 1000
+allpoints=[]
+allcosts=[]
+for i in range(10000):
+    costs,sumcost,tpoints = generateRandomNormal(budget)  
+    allpoints.append(tpoints)
+    allcosts.append(sumcost)
+plt.hist(allpoints)
+plt.show()
+plt.hist(allcosts)    
+print(test)    
+print(sum(test))
+print(teampoints)
+print(sum(teampoints))
+
+#%%
+plt.plot(x, stats.norm.pdf(x, mu, sigma)*30)
+plt.axvline(x=mu-sigma, color='r', ls='--')
+plt.axvline(x=mu+sigma, color='r', ls='--')
+plt.axvline(x=mu-1.645*sigma, color='b', ls='--')
+plt.axvline(x=mu+1.645*sigma, color='b', ls='--')
 # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
 #plt.plot(h,fit,'-o')
-plt.hist(test,7,density=True)
+#bins=[38, mu-1.3125*sigma,mu-sigma, mu-sigma+step,mu-sigma+2*step,mu+sigma-2*step+1,mu+sigma-step+1, mu+sigma+1, mu+1.3125*sigma+1, mu+1.625*sigma+1]
+plt.hist(test,bins=binstest)#, density=True)
 plt.show()
