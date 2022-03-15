@@ -5,6 +5,15 @@ Created on Thu Feb 17 14:38:11 2022
 
 @author: josef
 """
+#%%%
+
+for i in range(10):
+    j=i
+    print(i)
+    (j + 1) if i==0 else j
+    (j - 1) if i==9 else j
+    print(j)
+#%%%
 
 import pandas as pd
 import numpy as np
@@ -35,7 +44,7 @@ def det_a(data, all_ids):
     return(min(get.get_cost_team(data,all_ids)))
 
 def thry_interval(a,upper, c = 2):
-    inter = np.linspace(a+c, (2*upper/11)-a, 11, dtype = int)
+    inter = np.linspace(a+c, (2*upper/11)-a, 11, dtype = float)
     return(inter.tolist())
 
 def is_diverse(team_id, full_data, budget, c = 5):
@@ -53,7 +62,7 @@ def is_diverse(team_id, full_data, budget, c = 5):
         return(1)
 import math
 
-def is_diverse_ed2(playersdata, team_ids, s = 1, z_count = 4): # s determines interval length
+def is_diverse_ed2(playersdata, team_ids, s = 2, z_count = 4, rang = 2): # s determines interval length
     team_cost = get.get_cost_team(playersdata, team_ids)
 #    print(team_id)
     team_cost.sort()
@@ -62,19 +71,20 @@ def is_diverse_ed2(playersdata, team_ids, s = 1, z_count = 4): # s determines in
 
     a = min(team_cost)
     b= max(team_cost)
-#    print(a)
-    theory_int = np.linspace(a, b, 11, dtype=int).tolist()
+#    print(team_cost)
+    theory_int = np.round(np.linspace(a, b, 11, dtype=float),1).tolist()
+    
 #    print(theory_int)
-    c = int(theory_int[1]-theory_int[0])
-    theory_int_l = [x - math.ceil(c/s) for x in theory_int]
-    theory_int_h = [x + math.ceil(c/s) for x in theory_int]
+    c = np.round((theory_int[1]-theory_int[0])/2,1)
+    theory_int_l = [round(x - c,1) for x in theory_int]
+    theory_int_h = [round(x + c,2) for x in theory_int]
     counts = [0]*11
 #    print(c)
 #    print(theory_int_l)
 #    print(theory_int_h)
 #    save_empty_indices = []
 #    print(team_cost)
-#    print(theory_int_l)
+#    print(theory_int)
 #    print(theory_int_h)    
 #    
     for re in team_cost:
@@ -82,14 +92,29 @@ def is_diverse_ed2(playersdata, team_ids, s = 1, z_count = 4): # s determines in
         for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
             if(re >= low and re <= up):
                 counts[i] += 1
+                break
 #    print(counts)
-
-    
-    if(counts.count(0) < z_count): # zeros implicates amount that interval doesn't cover
-#        print(1)
+    mas = max(counts)
+    max_ind = [i for (i,x) in enumerate(counts) if x == mas]
+    normals = []
+    for i in max_ind:
+#        print(i)
+        if i == 0: i+=rang
+#        if i == 1: i +=1
+        if i == 10: i-=rang
+#        if i == 9: i-=1
+        normals.append(sum([counts[j] for j in range(i-rang,i+rang+1)]))
+#    print(normals)
+    if(sum(counts)> 11): print("hi")    
+    normal = max(normals)
+#    print(counts)
+#    print(normal)
+    if(normal > z_count): 
+#        print("normal")        
         return(0)
     else:
-#        print(0)
+#        print(counts)
+#        print("linear")
         return(1)
 
 def flatten(l):
@@ -134,6 +159,25 @@ from collections import Counter
 #playerspl = players.to_dict('index')
 playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", 1718)
 #cost_list = calc.createCostList(playerspldata, False)
+ones= filter_df(one, 650, 700)
+all_teams = ones["indexes"].to_list()
+random.seed(123)
+#all_teams = random.sample(all_teams, 50)
+isd = [is_diverse_ed2(playerspldata, team_id, s = 2, z_count = 7, rang =1) for team_id in all_teams]
+indexes_div = [i for (i,x) in enumerate(isd) if x==1]
+tot_points = []
+tot_cost = []
+#all_points = ones.total_points.tolist()
+#all_costs = ones.cost.tolist()
+
+#tot_points = [all_points[i] for i in indexes_div]
+for ind in indexes_div:
+     tot_points.append(ones.iloc[ind]['points_total'])
+     tot_cost.append(ones.iloc[ind]['cost'])
+
+
+print((sum(tot_cost)/len(tot_cost)/ ones['cost'].mean()))
+print((sum(tot_points)/len(tot_points))/ ones['points_total'].mean())
 #%%
 
 
