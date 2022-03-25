@@ -8,6 +8,11 @@ import pandas as pd
 import getters
 import parsers
 
+def filter_df(df, lwr, upper):
+    df = df[df['cost'] <= upper]
+    df_new = df[df['cost'] >= lwr]
+    return(df_new)
+
 def all_forms_as_df_cleaned(league = "allsvenskan"):
     data2 = getters.get_data()
     players = getters.get_players_feature(data2)
