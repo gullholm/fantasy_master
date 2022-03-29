@@ -14,6 +14,11 @@ import cleaners
 import ast
 import matplotlib.pyplot as plt
 generic = lambda x: ast.literal_eval(x)
+import numpy as np
+import random 
+from random import choice
+import collections
+
 
 
 #Random generate teams from ditribution or randomly.
@@ -193,60 +198,7 @@ def cleanAllPositions(season):
     print("Done with " + str(season))
     return individualCleansPerPosition
 
-# In[]
-import collections
 
-
-season=1617
-csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
-playerspl = pd.read_csv(csv_file) 
-playerspl = playerspl.to_dict('index')
-playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
-gk, df, mf,fw = getters.get_diff_pos(playerspldata)
-
-allmfCost=[]
-for m in mf.items():
-    allmfCost.append(m[1]['now_cost'])
-
-occurrences = collections.Counter(allmfCost)
-print(sorted(occurrences.items()))    
-plt.hist(allmfCost)   
-  
- # In[]
- 
-sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
-
-test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
-#print(test_dictionary[testsort[0]]) 
-
-for idx in sortIdxByCost:
-    print(playerspldata[idx])
-    
-print(playerspldata[sortIdxByCost[2]])
-
-# In[]
-value = -1
-theList = [None]*128 #127 highest value for cost
-templist=[]
-for key in test_dictionary.values(): 
-    print(key['now_cost'])
-    if key['now_cost'] <= value:
-        templist.append(key['total_points'])
-        #print(key)
-    else: 
-        theList[value] = templist  
-        templist = []
-        value = key['now_cost']
-        templist.append(key['total_points'])
-        if key['now_cost'] == 127:
-            theList[value] = templist
-
-print(choice(theList[38]))
-#%%
-possibleCosts=[]
-for i,item in enumerate(theList):
-    if item != None:
-        possibleCosts.append(i)
 
 #%%
 
@@ -284,9 +236,15 @@ def generateTeamFromDistribution(theList, budget, theory_k, theory_m):
         if x == 0: 
             low = theory_m
         cost = randint(low, high)
+        while cost >= len(theList):
+             cost=randint(low,high)
+        #print('cost', cost)     
         templist = theList[cost]
         while (templist is None): 
-            cost = randint(low, high)    
+            cost=randint(low,high)
+            while cost >= len(theList):
+                 cost=randint(low,high) 
+            #print('cost:', cost)     
             templist = theList[cost]
         
         teamDistr.append(cost)    
@@ -296,7 +254,7 @@ def generateTeamFromDistribution(theList, budget, theory_k, theory_m):
     return totalPoints, totalCost, teamDistr
 
 #%%
-budget = 800
+budget = 900
 allCosts, allPoints, allDynamics =[], [], []
 
 theory_k, theory_m = calculateTheoryDistribution(theList, budget)
@@ -310,8 +268,13 @@ while (len(allCosts)<10000):
         allDynamics.append(dynamics)
 
 # Plot results distribution
-plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "distribution")       
+plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "distribution")
+print('Sum of 50 best', sum(sorted(allPoints)[-50:]))
+print('Mean of 50 best', sum(sorted(allPoints)[-50:])/50)     
 
+#%%
+print(allDynamics[0])
+plt.plot(allDynamics[0], 'o') 
 
 #%%
 
@@ -391,8 +354,6 @@ printAndPlotSummary(allCosts, allPoints, allDynamics, budget)
 
 # Create a combinations of all seasons in PL 
 
-
-
 def combineAllSeasonsPl():
     
     seasons=[1617, 1718,1819,1920,2021]
@@ -409,7 +370,7 @@ def combineAllSeasonsPl():
         print(test_dictionary[len(test_dictionary)-1]['total_points'])
         value = -1
         if season == 1617:
-            theList = [None]*133 #132 highest value for cost
+            theList = [None]*133 #132 highest value for all costs in pl
             templist=[]
             for key in test_dictionary.values(): 
                 if key['now_cost'] <= value:
@@ -510,16 +471,12 @@ combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')
 
 
 #%%
-import numpy as np
-import random 
-
-budget= 1000
 
 # Costs 38 to 127 in season 1617 - interval of 89, little right scew is ok
-def generateRandomNormal(budget):
-    mu = round(budget/11)
-    sigma = round((mu-38)/1.645)
-    step=round(2*sigma/5)
+def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
+    #mu = round(budget/11)
+    #sigma = round((mu-38)/1.645)
+    #step=round(2*sigma/5)
     x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
     
     # random generate
@@ -540,6 +497,7 @@ def generateRandomNormal(budget):
             binstest.append(38)
             binstest.append(mu-1.3125*sigma)
             test.append(b)
+            #Vet inte om denna ska vara kommenterad eller inte 
         elif i == 6:
             #up to highest we can buy from 
             templist=[]
@@ -552,7 +510,13 @@ def generateRandomNormal(budget):
                 if len(templist)>0:
                     b=choice(templist)
                 else:
-                    b=mu
+                    #Var tvungen att justera här... 
+                    #print('här blir det fel', mu)
+                    #print('så mycket kvar', budget-sum(test))
+                    lastcost = [j for j in possibleCosts if j < budget-sum(test)]
+                    #print(lastcost)
+                    b=choice(lastcost)
+                    #b=mu
                 test.append(b)
                 binstest.append(mu+sigma+1)
                 add= mu+sigma+1+sigma*0.3125
@@ -586,27 +550,34 @@ def generateRandomNormal(budget):
         
     #a = random.randint(75,85)
     # test = [75, 75, 75, 85,85, 65,65, 55, 95, 105, 45]
-    teampoints=[]
+    teampoints=0
     for cost in test: 
-        teampoints.append(choice(theList[cost]))
-    return test, sum(test), sum(teampoints)    
+        teampoints += choice(theList[cost])
+    return sum(test), teampoints, test
 #%% 
-budget = 1000
+###DENNA KÖR MAN FÖR ATT FÅ FRAM NORMAL
+theList = createTheList(1718)  
+possibleCosts = createPossibleCosts(theList)    
+budget = 950
 allpoints=[]
 allcosts=[]
-for i in range(10000):
-    costs,sumcost,tpoints = generateRandomNormal(budget)  
+for i in range(10):
+    mu, sigma,step = calcMuSigmaStep(budget)
+    tcost,tpoints, distr = generateRandomNormal(budget, mu, sigma, step, possibleCosts)  
     allpoints.append(tpoints)
-    allcosts.append(sumcost)
-plt.hist(allpoints)
-plt.show()
-plt.hist(allcosts)    
-print(test)    
-print(sum(test))
-print(teampoints)
-print(sum(teampoints))
+    allcosts.append(tcost)
+plotHistOfAllCostsAndPoints(allcosts, allpoints, budget, ' normal')  
+
+print('Mean of 50 worst normal', sum(sorted(allpoints)[:50])/50) 
+print('Mean all normal', sum(allpoints)/runs)
+print('Mean of 50 best normal', sum(sorted(allpoints)[-50:])/50)
+
 
 #%%
+mu = round(budget/11)
+sigma = round((mu-38)/1.645)
+step=round(2*sigma/5)
+x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
 plt.plot(x, stats.norm.pdf(x, mu, sigma)*30)
 plt.axvline(x=mu-sigma, color='r', ls='--')
 plt.axvline(x=mu+sigma, color='r', ls='--')
@@ -615,5 +586,282 @@ plt.axvline(x=mu+1.645*sigma, color='b', ls='--')
 # fit = stats.norm.pdf(h, np.mean(h), np.std(h))*2  #this is a fitting indeed
 #plt.plot(h,fit,'-o')
 #bins=[38, mu-1.3125*sigma,mu-sigma, mu-sigma+step,mu-sigma+2*step,mu+sigma-2*step+1,mu+sigma-step+1, mu+sigma+1, mu+1.3125*sigma+1, mu+1.625*sigma+1]
-plt.hist(test,bins=binstest)#, density=True)
+plt.hist(costs,bins=binstest)#, density=True)
 plt.show()
+
+#%%
+
+def generateRandomLinearBins(theList, mean, possibleCosts, k, bins):
+   # if bins[0] + k < 38:
+    #    print('too small first bin')
+   #     return 0,0,0
+    totalPoints, totalCost, teamDistr = 0, 0, []
+    for i,b in enumerate(bins):
+        if i==11:
+            break
+    #    print('low, high: ' ,b, bins[i+1]-1)
+        # Testing new approach, think it works and better 
+        #lbin= b+1
+        lbin = b
+        hbin = bins[i+1]
+        
+        posCosts= [i for i in possibleCosts if i <=hbin and i >= lbin ]
+        while len(posCosts) == 0:
+              lbin -= 1 
+              hbin += 1
+              posCosts= [i for i in possibleCosts if i <=hbin and i >= lbin ]
+        
+        cost = choice(posCosts)
+        templist = theList[cost]
+        # THIS APPROACH WORKS
+    #     lbin= b+1
+    #     hbin = bins[i+1]
+    #     cost = randint(lbin, hbin)
+    #     while cost >= len(theList):
+    #           cost = randint(lbin,hbin)
+    # #    print('cost', cost)     
+    #     templist = theList[cost]
+    #     while (templist is None): 
+    #          cost=randint(lbin,hbin)
+    #          while cost >= len(theList):
+    #               cost=randint(lbin,hbin) 
+    #          print('cant find: ', cost)     
+    #          templist = theList[cost]
+        
+        teamDistr.append(cost)    
+        totalPoints += choice(templist) # add points
+        totalCost += cost
+    
+    return totalPoints, totalCost, teamDistr
+
+#%%
+
+#RUN THIS FOR LINEAR 
+budget = 900
+lowerbudget =budget-50
+allpoints=[]
+allcosts=[]
+alldistr=[]
+while len(allcosts) < 1000:
+    tpoints, tcost, distr = generateRandomLinearBins(theList, budget, possibleCosts)    
+    if tcost < budget and tcost > lowerbudget:
+        allpoints.append(tpoints)
+        allcosts.append(tcost)
+        alldistr.append(distr)
+plotHistOfAllCostsAndPoints(allcosts, allpoints, budget, 'normal')  
+
+print('Mean of 50 best', sum(sorted(allpoints)[-50:])/50)
+
+#%%
+plt.plot(range(11), alldistr[0], 'o')
+plt.plot()
+#%%
+#Not the best... maybe not linear... 
+def generateRandomLinearLine(theList, budget):
+    n=11
+    mean = int(budget/n)
+    print('mean',mean)
+    k = randint(1,2)
+    print('k',k)
+    m= mean-k*5
+    print('m', m)
+    
+    x = np.linspace(0,10, 1000)
+    y= k*x+m
+
+    totalPoints, totalCost = 0, 0
+    teamDistr = []
+    for i in range(11):
+        idx = randint(0,999)
+        cost= round(y[idx])
+        
+        teamDistr.append(cost)    
+        totalPoints += choice(templist) # add points
+        totalCost += cost
+    
+    return totalPoints, totalCost, teamDistr
+
+#%%
+#Blir sådär...
+budget=700
+a,b,c = generateRandomLinearLine(theList, budget)
+print('point', 'cost', 'distr',a,b,c)
+
+#%%
+ 
+def calcMuSigmaStep(budget):
+    mu = round(budget/11)
+    sigma = round((mu-38)/1.645)
+    step=round(2*sigma/5)
+    
+    return mu, sigma, step
+
+#%%
+#Kör för att jämföra : 
+    
+#FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE     
+season = 1718
+#Create list of lists with points for each cost
+theList = createTheList(season)  
+possibleCosts = createPossibleCosts(theList)    
+
+runs= 100000
+budget = 1000
+lowerbudget= budget-20
+n=11
+mean = budget/n
+
+# n for normal, l for linear
+nallpoints, nallcosts, nalldistr=[], [],[]
+lallpoints, lallcosts, lalldistr=[], [],[]
+
+#Bästa k för varje budget:
+budgets = [600, 650, 700, 750, 800, 850, 900, 950, 1000]
+bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
+#Baserat på säsong 1617 är dessa de bästa k-värdena
+#600 1 bäst
+#650 2 ger högst för top 50, 1 ger högre för medel av alla samt worst 50
+#700 1 ger högst mean, top 50, 2 ger högst worst 50
+#750 1 ger högst top 50 , 5 ger högst worst 50, 4 högst mean
+#800 3 högst top 50, 6 högst mean och worst 50
+#850 6 bäst
+#900 8 bäst
+#950 7 bäst top 50 mean, 9 bäst worst 50 
+#1000 6 ger högst mean, top 50, 1 ger högst worst 50 
+#k = randint(1,10) #Trying with random k
+#Trying the best k
+randomResults = pd.DataFrame(columns=['Budget', 'Linear/Normal', 'Mean cost', 'Mean points', 'Mean 50 best p', 'Mean 50 worst p', 'Ratio points/costs'])
+idx = 0 
+for j, budget in enumerate(budgets):
+    lowerbudget= budget-20
+    n=11
+    mean = budget/n
+    print('---------------budget: ',budget, '-------------------')
+    #for k in range(1,11): #Trying with fixed k
+    k = bestk[j]
+    #print('---------- k: ',k, '----------')
+    lallpoints, lallcosts, lalldistr=[], [],[]
+    lowbin= int(mean-k*5.5)
+    bins= [lowbin + i*k for i in range(12)]
+    if bins[0]+k<38:
+        break
+    
+    while len(lallcosts) < runs: 
+        
+        ltpoints, ltcosts, ldistr = generateRandomLinearBins(theList, mean, possibleCosts, k, bins)    
+        #print(ldistr)
+        if ltcosts < budget and ltcosts > lowerbudget:
+            lallpoints.append(ltpoints)
+            lallcosts.append(ltcosts)
+            lalldistr.append(ldistr)
+    print('Mean of 50 worst linear', sum(sorted(lallpoints)[:50])/50) 
+    print('Mean all linear', sum(lallpoints)/runs)
+    print('Mean of 50 best linear', sum(sorted(lallpoints)[-50:])/50)             
+      
+    nallpoints, nallcosts, nalldistr=[], [],[]      
+    while len(nallcosts) < runs: 
+        mu, sigma, step = calcMuSigmaStep(budget)
+        ntcosts, ntpoints, ndistr = generateRandomNormal(budget,mu,sigma,step, possibleCosts)  
+        # kan skicka in mu, sigma, step för snabbhet
+        if ntcosts < budget and ntcosts > lowerbudget:
+            nallpoints.append(ntpoints)
+            nallcosts.append(ntcosts)
+            nalldistr.append(ndistr)
+        
+    plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' linear')      
+    plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' normal')  
+    
+       
+    
+    print('Mean of 50 worst normal', sum(sorted(nallpoints)[:50])/50) 
+    print('Mean all normal', sum(nallpoints)/runs)
+    print('Mean of 50 best normal', sum(sorted(nallpoints)[-50:])/50)
+    
+    randomResults.loc[idx] = ([budget, 'Linear: ' + str(k), sum(lallcosts)/runs, sum(lallpoints)/runs, sum(sorted(lallpoints)[-50:])/50, sum(sorted(lallpoints)[:50])/50, round(sum(lallpoints)/sum(lallcosts),3)])
+    idx+=1
+    randomResults.loc[idx] = ([budget, 'Normal' , sum(nallcosts)/runs, sum(nallpoints)/runs, sum(sorted(nallpoints)[-50:])/50, sum(sorted(nallpoints)[:50])/50, round(sum(nallpoints)/sum(nallcosts),3)])
+    idx+=1
+#%%
+randomResults.to_csv('results/pl/' + str(season) + '/generateRandom.csv')
+
+
+#%%
+#%%
+#plot the different distributions
+flat_nalldistr = [item for sublist in nalldistr for item in sublist]
+flat_lalldistr = [item for sublist in lalldistr for item in sublist]
+#%%
+plt.hist(flat_nalldistr, range=(38,128), bins=11)
+plt.hist(flat_lalldistr, range=(38,128), bins=bins)
+plt.show()
+for i in range(1000):
+    plt.plot(range(11),lalldistr[i], 'o')
+plt.show() 
+for i in range(1000):
+    plt.plot(range(11), nalldistr[i], 'o')
+    
+#%%
+print('Mean all normal points', sum(nallpoints)/runs)
+print('Mean all linear points', sum(lallpoints)/runs)
+print('Mean of all costs linear', sum(lallcosts)/runs)
+print('Mean of all costs normal', sum(nallcosts)/runs)
+print(round(sum(nallpoints)/sum(nallcosts),3)) 
+print(sum(lallpoints)/sum(lallcosts))   
+
+#%%
+randomResults.to_csv('results/pl/1617/generateRandom.csv')
+
+# In[]
+
+season = 1617
+def createTheList(season):
+    
+    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+    playerspl = pd.read_csv(csv_file) 
+    playerspl = playerspl.to_dict('index')
+    playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
+    #gk, df, mf,fw = getters.get_diff_pos(playerspldata)
+
+    #allmfCost=[]
+    #for m in mf.items():
+    #    allmfCost.append(m[1]['now_cost'])
+
+    #occurrences = collections.Counter(allmfCost)
+    #print(sorted(occurrences.items()))    
+    #plt.hist(allmfCost)
+
+    sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
+
+    test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
+    highcost = test_dictionary[len(test_dictionary)-1]['now_cost'] 
+    print('max',highcost) 
+
+    #for idx in sortIdxByCost:
+        #print(playerspldata[idx])
+        
+    print(playerspldata[sortIdxByCost[2]])
+    
+    value = -1
+    theList = [None]*(highcost+1) #127 highest value for cost
+    templist=[]
+    for key in test_dictionary.values(): 
+        if key['now_cost'] <= value:
+            templist.append(key['total_points'])
+        else: 
+            theList[value] = templist  
+            templist = []
+            value = key['now_cost']
+            templist.append(key['total_points'])
+            if key['now_cost'] == highcost:
+                theList[value] = templist    
+    return theList
+
+
+
+#%%
+def createPossibleCosts(theList):
+    possibleCosts=[]
+    for i,item in enumerate(theList):
+        if item != None:
+            possibleCosts.append(i)
+    return possibleCosts    
