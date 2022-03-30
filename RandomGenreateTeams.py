@@ -315,13 +315,13 @@ plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "random")
 
 def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):        
     plt.hist(allCosts)
-    plt.title("All costs from" + title + " under budget: " + str(budget))
+    plt.title("Season: " + str(season) + " budget: " + str(budget) + " distr: " + title)
     plt.xlabel("Costs")
     plt.ylabel("Amount")
     plt.show()
     
     plt.hist(allPoints)    
-    plt.title("All points from " + title + " under budget: " + str(budget)) 
+    plt.title("Season: " + str(season) + " budget: " + str(budget) + " distr: " + title) 
     plt.xlabel("Points")
     plt.ylabel("Amount")       
     plt.show()
@@ -699,106 +699,130 @@ def calcMuSigmaStep(budget):
 #%%
 #Kör för att jämföra : 
     
-#FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE     
-season = 1718
+#FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE  
+seasons = [1617,1718,1819,1920,2021]   
+#season = 1819
 #Create list of lists with points for each cost
-theList = createTheList(season)  
-possibleCosts = createPossibleCosts(theList)    
-
 runs= 100000
-budget = 1000
-lowerbudget= budget-20
-n=11
-mean = budget/n
+ #budget = 1000
+ #lowerbudget= budget-20
+ #n=11
+ #mean = budget/n
 
-# n for normal, l for linear
-nallpoints, nallcosts, nalldistr=[], [],[]
-lallpoints, lallcosts, lalldistr=[], [],[]
-
-#Bästa k för varje budget:
-budgets = [600, 650, 700, 750, 800, 850, 900, 950, 1000]
-bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
-#Baserat på säsong 1617 är dessa de bästa k-värdena
-#600 1 bäst
-#650 2 ger högst för top 50, 1 ger högre för medel av alla samt worst 50
-#700 1 ger högst mean, top 50, 2 ger högst worst 50
-#750 1 ger högst top 50 , 5 ger högst worst 50, 4 högst mean
-#800 3 högst top 50, 6 högst mean och worst 50
-#850 6 bäst
-#900 8 bäst
-#950 7 bäst top 50 mean, 9 bäst worst 50 
-#1000 6 ger högst mean, top 50, 1 ger högst worst 50 
-#k = randint(1,10) #Trying with random k
-#Trying the best k
-randomResults = pd.DataFrame(columns=['Budget', 'Linear/Normal', 'Mean cost', 'Mean points', 'Mean 50 best p', 'Mean 50 worst p', 'Ratio points/costs'])
-idx = 0 
-for j, budget in enumerate(budgets):
-    lowerbudget= budget-20
-    n=11
-    mean = budget/n
-    print('---------------budget: ',budget, '-------------------')
-    #for k in range(1,11): #Trying with fixed k
-    k = bestk[j]
-    #print('---------- k: ',k, '----------')
+for season in seasons:  
+    print('------------------------SEASON', season, '------------------')
+    theList = createTheList(season)  
+    possibleCosts = createPossibleCosts(theList)    
+    
+    # n for normal, l for linear
+    nallpoints, nallcosts, nalldistr=[], [],[]
     lallpoints, lallcosts, lalldistr=[], [],[]
-    lowbin= int(mean-k*5.5)
-    bins= [lowbin + i*k for i in range(12)]
-    if bins[0]+k<38:
-        break
     
-    while len(lallcosts) < runs: 
+    #Bästa k för varje budget:
+    budgets = [600, 650, 700, 750, 800, 850, 900, 950, 1000]
+    bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
+    #Baserat på säsong 1617 är dessa de bästa k-värdena
+    #600 1 bäst
+    #650 2 ger högst för top 50, 1 ger högre för medel av alla samt worst 50
+    #700 1 ger högst mean, top 50, 2 ger högst worst 50
+    #750 1 ger högst top 50 , 5 ger högst worst 50, 4 högst mean
+    #800 3 högst top 50, 6 högst mean och worst 50
+    #850 6 bäst
+    #900 8 bäst
+    #950 7 bäst top 50 mean, 9 bäst worst 50 
+    #1000 6 ger högst mean, top 50, 1 ger högst worst 50 
+    #k = randint(1,10) #Trying with random k
+    #Trying the best k
+    randomResults = pd.DataFrame(columns=['Budget', 'Linear/Normal', 'Mean cost', 'Mean points', 'Mean 50 best p', 'Mean 50 worst p', 'Ratio points/costs'])
+    idx = 0 
+    for j, budget in enumerate(budgets):
+        lowerbudget= budget-20
+        n=11
+        mean = budget/n
+        print('---------------budget: ',budget, '-------------------')
+        #for k in range(1,11): #Trying with fixed k
+        k = bestk[j]
+        #print('---------- k: ',k, '----------')
+        lallpoints, lallcosts, lalldistr=[], [],[]
+        lowbin= int(mean-k*5.5)
+        bins= [lowbin + i*k for i in range(12)]
+        if bins[0]+k<38:
+            break
         
-        ltpoints, ltcosts, ldistr = generateRandomLinearBins(theList, mean, possibleCosts, k, bins)    
-        #print(ldistr)
-        if ltcosts < budget and ltcosts > lowerbudget:
-            lallpoints.append(ltpoints)
-            lallcosts.append(ltcosts)
-            lalldistr.append(ldistr)
-    print('Mean of 50 worst linear', sum(sorted(lallpoints)[:50])/50) 
-    print('Mean all linear', sum(lallpoints)/runs)
-    print('Mean of 50 best linear', sum(sorted(lallpoints)[-50:])/50)             
-      
-    nallpoints, nallcosts, nalldistr=[], [],[]      
-    while len(nallcosts) < runs: 
-        mu, sigma, step = calcMuSigmaStep(budget)
-        ntcosts, ntpoints, ndistr = generateRandomNormal(budget,mu,sigma,step, possibleCosts)  
-        # kan skicka in mu, sigma, step för snabbhet
-        if ntcosts < budget and ntcosts > lowerbudget:
-            nallpoints.append(ntpoints)
-            nallcosts.append(ntcosts)
-            nalldistr.append(ndistr)
+        while len(lallcosts) < runs: 
+            
+            ltpoints, ltcosts, ldistr = generateRandomLinearBins(theList, mean, possibleCosts, k, bins)    
+            #print(ldistr)
+            if ltcosts < budget and ltcosts > lowerbudget:
+                lallpoints.append(ltpoints)
+                lallcosts.append(ltcosts)
+                lalldistr.append(ldistr)
+        print('Mean of 50 worst linear', sum(sorted(lallpoints)[:50])/50) 
+        print('Mean all linear', sum(lallpoints)/runs)
+        print('Mean of 50 best linear', sum(sorted(lallpoints)[-50:])/50)             
+          
+        nallpoints, nallcosts, nalldistr=[], [],[]      
+        while len(nallcosts) < runs: 
+            mu, sigma, step = calcMuSigmaStep(budget)
+            ntcosts, ntpoints, ndistr = generateRandomNormal(budget,mu,sigma,step, possibleCosts)  
+            # kan skicka in mu, sigma, step för snabbhet
+            if ntcosts < budget and ntcosts > lowerbudget:
+                nallpoints.append(ntpoints)
+                nallcosts.append(ntcosts)
+                nalldistr.append(ndistr)
+            
+        plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' linear', season)      
+        plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' normal', season)  
         
-    plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' linear')      
-    plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' normal')  
+        print('Mean of 50 worst normal', sum(sorted(nallpoints)[:50])/50) 
+        print('Mean all normal', sum(nallpoints)/runs)
+        print('Mean of 50 best normal', sum(sorted(nallpoints)[-50:])/50)
+        
+        randomResults.loc[idx] = ([budget, 'Linear: ' + str(k), int(sum(lallcosts)/runs), round(sum(lallpoints)/runs), round(sum(sorted(lallpoints)[-50:])/50), round(sum(sorted(lallpoints)[:50])/50), round(sum(lallpoints)/sum(lallcosts),3)])
+        idx+=1
+        randomResults.loc[idx] = ([budget, 'Normal' , round(sum(nallcosts)/runs), round(sum(nallpoints)/runs), round(sum(sorted(nallpoints)[-50:])/50), round(sum(sorted(nallpoints)[:50])/50), round(sum(nallpoints)/sum(nallcosts),3)])
+        idx+=1
+        
+        #plot the different distributions
+        plotDistr(lalldistr, Linear)
+        plotdistr(nalldistr, Normal)
     
-       
-    
-    print('Mean of 50 worst normal', sum(sorted(nallpoints)[:50])/50) 
-    print('Mean all normal', sum(nallpoints)/runs)
-    print('Mean of 50 best normal', sum(sorted(nallpoints)[-50:])/50)
-    
-    randomResults.loc[idx] = ([budget, 'Linear: ' + str(k), sum(lallcosts)/runs, sum(lallpoints)/runs, sum(sorted(lallpoints)[-50:])/50, sum(sorted(lallpoints)[:50])/50, round(sum(lallpoints)/sum(lallcosts),3)])
-    idx+=1
-    randomResults.loc[idx] = ([budget, 'Normal' , sum(nallcosts)/runs, sum(nallpoints)/runs, sum(sorted(nallpoints)[-50:])/50, sum(sorted(nallpoints)[:50])/50, round(sum(nallpoints)/sum(nallcosts),3)])
-    idx+=1
-#%%
-randomResults.to_csv('results/pl/' + str(season) + '/generateRandom.csv')
+    randomResults.to_csv('results/pl/' + str(season) + '/generateRandom.csv')
 
 
 #%%
 #%%
+def plotDistr(distr, title):
+    #plot the different distributions
+    print('Plotting')
+    flat_distr = [item for sublist in distr for item in sublist]
+
+    plt.hist(flat_distr, range=(38,128), bins=bins)
+    plt.title("Histogram of individual player costs with distr: " + str(title))
+    plt.show()
+
+    for i in range(1000):
+        plt.plot(range(11), distr[i], 'o') 
+    plt.title("Distribution of individual player costs with distr: " + str(title))
+    plt.show()
+  #%%
 #plot the different distributions
+print('Plotting')
 flat_nalldistr = [item for sublist in nalldistr for item in sublist]
 flat_lalldistr = [item for sublist in lalldistr for item in sublist]
 #%%
-plt.hist(flat_nalldistr, range=(38,128), bins=11)
+plt.hist(flat_nalldistr, range=(38,128), bins=bins)
+plt.title()
+plt.show()
 plt.hist(flat_lalldistr, range=(38,128), bins=bins)
 plt.show()
+#%%
 for i in range(1000):
     plt.plot(range(11),lalldistr[i], 'o')
 plt.show() 
 for i in range(1000):
     plt.plot(range(11), nalldistr[i], 'o')
+print('Done plotting')    
     
 #%%
 print('Mean all normal points', sum(nallpoints)/runs)
