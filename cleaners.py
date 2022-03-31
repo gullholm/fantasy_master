@@ -166,4 +166,120 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
 #    print(ind_to_del)
     return(dropRows(df_part, ind_to_del))
 """
+
+
+def cleanToWorstTeams(df_part, n_part, budget): 
+    # budget är i detta fall vad laget minst måste kosta
+       
+    df_clean=worst_del_multiple_point_per_cost(df_part, n_part)
+    df_clean_2 = worst_del_multiple_cost_per_point(df_clean,n_part)  
+    df_clean_3 = delete_better_points_when_decreasing_cost(df_clean_2, n_part)  
+
+    return(df_clean_3)
+
+def worst_del_multiple_point_per_cost(sorted_df_part, n):
+    """
+    delete if there are more than 
+    n players that have the same cost
+    """
+
+    deleteIndexes=[]    
+    sorted_df_part = sorted_df_part.sort_values(by=['now_cost',"total_points"])    
+    for i in range(max(sorted_df_part['now_cost'])):
+        if((sorted_df_part['now_cost'] == i).sum() > n):
+            
+            delete = list(sorted_df_part.index[(sorted_df_part['now_cost'] == i) ][n:])
+            deleteIndexes.extend(delete)
+            
+    return(dropRows(sorted_df_part,deleteIndexes))
+
+def worst_del_multiple_cost_per_point(sorted_df_part, n):
+    """
+    delete if there are more than 
+    n players that have the same total points
+    """
+    sorted_df_part = sorted_df_part.sort_values(by=["total_points", "now_cost"])    
+    deleteIndexes=[]    
+
+    for i in range(max(sorted_df_part['total_points'])+1):
+        if((sorted_df_part['total_points'] == i).sum() > n):
+            
+            delete = list(sorted_df_part.index[(sorted_df_part['total_points'] == i) ][:-n])
+            deleteIndexes.extend(delete)
+    return(dropRows(sorted_df_part,deleteIndexes))
+
+def delete_better_points_when_decreasing_cost(df_part, n_form):
+    
+    df_part.sort_values(by=['now_cost','total_points'], 
+                        ascending=[False, True], inplace = True)
+    
+    #print(df_part)
+    tot_points = df_part["total_points"].to_list()
+    indexes = list(df_part.index)
+    worst = tot_points[:n_form]
+    #print(worst)
+    
+    ind_to_del = []
+
+    for point, ind in zip(tot_points[n_form:], indexes[n_form:]):
+        if point < max(worst):
+     #       print('byt',point)
+            worst.remove(max(worst))
+            worst.append(point)
+        else: 
+      #      print('bort',point)
+            ind_to_del.append(ind)
+            
+    return(dropRows(df_part, ind_to_del))
+
+#%%
+season=1617
+budget = 950 # i detta fall vad laget minst måste kosta 
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
+ 
+formations = [[3,4,5],[3,4,5],[1,2,3]]
+form_name = ["df", "mf", "fw"]
+all_parts_but_goalie = all_forms_as_df_cleaned_pl("data/pl_csv/players_raw_",season)[1:]
+individualCleansPerPosition =[]
+ 
+for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+    print(pos)
+    for p in part:
+        print(p)
+        all_cleaned = cleanToWorstTeams(df, p, budget)  
+        individualCleansPerPosition.append(all_cleaned)
+
+worst3=individualCleansPerPosition
+
+#%%
+def cleanWorst(season):
+
+    playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
+    
+    formations = [[3,4,5],[3,4,5],[1,2,3]]
+    form_name = ["df", "mf", "fw"]
+    all_parts_but_goalie = all_forms_as_df_cleaned_pl("data/pl_csv/players_raw_",season)[1:]
+    individualCleansPerPosition =[]
+    
+    for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+        print(pos)
+        for p in part:
+            print(p)
+            all_cleaned = cleanToWorstTeams(df, p)  
+            individualCleansPerPosition.append(all_cleaned)
+    # Goalkeepers
+    gk, _,_,_ = getters.get_diff_pos(playerspldata)
+    df_gk = pd.DataFrame.from_dict(gk, orient='index')
+    sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+    cleaned_gk = clean_gk(sorted_df_gk)
+    cleaned_gk.reset_index(inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.drop('element_type', inplace=True, axis=1)
+    
+    individualCleansPerPosition.append(cleaned_gk)
+    
+    print("Done with " + str(season))
+    return individualCleansPerPosition
+#%%
+worst = cleanWorst(1617)
             
