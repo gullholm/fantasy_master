@@ -13,7 +13,7 @@ import random
 import getters
 import numpy as np
 
-season = 1617
+season = 1819
 loc = "data/pl_csv/players_raw_"
 def create_new_players(loc, season):
     playerspldata = getters.get_players_feature_pl(loc,
@@ -49,10 +49,11 @@ def create_new_players(loc, season):
         for i in range(max_counts-v):
             copy_ind = random.sample(inds, 1)[0]
             perc = 0.2
-            new_points = round(linreg.predict(np.array(k).reshape(-1,1))) + + random.randint(-round(perc*points[copy_ind]), round(perc*points[copy_ind]))   
-    #       print(points[copy_ind])
+            new_points = np.round(linreg.predict(np.array(k).reshape(-1,1))) + + random.randint(-round(perc*points[copy_ind]), round(perc*points[copy_ind]))   
+       
+        #print(points[copy_ind])
      #      print(new_points)
-            temp = {len(new_players)+1:{"element_type" : pos[copy_ind], "now_cost" : k, "total_points": new_points, "id" : len(new_players)+1}}
+            temp = {len(new_players)+1:{"element_type" : pos[copy_ind], "now_cost" : k, "total_points": int(new_points), "id" : len(new_players)+1}}
             new_players.update(temp)
     return(new_players)
 
@@ -61,4 +62,4 @@ news = create_new_players(loc,season)
 
 pl = pd.DataFrame.from_dict(news, orient = "index")
 
-pl.to_csv("data/pl_csv/players_incnew_lin_" + str(season) + ".csv")
+pl.to_csv("data/pl_csv/players_incnew_lin_" + str(season) + ".csv", index = False)

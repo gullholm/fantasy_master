@@ -8,12 +8,11 @@ Created on Mon Feb 28 18:00:19 2022
 import getters
 from collections import Counter
 import random
-from bisect import bisect_right, bisect_left
-import numpy as np
 import pandas as pd
 
-season =1819
-playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season, ['element_type', 'now_cost', 'total_points', 'id'])
+season = 1617
+playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_",
+                                               season, ['element_type', 'now_cost', 'total_points', 'id'])
 
 costs = [v.get("now_cost") for (k,v) in playerspldata.items()]
 points = [v.get("total_points") for (k,v) in playerspldata.items()]
@@ -47,8 +46,8 @@ for i, (k,v) in enumerate(counts.items()):
         inds_after = [j for (j,x) in enumerate(costs) if x == k+count_after]
         print(k-count_before)
         print(inds_before)
-        w_before = count_before / (count_before+count_after)
-        w_after = count_after / (count_before+count_after)
+        w_before = count_after / (count_before+count_after)
+        w_after = count_before / (count_before+count_after)
         
         for i in range(max_counts):
             copy_ind_before = random.sample(inds_before, 1)[0]
