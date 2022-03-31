@@ -23,7 +23,7 @@ class team:
         Y = np.array(self.ind_cost).reshape(-1,1)
         linmod = lin()
         linmod.fit(X,Y)
-        self.r2 = linmod.score(X,Y)
+        self.r2 = linmod.score(X, y_pred)
         self.res = (linmod.predict(X) - Y).flatten()
         
     def get_is_linear(self,r2_lim, ret = True):
