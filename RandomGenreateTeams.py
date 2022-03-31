@@ -313,15 +313,15 @@ plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, "random")
 #%%
 # Plot results
 
-def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title):        
+def plotHistOfAllCostsAndPoints(allCosts, allPoints, budget, title, season):        
     plt.hist(allCosts)
-    plt.title("Season: " + str(season) + " budget: " + str(budget) + " distr: " + title)
+    plt.title("Season: " + str(season) + ", Budget: " + str(budget) + ", Distr: " + title)
     plt.xlabel("Costs")
     plt.ylabel("Amount")
     plt.show()
     
     plt.hist(allPoints)    
-    plt.title("Season: " + str(season) + " budget: " + str(budget) + " distr: " + title) 
+    plt.title("Season: " + str(season) + ", Budget: " + str(budget) + ", Distr: " + title) 
     plt.xlabel("Points")
     plt.ylabel("Amount")       
     plt.show()
@@ -526,7 +526,7 @@ def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
                     add+=sigma*0.3125
                 binstest.append(b+1)
             else:
-                for j in range(budget-sum(test)-10, budget-sum(test)):
+                for j in range(budget-sum(test)-12, budget-sum(test)):
                     if j in possibleCosts:
                         templist.append(j)
                 #b=randint(budget-sum(test)-10,budget-sum(test))
@@ -700,7 +700,7 @@ def calcMuSigmaStep(budget):
 #Kör för att jämföra : 
     
 #FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE  
-seasons = [1617,1718,1819,1920,2021]   
+seasons = [0]   
 #season = 1819
 #Create list of lists with points for each cost
 runs= 100000
@@ -771,8 +771,8 @@ for season in seasons:
                 nallcosts.append(ntcosts)
                 nalldistr.append(ndistr)
             
-        plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' linear', season)      
-        plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' normal', season)  
+        plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' Linear', season)      
+        plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' Normal', season)  
         
         print('Mean of 50 worst normal', sum(sorted(nallpoints)[:50])/50) 
         print('Mean all normal', sum(nallpoints)/runs)
@@ -784,26 +784,26 @@ for season in seasons:
         idx+=1
         
         #plot the different distributions
-        plotDistr(lalldistr, Linear)
-        plotdistr(nalldistr, Normal)
+        plotDistr(lalldistr, 'Linear', budget, season)
+        plotDistr(nalldistr, 'Normal', budget, season)
     
     randomResults.to_csv('results/pl/' + str(season) + '/generateRandom.csv')
 
 
 #%%
 #%%
-def plotDistr(distr, title):
+def plotDistr(distr, title, budget, season):
     #plot the different distributions
     print('Plotting')
     flat_distr = [item for sublist in distr for item in sublist]
 
     plt.hist(flat_distr, range=(38,128), bins=bins)
-    plt.title("Histogram of individual player costs with distr: " + str(title))
+    plt.title("Individual costs with distr: " + title+ ', Season: ' + str(season) + ',Budget: ' +str(budget) )
     plt.show()
 
     for i in range(1000):
         plt.plot(range(11), distr[i], 'o') 
-    plt.title("Distribution of individual player costs with distr: " + str(title))
+    plt.title("Individual costs with distr: " + title+ ', Season: ' + str(season) + ',Budget: ' +str(budget) )
     plt.show()
   #%%
 #plot the different distributions
@@ -840,12 +840,16 @@ randomResults.to_csv('results/pl/1617/generateRandom.csv')
 season = 1617
 def createTheList(season):
     
-    csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
-    playerspl = pd.read_csv(csv_file) 
-    playerspl = playerspl.to_dict('index')
-    playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
-    #gk, df, mf,fw = getters.get_diff_pos(playerspldata)
-
+    if season !=0:
+   #     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+  #      playerspl = pd.read_csv(csv_file) 
+ #       playerspl = playerspl.to_dict('index')
+        playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
+        #gk, df, mf,fw = getters.get_diff_pos(playerspldata)
+    
+    if season==0:
+#        csv_file='data/allsvenskan/players_raw.csv'
+        playerspldata = getters.get_players_feature_pl('data/allsvenskan/players_raw', '')
     #allmfCost=[]
     #for m in mf.items():
     #    allmfCost.append(m[1]['now_cost'])
@@ -880,6 +884,9 @@ def createTheList(season):
                 theList[value] = templist    
     return theList
 
+#%%
+ASlist = createTheList(0)
+randomResults.to_csv('results/as/generateRandom.csv')
 
 
 #%%

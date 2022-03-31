@@ -167,7 +167,6 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
     return(dropRows(df_part, ind_to_del))
 """
 
-
 def cleanToWorstTeams(df_part, n_part, budget): 
     # budget är i detta fall vad laget minst måste kosta
        
@@ -282,4 +281,4 @@ def cleanWorst(season):
     return individualCleansPerPosition
 #%%
 worst = cleanWorst(1617)
-            
+
