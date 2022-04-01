@@ -69,6 +69,21 @@ def create_all_combs_from_cleaned_df(df_full, df_part, form_n):
     print("before return")
     return(cleaners.delete_worse_points_when_increasing_cost(sortedCombs_parts, 1))
 
+def worst_create_all_combs_from_cleaned_df(df_full, df_part, form_n):
+    combs = np.transpose(calc.nump2(len(df_part), form_n))
+#    print(df_part.index[:10])
+    combs_indexes = calc.calcIndexOld(combs, df_part.index) 
+    pointsList = calc.createPointsList(df_full)
+    costList = calc.createCostList(df_full)
+    combsPoints, combsCost = [], []
+    for i in range(len(combs)): 
+        combsPoints.append(calc.pointsPerTeam4(combs_indexes[i],pointsList))
+        combsCost.append(calc.costPerTeam4(combs_indexes[i], costList)) 
+    combs_parts = pd.DataFrame(list(zip(combsPoints, combsCost, combs_indexes)),
+                           columns =['total_points', 'now_cost', 'indexes'])
+    sortedCombs_parts = combs_parts.sort_values(by=['now_cost', 'total_points'], ascending=[True, False])
+    print("before return")
+    return(cleaners.delete_better_points_when_decreasing_cost(sortedCombs_parts, 1))
     
 def calc_full_teams(all_combs):
     all_points = calc.calc_from_combs(all_combs, "total_points")
@@ -157,6 +172,57 @@ def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_r
         cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
         
     print("Done with " + str(season))
+
+
+def clean_all_data_and_make_positions_combs_worst(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/worst/", k = "0.2", clean_all = True):
+    
+    playerspldata = getters.get_players_feature_pl(bas,season)
+    formations = [[3,4,5],[3,4,5],[1,2,3]]
+    form_name = ["df", "mf", "fw"]
+    all_parts_but_goalie = cleaners.all_forms_as_df_cleaned_pl(bas, season)[1:]
+    new_dest = os.path.join(dest, str(season))
+    os.makedirs(new_dest, exist_ok = True)
+    for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+        #print(part)
+        #print(df)
+        print(len(df))
+        os.makedirs(os.path.join(new_dest, pos) , exist_ok = True)
+
+        for p in part:
+            print(p)
+            
+            all_cleaned = cleaners.worst_clean_all_data_pl(df, p)
+            if clean_all: 
+            
+#                print(len(all_cleaned))
+                combs = worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+#                print(combs.head(5))
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+            else: 
+                combs = worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+
+    
+    # Goalkeepers
+    
+    gk, df,mf,fw = getters.get_diff_pos(playerspldata)
+    
+    df_gk = pd.DataFrame.from_dict(gk, orient='index')
+    
+    sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+    
+    cleaned_gk = cleaners.clean_gk(sorted_df_gk)
+    cleaned_gk.reset_index(inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.drop('element_type', inplace=True, axis=1)
+    if clean_all: 
+        cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
+    else : 
+        cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
+        
+    print("Done with " + str(season))
+
 
 """
 def calc_p_c_per_part(gk_comb, def_comb,  mf_comb, fw_comb): 
