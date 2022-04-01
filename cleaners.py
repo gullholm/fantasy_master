@@ -245,7 +245,7 @@ for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
     print(pos)
     for p in part:
         print(p)
-        all_cleaned = cleanToWorstTeams(df, p, budget)  
+        all_cleaned = cleanToWorstTeams(df, p)  
         individualCleansPerPosition.append(all_cleaned)
 
 worst3=individualCleansPerPosition
@@ -264,13 +264,13 @@ def cleanWorst(season):
         print(pos)
         for p in part:
             print(p)
-            all_cleaned = cleanToWorstTeams(df, p, budget)  
+            all_cleaned = cleanToWorstTeams(df, p)  
             individualCleansPerPosition.append(all_cleaned)
     # Goalkeepers
     gk, _,_,_ = getters.get_diff_pos(playerspldata)
     df_gk = pd.DataFrame.from_dict(gk, orient='index')
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
-    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1, budget)
+    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1)
     #cleaned_gk.reset_index(inplace=True)
     #cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
@@ -298,7 +298,7 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
             
             if clean_all: 
                 print(len(all_cleaned))
-                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs = parsers.create_all_combs_from_cleaned_df_worst(playerspldata, all_cleaned, p)
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 
@@ -314,7 +314,7 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
     
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
     
-    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1, budget)
+    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1)
     # cleaned_gk.reset_index(inplace=True)
     # cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
@@ -335,3 +335,7 @@ for season in seasons:
 for season in seasons: 
     
     parsers.clean_all_data_and_make_positions_combs_worst(season)
+    
+#%%
+for season in seasons:
+    parsers.worst_write_full_teams("data_cleaned/pl/worst/" + str(season)+"/") 
