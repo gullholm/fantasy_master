@@ -22,25 +22,43 @@ def plot_per_position(positions, title):
 
 
 # plot hist of points
-def plot_hist_of_points(pointsList, title):
-    plt.hist(pointsList)
-    plt.xlabel("Points")
-    plt.ylabel("Amount")
-    xmin, xmax, ymin, ymax = [0, 320, 0, 350]
-    plt.xlim(xmin, xmax)
-    plt.ylim(ymin, ymax)
-    plt.title(title)
-    plt.show()
+def plot_hist_of_points(pointsList, title,season, nbins = 20, dest = "results/pl/data_viz"):
+    fig, ax = plt.subplots()
+    ax.hist(pointsList, bins = nbins)
+    #plt.hist(npscostlist)
+    ax.set_xlabel("Points")
+    ax.set_ylabel("Amount")
+    xmin, xmax, ymin, ymax = [0, max(pointsList)+20, 0, 150]
+    ax.set_xlim(xmin, xmax)
+    ax.set_ylim(ymin, ymax)
+    ax.set_title(title)
+    dest = os.path.join(dest, "points_hist_"+ str(season) +".png")
+    fig.savefig(dest, bbox_inches = "tight")
 
 # plot hist of costs
-def plot_hist_of_costs(costList, title, season, nbins = 20, dest = "results/pl/data_viz"):
+def plot_hist(list_to_count, season, xlabel = "Change of cost", 
+                         title = "Cost change for FPL season ", 
+                         nbins =20, lims = [-16,16,0,200], dest = "results/pl/data_viz", typ = "cost_change"):
+    fig, ax = plt.subplots()
+    ax.hist(list_to_count, bins = nbins)
+    #plt.hist(npscostlist)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel("Amount")
+    xmin, xmax, ymin, ymax = lims
+    ax.set_xlim(xmin, xmax)
+    ax.set_ylim(ymin, ymax)
+    ax.set_title(title + str(season))
+    dest = os.path.join(dest, typ +  "_" + str(season) + ".png")
+    fig.savefig(dest, bbox_inches = "tight")
+def plot_hist_of_costs(costList, title, season, nbins = 20, 
+                       dest = "results/pl/data_viz", ylim= 300):
     #npscostlist = [np.log(x) for x in costList if x > 0]
     fig, ax = plt.subplots()
     ax.hist(costList, bins = nbins)
     #plt.hist(npscostlist)
     ax.set_xlabel("Cost")
     ax.set_ylabel("Amount")
-    xmin, xmax, ymin, ymax = [35, 140, 0, 300]
+    xmin, xmax, ymin, ymax = [35, 140, 0, ylim]
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
     ax.set_title(title)

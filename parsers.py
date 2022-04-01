@@ -9,7 +9,6 @@ import numpy as np
 import calculations as calc
 import getters
 import pandas as pd
-import cleaners
 import os
 import ast
 
@@ -119,8 +118,9 @@ def write_full_teams(loc):
         #all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
         all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
         
-        print('Fel?')
-        print(all_combs)
+      #  print('Fel?')
+    #    print(all_combs[0])
+        
         all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
         done_df = calc_full_teams(all_combs)
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
