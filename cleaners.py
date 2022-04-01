@@ -332,13 +332,16 @@ for season in seasons:
    worst = worst_clean_all_data_pl(season)
 
 #%%
-#for season in seasons: 
+for season in seasons: 
     
-#    parsers.clean_all_data_and_make_positions_combs_worst(season)
+    parsers.clean_all_data_and_make_positions_combs_worst(season)
     
 #%%
-#seasons=[1617,1718,1819,1920,2021]
-#import parsers
-#for season in seasons:
-#    location =  "data_cleaned/pl/worst/" + str(season)+"/"
-#    parsers.write_full_teams(location) 
+seasons=[1617,1718,1819,1920,2021]
+import parsers
+for season in seasons:
+    location =  "data_cleaned/pl/worst/" + str(season)+"/"
+    parsers.write_full_teams(location) 
+
+
+   
