@@ -90,7 +90,7 @@ def plot_hist_of_costs(feature_data, title):
     #plt.hist(npscostlist)
     plt.xlabel("Costs")
     plt.ylabel("Amount")
-    xmin, xmax, ymin, ymax = [35, 140, 0, 400]
+    xmin, xmax, ymin, ymax = [35, 140, 0, 300]
     plt.xlim(xmin, xmax)
     plt.ylim(ymin, ymax)
     plt.title(title)
