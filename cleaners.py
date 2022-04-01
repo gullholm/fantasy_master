@@ -167,7 +167,7 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
     return(dropRows(df_part, ind_to_del))
 """
 
-def cleanToWorstTeams(df_part, n_part, budget): 
+def cleanToWorstTeams(df_part, n_part): 
     # budget är i detta fall vad laget minst måste kosta
        
     df_clean=worst_del_multiple_point_per_cost(df_part, n_part)
@@ -264,15 +264,15 @@ def cleanWorst(season):
         print(pos)
         for p in part:
             print(p)
-            all_cleaned = cleanToWorstTeams(df, p)  
+            all_cleaned = cleanToWorstTeams(df, p, budget)  
             individualCleansPerPosition.append(all_cleaned)
     # Goalkeepers
     gk, _,_,_ = getters.get_diff_pos(playerspldata)
     df_gk = pd.DataFrame.from_dict(gk, orient='index')
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
-    cleaned_gk = clean_gk(sorted_df_gk)
-    cleaned_gk.reset_index(inplace=True)
-    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1, budget)
+    #cleaned_gk.reset_index(inplace=True)
+    #cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
     
     individualCleansPerPosition.append(cleaned_gk)
@@ -280,5 +280,58 @@ def cleanWorst(season):
     print("Done with " + str(season))
     return individualCleansPerPosition
 #%%
-worst = cleanWorst(1617)
 
+def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/worst/",  clean_all = True, ns = 3):
+    
+    playerspldata = getters.get_players_feature_pl(bas, season)
+    formations = [[3,4,5],[3,4,5],[1,2,3]]
+    form_name = ["df", "mf", "fw"]
+#    csv_file = str(bas) + str(season) + ".csv"
+    all_parts_but_goalie = all_forms_as_df_cleaned_pl(bas,season)[1:]
+    
+    
+    for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
+        print(pos)
+        for p in part:
+            print(p)
+            all_cleaned =cleanToWorstTeams(df, p)
+            
+            if clean_all: 
+                print(len(all_cleaned))
+                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
+                combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+            else: 
+                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
+
+    
+    # Goalkeepers
+    
+    gk, _,_,_ = getters.get_diff_pos(playerspldata)
+    
+    df_gk = pd.DataFrame.from_dict(gk, orient='index')
+    
+    sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
+    
+    cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1, budget)
+    # cleaned_gk.reset_index(inplace=True)
+    # cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.drop('element_type', inplace=True, axis=1)
+    if clean_all: 
+        cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
+    else : 
+        cleaned_gk.to_csv("individual_data_cleaned/pl/" + str(season) + "/gk.csv")
+        
+    print("Done with " + str(season))
+
+#%%
+seasons=[1617,1718,1819,1920,2021]
+for season in seasons:
+    
+    worst = worst_clean_all_data_pl(season)
+
+#%%
+for season in seasons: 
+    
+    parsers.clean_all_data_and_make_positions_combs_worst(season)

@@ -191,7 +191,7 @@ def clean_all_data_and_make_positions_combs_worst(season, bas = "data/pl_csv/pla
         for p in part:
             print(p)
             
-            all_cleaned = cleaners.worst_clean_all_data_pl(df, p)
+            all_cleaned = cleaners.cleanToWorstTeams(df,p)
             if clean_all: 
             
 #                print(len(all_cleaned))
