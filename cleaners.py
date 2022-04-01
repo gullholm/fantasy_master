@@ -337,5 +337,6 @@ for season in seasons:
     parsers.clean_all_data_and_make_positions_combs_worst(season)
     
 #%%
+import parsers
 for season in seasons:
     parsers.worst_write_full_teams("data_cleaned/pl/worst/" + str(season)+"/") 
