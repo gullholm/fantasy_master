@@ -135,6 +135,8 @@ def worst_write_full_teams(loc):
         all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
         #all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
         all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
+        print('Fel?')
+        print(all_combs)
 
         all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
         done_df = calc_full_teams(all_combs)
