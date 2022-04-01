@@ -122,6 +122,23 @@ def write_full_teams(loc):
         all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
         done_df = calc_full_teams(all_combs)
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
+        
+def worst_write_full_teams(loc):
+    generic = lambda x: ast.literal_eval(x)
+    conv = {'indexes': generic}
+    all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
+    form_name = ["/df", "/mf", "/fw"]
+    all_combs = []
+    
+    for comb in all_pass_combs: 
+
+        all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
+        #all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
+        all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
+
+        all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+        done_df = calc_full_teams(all_combs)
+        done_df.to_csv(loc + str(comb) + ".csv", index = False)
 
 
 def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/", k = "0.2", clean_all = True):
@@ -212,8 +229,8 @@ def clean_all_data_and_make_positions_combs_worst(season, bas = "data/pl_csv/pla
     
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
     
-    cleaned_gk = cleaners.clean_gk(sorted_df_gk)
-    cleaned_gk.reset_index(inplace=True)
+    cleaned_gk = cleaners.cleanToWorstTeams(sorted_df_gk,1)
+    #cleaned_gk.reset_index(inplace=True)
     cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
     if clean_all: 
