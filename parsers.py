@@ -106,24 +106,24 @@ def calc_full_teams(all_combs):
     full_teams_df = pd.DataFrame({"cost": costs_total, "points_total": points_total, "indexes": indexes})
     return(full_teams_df)
 
-def write_full_teams(loc):
-    generic = lambda x: ast.literal_eval(x)
-    conv = {'indexes': generic}
-    all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
-    form_name = ["/df", "/mf", "/fw"]
-    all_combs = []
+# def write_full_teams(loc):
+#     generic = lambda x: ast.literal_eval(x)
+#     conv = {'indexes': generic}
+#     all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
+#     form_name = ["/df", "/mf", "/fw"]
+#     all_combs = []
     
-    for comb in all_pass_combs: 
+#     for comb in all_pass_combs: 
 
-        all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
-        #all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
-        all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
+#         all_combs = [pd.read_csv(loc + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
+#         #all_combs.insert(0, pd.read_csv(loc + "gk.csv", engine = "pyarrow"))
+#         all_combs.insert(0, pd.read_csv(loc + "gk.csv"))
         
-        print('Fel?')
-        print(all_combs)
-        all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
-        done_df = calc_full_teams(all_combs)
-        done_df.to_csv(loc + str(comb) + ".csv", index = False)
+#         print('Fel?')
+#         print(all_combs)
+#         all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+#         done_df = calc_full_teams(all_combs)
+#         done_df.to_csv(loc + str(comb) + ".csv", index = False)
         
 # def worst_write_full_teams(loc):
 #     generic = lambda x: ast.literal_eval(x)
