@@ -298,7 +298,7 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
             
             if clean_all: 
                 print(len(all_cleaned))
-                combs = parsers.create_all_combs_from_cleaned_df_worst(playerspldata, all_cleaned, p)
+                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 

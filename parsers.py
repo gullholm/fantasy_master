@@ -229,7 +229,7 @@ def clean_all_data_and_make_positions_combs_worst(season, bas = "data/pl_csv/pla
     
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
     
-    cleaned_gk = cleaners.cleanToWorstTeams(sorted_df_gk,1)
+    cleaned_gk = cleaners.cleanToWorstTeams(sorted_df_gk , 1)
     #cleaned_gk.reset_index(inplace=True)
     cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
