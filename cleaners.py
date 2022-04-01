@@ -325,23 +325,24 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
         
     print("Done with " + str(season))
 
-#%%
-seasons=[1617,1718,1819,1920,2021]
-for season in seasons:
+# #%%
+# seasons=[1617,1718,1819,1920,2021]
+# for season in seasons:
     
-   worst = worst_clean_all_data_pl(season)
+#    worst = worst_clean_all_data_pl(season)
 
-#%%
-for season in seasons: 
+# #%%
+# for season in seasons: 
     
-    parsers.clean_all_data_and_make_positions_combs_worst(season)
+#     parsers.clean_all_data_and_make_positions_combs_worst(season)
     
-#%%
-seasons=[1617,1718,1819,1920,2021]
-import parsers
-for season in seasons:
-    location =  "data_cleaned/pl/worst/" + str(season)+"/"
-    parsers.write_full_teams(location) 
+# #%%
+#För att göra kombinationer av worst men krånglar, det är klart iaf
+# seasons=[1617,1718,1819,1920,2021]
+# import parsers
+# for season in seasons:
+#     location =  "data_cleaned/pl/worst/" + str(season)+"/"
+#     parsers.write_full_teams(location) 
 
 
    
