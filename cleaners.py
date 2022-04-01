@@ -272,7 +272,7 @@ def cleanWorst(season):
     sorted_df_gk = df_gk.sort_values(by= ['now_cost'])
     cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1)
     #cleaned_gk.reset_index(inplace=True)
-    #cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
     
     individualCleansPerPosition.append(cleaned_gk)
@@ -298,8 +298,7 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
             
             if clean_all: 
                 print(len(all_cleaned))
-                combs=[] # nåt fel
-#                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 
@@ -317,7 +316,7 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
     
     cleaned_gk = cleanToWorstTeams(sorted_df_gk, 1)
     # cleaned_gk.reset_index(inplace=True)
-    # cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
+    cleaned_gk.rename(columns={'index':'indexes'}, inplace=True)
     cleaned_gk.drop('element_type', inplace=True, axis=1)
     if clean_all: 
         cleaned_gk.to_csv(dest + str(season) + "/gk.csv")
@@ -326,20 +325,24 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
         
     print("Done with " + str(season))
 
-#%%
+# #%%
 # seasons=[1617,1718,1819,1920,2021]
 # for season in seasons:
     
-#     worst = worst_clean_all_data_pl(season)
+#    worst = worst_clean_all_data_pl(season)
 
 # #%%
 # for season in seasons: 
     
 #     parsers.clean_all_data_and_make_positions_combs_worst(season)
     
-#%%
-seasons=[1617,1718,1819,1920,2021]
-import parsers
-for season in seasons:
-    location =  "data_cleaned/pl/worst/" + str(season)+"/"
-    parsers.write_full_teams(location) 
+# #%%
+#För att göra kombinationer av worst men krånglar, det är klart iaf
+# seasons=[1617,1718,1819,1920,2021]
+# import parsers
+# for season in seasons:
+#     location =  "data_cleaned/pl/worst/" + str(season)+"/"
+#     parsers.write_full_teams(location) 
+
+
+   
