@@ -43,52 +43,36 @@ class team:
         if self.r2 >= r2lim: self.linear = True
         else: self.linear = False
         
-    def create_int(self, playersdata, team_ids, s = 2, z_count = 4, rang = 2): # s determines interval length
-            team_cost = get.get_cost_team(playersdata, team_ids)
+    def create_int(self,  s = 2, z_count = 4, rang = 2): # s determines interval length
 
-            team_cost.sort()
             self.min_cost = min(self.ind_cost)
             self.max_cost= max(self.ind_cost)
             self.theory_int = np.round(np.linspace(self.min_cost, self.max_cost, 11, dtype=float),1).tolist()
-            self.gap = np.round((theory_int[1]-theory_int[0])/2,1)
+            self.gap = np.round((self.theory_int[1]-self.theory_int[0])/2)
 
-    def check_int(self):
-            theory_int_l = [round(x - self.gap,1) for x in self.theory_int]
-            theory_int_h = [round(x + self.gap,2) for x in self.theory_int]
-            counts = [0]*11
+    def check_int(self, z_count = 3):
+            theory_int_l = [round(x - self.gap) for x in self.theory_int]
+            theory_int_h = [round(x + self.gap) for x in self.theory_int]
+            self.counts = [0]*11
 
-            for re in team_cost:
-                
+            for re in self.ind_cost:
                 for i,(low,up) in enumerate(zip(theory_int_l, theory_int_h)):
                     if(re >= low and re <= up):
-                        counts[i] += 1
+                        self.counts[i] += 1
                         break
-        #    print(counts)
-            mas = max(counts)
-            max_ind = [i for (i,x) in enumerate(counts) if x == mas]
-            normals = []
-            for i in max_ind:
-        #        print(i)
-                if i == 0: i+=rang
-        #        if i == 1: i +=1
-                if i == 10: i-=rang
-        #        if i == 9: i-=1
-                normals.append(sum([counts[j] for j in range(i-rang,i+rang+1)]))
-        #    print(normals)
-            if(sum(counts)> 11): print("hi")    
-            normal = max(normals)
-        #    print(counts)
-        #    print(normal)
-            if(normal > z_count): 
-        #        print("normal")        
-                return(0)
-            else:
-        #        print(counts)
-        #        print("linear")
-                return(1)
 
-        
-def use_linreg_pl_full_seasons(seasons, typ = "raw"):
+            if(self.counts > z_count): 
+                self.diverse = True
+            else:
+                self.diverse = False
+
+def create_nested_lists(lis):
+    return([lis for _ in range(3)])
+
+def mean_of_lists(lis):
+    return([np.mean(x) for x in lis])
+
+def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [2,3,4]):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
     for season in seasons:
@@ -114,29 +98,48 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw"):
             all_points = one['points_total'].to_list()
             all_costs = one['cost'].to_list()
            
-            linear_cost = [[] for _ in range(3)]
-            linear_points = [[] for _ in range(3)]
-            non_cost = [[] for _ in range(3)]
-            non_points = [[] for _ in range(3)]
+            cost_lin, points_lin = create_nested_lists([]), create_nested_lists([])
+            non_cost_lin,non_points_lin = create_nested_lists([]), create_nested_lists([])
             
+            cost_div, points_div = create_nested_lists([]), create_nested_lists([])
+            non_cost_div,non_points_div= create_nested_lists([]), create_nested_lists([])
+            
+            cost_both, points_both= create_nested_lists([]), create_nested_lists([])
+            non_cost_both,non_points_both= create_nested_lists([]), create_nested_lists([])
+
+    
             #linear_cost_085, linear_points_085, non_cost_085, non_points_085 = [],[],[],[]
             #linear_cost_09, linear_points_09, non_cost_09, non_points_09 = [],[],[],[]
             for t,p,c in zip(all_teams, all_points, all_costs):
-                y = get.get_cost_team(playerspldata, t)
-                linmod = team(t,playerspldata)
-                linmod.lin_fit()
-                for i,r2 in enumerate([0.8,0.85,0.9]):
-                    linmod.check_lin(r2)
-                    if(linmod.linear):
-                        linear_cost[i].append(c)
-                        linear_points[i].append(p)
+                each_team = team(t,playerspldata)
+                each_team.create_int()
+                
+                each_team.lin_fit()
+                
+                for i, (r2,z) in enumerate(zip(r2_vals, empty_all)):
+                    each_team.check_lin(r2)
+                    each_team.check_int(z)
+                    if(each_team.linear):
+                        cost_lin[i].append(c)
+                        points_lin[i].append(p)
                     else:
-                        non_cost[i].append(c)
-                        non_points[i].append(p)
-            break
-        lin_cost.append(np.mean(linear_cost))
-        lin_points.append(np.mean(linear_points))
-        lin_n.append(len(linear_cost))
+                        non_cost_lin[i].append(c)
+                        non_points_lin[i].append(p)
+                    if(each_team.diverse):
+                        cost_div[i].append(c)
+                        points_div[i].append(p)
+                    else:
+                        non_cost_div[i].append(c)
+                        non_points_div[i].append(p)
+                    if(each_team.diverse and each_team.linear):
+                        cost_both[i].append(c)
+                        points_both[i].append(p)
+                    else: 
+                        non_cost_both[i].append(c)
+                        non_points_both[i].append(p)
+
+        lin_cost, lin_points = mean_of_lists(linear_cost), mean_of_lists(linear_points)
+        lin_n = [len(x) for x in linear_cost]
             
         nonlin_cost.append(np.mean(non_cost))
         nonlin_points.append(np.mean(non_points))
