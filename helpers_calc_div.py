@@ -61,7 +61,7 @@ class team:
                         self.counts[i] += 1
                         break
             self.zero_count = self.counts.count(0)
-            if(self.zero_count >= z_count): 
+            if(self.zero_count <= z_count): 
                 self.diverse = True
             else:
                 self.diverse = False
@@ -77,7 +77,7 @@ def mean_of_lists(lis, r2= [0.8,0.85,0.9]):
         
     return(new)
 
-def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [2,3,4]):
+def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2]):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
     cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
@@ -107,7 +107,7 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
     
             playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
             one.sort_values(by="points_total", inplace=True, ascending = False)
-            one = one.sample(n=10)
+            #one = one.sample(n=10)
             print('Done')
             all_teams = one["indexes"].to_list()
             all_points = one['points_total'].to_list()
@@ -156,15 +156,15 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
             non_cost_lin_t.append(mean_of_lists(non_cost_lin))
             non_points_lin_t.append(mean_of_lists(non_points_lin))
             
-            cost_div_t.append(mean_of_lists(cost_div))
-            points_div_t.append(mean_of_lists(points_div))
-            non_points_div_t.append(mean_of_lists(non_points_div))
-            non_cost_div_t.append(mean_of_lists(non_cost_div))
+            cost_div_t.append(mean_of_lists(cost_div, empty_all))
+            points_div_t.append(mean_of_lists(points_div,empty_all))
+            non_points_div_t.append(mean_of_lists(non_points_div, empty_all))
+            non_cost_div_t.append(mean_of_lists(non_cost_div,empty_all))
             
-            cost_both_t.append(mean_of_lists(cost_both))
-            points_both_t.append(mean_of_lists(points_both))
-            non_cost_both_t.append(mean_of_lists(non_cost_both))
-            non_points_both_t.append(mean_of_lists(non_points_both))
+            cost_both_t.append(mean_of_lists(cost_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+            points_both_t.append(mean_of_lists(points_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+            non_cost_both_t.append(mean_of_lists(non_cost_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+            non_points_both_t.append(mean_of_lists(non_points_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
     
     
             lin_n_t.append([len(x) for x in cost_lin])
@@ -175,20 +175,14 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
             
             both_n_t.append([len(x) for x in cost_both])
             non_both_n_t.append([len(x) for x in non_cost_both])
-        print(both_n_t)
-        print(cost_lin_t)
-        print(len(both_n_t))
-        print(len(non_cost_div_t))
-        print(len(cost_div_t))
-        print(len(cost_both_t))
-        print(len(cost_lin_t))
+        
 
-        df = pd.DataFrame({'formation': formation, 'Linear mean cost': cost_lin_t, 'Linear mean points': points_lin_t, 'n linear': lin_n_t,
-                          'Non linear cost': non_cost_lin_t, 'Non linear points': non_points_lin_t, 'Non linear n': non_lin_n_t,
+        df = pd.DataFrame({'formation': formations, 'Linear mean cost': cost_lin_t, 'Linear mean points': points_lin_t, 'n linear': lin_n_t, 
+                           'Non linear cost': non_cost_lin_t, 'Non linear points': non_points_lin_t, 'Non linear n': non_lin_n_t,
                           'Div mean cost': cost_div_t, 'Div mean points': points_div_t, 'n div': div_n_t,
                                         'Non div cost': non_cost_div_t, 'Non div points': non_points_div_t, 'Non div n': non_div_n_t,
                                         'Both mean cost': cost_both_t, 'Both mean points': points_both_t, 'n both': both_n_t,
-                                                      'Non both cost': non_cost_both_t, 'Non both points': non_points_both_t, 'Non both n': non_both_n,
+                                                      'Non both cost': non_cost_both_t, 'Non both points': non_points_both_t, 'Non both n': non_both_n_t
                           
                               
                 })
