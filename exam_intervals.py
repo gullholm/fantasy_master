@@ -25,6 +25,7 @@ import getters
 from collections import Counter
 generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
+import parsers
 
 #%%
 one = pd.read_csv("data_cleaned/pl/1718/[3, 4, 3].csv", converters = conv)
@@ -307,7 +308,7 @@ def linR2Inter(h, ax, plot=False):
     r2 = 1 - (ss_r/ss_t)
     
     res = [i-I for (i,I) in zip(y,Y)]
-    if r2> 0.9:
+    if r2> 0.85:
         ret = 0
     #    norm = 'Not normal'
     #    return r2, ret, res
@@ -341,12 +342,13 @@ def printpercent(title, diverselist, nperc, divperc, undefperc):
 def calcpercent(divlist):
     if len(divlist)>0:
         nor = round(100*divlist.count(1)/len(divlist))
+        
         div = round(100*divlist.count(0)/len(divlist))
-        und = round(100*divlist.count(-1)/len(divlist))   
+        #und = round(100*divlist.count(-1)/len(divlist))   
     
-        return nor, div, und 
+        return nor, div#, und 
     else:
-        return 0,0,0
+        return 0,0#,0
 #%%
 seasons= [1617,1718,1819,1920,2021]
 formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
@@ -490,9 +492,8 @@ plt.show()
 
 #%%
 
-#create teams
-import parsers
-getformations = parsers.write_full_teams('data_cleaned/pl/1718/')
+#create formations
+getformations = parsers.write_full_teams('data_cleaned/pl/2021/')
 
 #%%
 dfRes = pd.DataFrame()
@@ -569,4 +570,86 @@ for formation in formations:
         resbest = ast.literal_eval(res['Best 50'][i])
         resworst = ast.literal_eval(res['Worst 50'][i]) 
         resall = ast.literal_eval(res['All'][i])
+
+#%%
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+ 
+seasons= [1617,1718,1819,1920,2021]
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+
+for season in seasons:
+    print(season)
+    for formation in formations: 
+        print('Preparing data', str(formation))
+        one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
+        print('Done')
     
+        useall = True  # T -> alla, F -> bara 50 bästa
+        if useall:
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
+        else: 
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal, Diverse)'])
+        
+        startlow =450
+        endlow =1000
+        idx=0
+        for low in range(startlow, endlow,50):
+            
+            budget = low+50
+            print('-------------------------------------')
+            print(budget)
+            ones = filter_df(one, low, budget)
+            ones.sort_values(by ="points_total", inplace = True, ascending = False)
+            playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", season)
+            all_teams = ones["indexes"].to_list()
+            ss = Counter(flatten(all_teams)).most_common()
+            allpoints= ones['points_total'].to_list() 
+            
+            #Take 50 best 
+            if len(ones)>50:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+            else:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
+            
+            best_div=[]
+            i=0
+            plot= False
+            for team in best_50:
+                #for plotting
+                #if plot==True:
+                #    i+=1
+                #    fig, (ax1, ax2) = plt.subplots(1, 2)
+                #    fig.suptitle(i)
+                # then add ax = ax1 in next row
+                h = get.get_cost_team(playerspldata, team)
+                
+                _ , ret, _ = linR2Inter(h, None, plot)
+                #print(r2)
+                best_div.append(ret)
+                #print(best_div)
+            bnor, bdiv = calcpercent(best_div)
+            b50  = [bnor,bdiv]
+            
+            #For printing
+            #printpercent('Best 50', best_div, bnor, bdiv, bund)
+            
+            if useall: 
+                diverse=[]
+                for team_id in all_teams:
+                    h = get.get_cost_team(playerspldata, team_id)
+                    _, ret, _ = linR2Inter(h, None, plot)
+                    diverse.append(ret)
+                
+                anor, adiv = calcpercent(diverse)
+                a  = [anor,adiv]
+            
+                #For printing
+                #printpercent('All', diverse, anor, adiv, aund)
+        
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,a]
+            else: 
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50]
+            idx+=1
+        
+        
+        dfres.to_csv('results/pl/'+ str(season) +'/linperc_' +str(formation)+ '.csv')     
