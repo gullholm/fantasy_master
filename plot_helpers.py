@@ -28,7 +28,7 @@ def plot_hist_of_points(pointsList, title,season, nbins = 20, dest = "results/pl
     #plt.hist(npscostlist)
     ax.set_xlabel("Points")
     ax.set_ylabel("Amount")
-    xmin, xmax, ymin, ymax = [0, max(pointsList)+20, 0, 150]
+    xmin, xmax, ymin, ymax = [0, max(pointsList)+20, 0, 180]
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
     ax.set_title(title)
@@ -51,7 +51,7 @@ def plot_hist(list_to_count, season, xlabel = "Change of cost",
     dest = os.path.join(dest, typ +  "_" + str(season) + ".png")
     fig.savefig(dest, bbox_inches = "tight")
 def plot_hist_of_costs(costList, title, season, nbins = 20, 
-                       dest = "results/pl/data_viz", ylim= 300):
+                       dest = "results/pl/data_viz", ylim= 300, typ = "raw"):
     #npscostlist = [np.log(x) for x in costList if x > 0]
     fig, ax = plt.subplots()
     ax.hist(costList, bins = nbins)
@@ -63,7 +63,7 @@ def plot_hist_of_costs(costList, title, season, nbins = 20,
     ax.set_ylim(ymin, ymax)
     ax.set_title(title)
     
-    dest = os.path.join(dest, "cost_hist_"+ str(season) +".png")
+    dest = os.path.join(dest, "cost_hist_"+ str(season) +typ +".png")
     fig.savefig(dest, bbox_inches = "tight")
     
 def plotIndividualCosts(feature_data, title, degree, line=False):

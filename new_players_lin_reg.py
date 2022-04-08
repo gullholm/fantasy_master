@@ -13,9 +13,9 @@ import random
 import getters
 import numpy as np
 
-season = 1819
+season = 1617
 loc = "data/pl_csv/players_raw_"
-def create_new_players(loc, season):
+def create_new_players(loc, season,n =15):
     playerspldata = getters.get_players_feature_pl(loc,
                                                season, ['element_type', 'now_cost', 'total_points', 'id'])
 
@@ -26,8 +26,10 @@ def create_new_players(loc, season):
     counts = Counter()
     counts.update({x:0 for x in range(min(costs),max(costs)+1)})
     counts.update(costs)
-    max_counts = counts.most_common(1)[0][1]
+
+#    max_counts = counts.most_common(1)[0][1]
     new_players = playerspldata.copy() 
+    print(counts.most_common())
     count_list = list(counts.values()) 
     costs_np = np.array(costs).reshape(-1,1)
     points_np = np.array(points).reshape(-1,1)
@@ -46,7 +48,7 @@ def create_new_players(loc, season):
             inds.extend([j for (j,x) in enumerate(costs) if x == k+count_after])
             
 
-        for i in range(max_counts-v):
+        for i in range(n-v):
             copy_ind = random.sample(inds, 1)[0]
             perc = 0.2
             new_points = np.round(linreg.predict(np.array(k).reshape(-1,1))) + + random.randint(-round(perc*points[copy_ind]), round(perc*points[copy_ind]))   

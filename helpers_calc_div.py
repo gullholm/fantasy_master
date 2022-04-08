@@ -195,24 +195,24 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
 def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2]):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
-    cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
-    cost_div_t,points_div_t, non_cost_div_t,non_points_div_t = [],[], [],[]
-    cost_both_t,points_both_t, non_cost_both_t,non_points_both_t = [],[], [],[]
-    lin_n_t, non_lin_n_t, div_n_t, non_div_n_t, both_n_t, non_both_n_t = [],[], [],[], [],[]
-    
-    budget_int_l = np.arange(450,1001,50)
-    budget_int_h = np.add(budget_int_l, 50)
-    
+
 
     for season in seasons:
         playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
 
         print(str(season))
+
+        
+
+        
         for formation in formations:
-            cost_lin,points_lin, non_cost_lin,non_points_lin= [],[], [],[]
-            cost_div,points_div, non_cost_div,non_points_div = [],[], [],[]
-            cost_both,points_both, non_cost_both,non_points_both= [],[], [],[]
-            
+            cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
+            cost_div_t,points_div_t, non_cost_div_t,non_points_div_t = [],[], [],[]
+            cost_both_t,points_both_t, non_cost_both_t,non_points_both_t = [],[], [],[]
+            lin_n_t, non_lin_n_t, div_n_t, non_div_n_t, both_n_t, non_both_n_t = [],[], [],[], [],[]
+            budget_int_l = np.arange(450,1001,50)
+            budget_int_h = np.add(budget_int_l, 50)
+
             print('Preparing data', str(formation))
             if typ == "raw":
                 loc =  'data_cleaned/pl/'+str(season)+'/'
@@ -223,18 +223,23 @@ def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0
             elif typ == "noexp":
                 loc = 'data_cleaned/pl/'+ "noexp_01" + "/"
                 one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
-    
+            del_ind = np.array([],dtype = int)
             for (i,low) in enumerate(budget_int_l):
-                
+
                 budget = low+50
                 print('-------------------------------------')
                 print(budget)
                 
                 ones = cleaners.filter_df(one, low, budget)
+                
                 if(len(ones)<50):
-                    budget_int_h = np.delete(budget_int_h, i)
-                    break
-                ones.sample(50)
+                    del_ind = np.append(del_ind, i)
+                    continue
+                cost_lin,points_lin, non_cost_lin,non_points_lin= [],[], [],[]
+                cost_div,points_div, non_cost_div,non_points_div = [],[], [],[]
+                cost_both,points_both, non_cost_both,non_points_both= [],[], [],[]
+                
+#                ones = ones.sample(50)
                 all_teams = ones["indexes"].to_list()
                 all_points = ones['points_total'].to_list()
                 all_costs = ones['cost'].to_list()
@@ -300,14 +305,14 @@ def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0
                 
                 both_n_t.append([len(x) for x in cost_both])
                 non_both_n_t.append([len(x) for x in non_cost_both])
-            
-    
+            if(del_ind.size !=0):
+                budget_int_h = np.delete(budget_int_h, del_ind)
             df = pd.DataFrame({'Budget': budget_int_h, 'Linear mean cost': cost_lin_t, 'Linear mean points': points_lin_t, 'n linear': lin_n_t, 
-            #                   'Non linear cost': non_cost_lin_t, 'Non linear points': non_points_lin_t, 'Non linear n': non_lin_n_t,
-             #                 'Div mean cost': cost_div_t, 'Div mean points': points_div_t, 'n div': div_n_t,
-              #                              'Non div cost': non_cost_div_t, 'Non div points': non_points_div_t, 'Non div n': non_div_n_t,
-               #                             'Both mean cost': cost_both_t, 'Both mean points': points_both_t, 'n both': both_n_t,
-                #                                          'Non both cost': non_cost_both_t, 'Non both points': non_points_both_t, 'Non both n': non_both_n_t
+                               'Non linear cost': non_cost_lin_t, 'Non linear points': non_points_lin_t, 'Non linear n': non_lin_n_t,
+                              'Div mean cost': cost_div_t, 'Div mean points': points_div_t, 'n div': div_n_t,
+                                            'Non div cost': non_cost_div_t, 'Non div points': non_points_div_t, 'Non div n': non_div_n_t,
+                                            'Both mean cost': cost_both_t, 'Both mean points': points_both_t, 'n both': both_n_t,
+                                                          'Non both cost': non_cost_both_t, 'Non both points': non_points_both_t, 'Non both n': non_both_n_t
                               
                                   
                     })
