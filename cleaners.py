@@ -6,7 +6,7 @@ Created on Thu Feb  3 15:47:51 2022
 """
 import pandas as pd
 import getters
-import parsers
+#import parsers
 
 def filter_df(df, lwr, upper):
     df = df[df['cost'] <= upper]
@@ -298,11 +298,12 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
             
             if clean_all: 
                 print(len(all_cleaned))
-                combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+                combs=[] # kommentera bort raden nedan för att köra
+ #               combs = parsers.worst_create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv")
                 combs.to_csv(dest + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
             else: 
-                combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
+  #              combs = parsers.create_all_combs_from_cleaned_df(playerspldata, all_cleaned, p)
                 combs.to_csv("individual_data_cleaned/pl/" + str(season) + "/" + pos + "/" + str(p) + ".csv",index = False)
 
     
