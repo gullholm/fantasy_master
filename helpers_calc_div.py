@@ -11,6 +11,7 @@ generic = lambda x: ast.literal_eval(x)
 conv = {'indexes': generic}
 import getters as get
 import os
+import cleaners
 
 class team:
     def __init__(self, team_ids, playersdata,  typ = "raw"):
@@ -92,7 +93,6 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
             cost_lin,points_lin, non_cost_lin,non_points_lin= [],[], [],[]
             cost_div,points_div, non_cost_div,non_points_div = [],[], [],[]
             cost_both,points_both, non_cost_both,non_points_both= [],[], [],[]
-            lin_n, non_lin_n, div_n, non_div_n, both_n, non_both_n = [],[], [],[], [],[]
             
             print('Preparing data', str(formation))
             if typ == "raw":
@@ -107,7 +107,6 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
     
             playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
             one.sort_values(by="points_total", inplace=True, ascending = False)
-            #one = one.sample(n=10)
             print('Done')
             all_teams = one["indexes"].to_list()
             all_points = one['points_total'].to_list()
@@ -189,3 +188,129 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
             
         dest = os.path.join("results","pl",str(season), "all_on_all_" + typ + ".csv")
         df.to_csv(dest)
+
+
+#%%
+
+def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2]):
+    formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
+    
+    cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
+    cost_div_t,points_div_t, non_cost_div_t,non_points_div_t = [],[], [],[]
+    cost_both_t,points_both_t, non_cost_both_t,non_points_both_t = [],[], [],[]
+    lin_n_t, non_lin_n_t, div_n_t, non_div_n_t, both_n_t, non_both_n_t = [],[], [],[], [],[]
+    
+    budget_int_l = np.arange(450,1001,50)
+    budget_int_h = np.add(budget_int_l, 50)
+    
+
+    for season in seasons:
+        playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
+
+        print(str(season))
+        for formation in formations:
+            cost_lin,points_lin, non_cost_lin,non_points_lin= [],[], [],[]
+            cost_div,points_div, non_cost_div,non_points_div = [],[], [],[]
+            cost_both,points_both, non_cost_both,non_points_both= [],[], [],[]
+            
+            print('Preparing data', str(formation))
+            if typ == "raw":
+                loc =  'data_cleaned/pl/'+str(season)+'/'
+                one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
+            elif typ == "incnew": 
+                loc = 'data_cleaned/pl/'+ typ + "/"
+                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+            elif typ == "noexp":
+                loc = 'data_cleaned/pl/'+ "noexp_01" + "/"
+                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+    
+            for (i,low) in enumerate(budget_int_l):
+                
+                budget = low+50
+                print('-------------------------------------')
+                print(budget)
+                
+                ones = cleaners.filter_df(one, low, budget)
+                if(len(ones)<50):
+                    budget_int_h = np.delete(budget_int_h, i)
+                    break
+                ones.sample(50)
+                all_teams = ones["indexes"].to_list()
+                all_points = ones['points_total'].to_list()
+                all_costs = ones['cost'].to_list()
+               
+                cost_lin, points_lin = [[] for _ in range(3)], [[] for _ in range(3)]
+                non_cost_lin,non_points_lin = [[] for _ in range(3)], [[] for _ in range(3)]
+                
+                cost_div, points_div = [[] for _ in range(3)], [[] for _ in range(3)]
+                non_cost_div,non_points_div= [[] for _ in range(3)], [[] for _ in range(3)]
+                
+                cost_both, points_both= [[] for _ in range(3)], [[] for _ in range(3)]
+                non_cost_both,non_points_both= [[] for _ in range(3)], [[] for _ in range(3)]
+        
+                #linear_cost_085, linear_points_085, non_cost_085, non_points_085 = [],[],[],[]
+                #linear_cost_09, linear_points_09, non_cost_09, non_points_09 = [],[],[],[]
+                for t,p,c in zip(all_teams, all_points, all_costs):
+                    each_team = team(t,playerspldata)
+                    each_team.create_int()
+                    
+                    each_team.lin_fit()
+                    
+                    for i, (r,z) in enumerate(zip(r2_vals, empty_all)):
+                        each_team.check_int(z)
+                        if(each_team.r2 >= r):
+                            cost_lin[i].append(c)
+                            points_lin[i].append(p)
+                        else:
+                            non_cost_lin[i].append(c)
+                            non_points_lin[i].append(p)
+                        if(each_team.zero_count <= z):
+                            cost_div[i].append(c)
+                            points_div[i].append(p)
+                        else:
+                            non_cost_div[i].append(c)
+                            non_points_div[i].append(p)
+                        if(each_team.zero_count <= z and each_team.r2 >= r):
+                            cost_both[i].append(c)
+                            points_both[i].append(p)
+                        else: 
+                            non_cost_both[i].append(c)
+                            non_points_both[i].append(p)
+                cost_lin_t.append(mean_of_lists(cost_lin))
+                points_lin_t.append(mean_of_lists(points_lin))
+                non_cost_lin_t.append(mean_of_lists(non_cost_lin))
+                non_points_lin_t.append(mean_of_lists(non_points_lin))
+                
+                cost_div_t.append(mean_of_lists(cost_div, empty_all))
+                points_div_t.append(mean_of_lists(points_div,empty_all))
+                non_points_div_t.append(mean_of_lists(non_points_div, empty_all))
+                non_cost_div_t.append(mean_of_lists(non_cost_div,empty_all))
+                
+                cost_both_t.append(mean_of_lists(cost_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+                points_both_t.append(mean_of_lists(points_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+                non_cost_both_t.append(mean_of_lists(non_cost_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+                non_points_both_t.append(mean_of_lists(non_points_both, ["0.8, 2", "0.85, 3", "0.9, 4"]))
+        
+        
+                lin_n_t.append([len(x) for x in cost_lin])
+                non_lin_n_t.append([len(x) for x in non_cost_lin])
+                
+                div_n_t.append([len(x) for x in cost_div])
+                non_div_n_t.append([len(x) for x in non_cost_div]) 
+                
+                both_n_t.append([len(x) for x in cost_both])
+                non_both_n_t.append([len(x) for x in non_cost_both])
+            
+    
+            df = pd.DataFrame({'Budget': budget_int_h, 'Linear mean cost': cost_lin_t, 'Linear mean points': points_lin_t, 'n linear': lin_n_t, 
+            #                   'Non linear cost': non_cost_lin_t, 'Non linear points': non_points_lin_t, 'Non linear n': non_lin_n_t,
+             #                 'Div mean cost': cost_div_t, 'Div mean points': points_div_t, 'n div': div_n_t,
+              #                              'Non div cost': non_cost_div_t, 'Non div points': non_points_div_t, 'Non div n': non_div_n_t,
+               #                             'Both mean cost': cost_both_t, 'Both mean points': points_both_t, 'n both': both_n_t,
+                #                                          'Non both cost': non_cost_both_t, 'Non both points': non_points_both_t, 'Non both n': non_both_n_t
+                              
+                                  
+                    })
+                
+            dest = os.path.join("results","pl",str(season), formation +"_budgets_means_" + typ + ".csv")
+            df.to_csv(dest)
