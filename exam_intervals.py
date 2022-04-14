@@ -395,8 +395,8 @@ for season in seasons:
             ones.sort_values(by ="points_total", inplace = True, ascending = False)
             playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", 1617)
             all_teams = ones["indexes"].to_list()
-            ss = Counter(flatten(all_teams)).most_common()
-            allpoints= ones['points_total'].to_list() 
+            #ss = Counter(flatten(all_teams)).most_common()
+            #allpoints= ones['points_total'].to_list() 
             
             #Take 50 best 
             if len(ones)>50:
@@ -575,6 +575,7 @@ for formation in formations:
 #Create df for saving results, checking linearity of all teams, linear or not according to R2
  
 seasons= [1617,1718,1819,1920,2021]
+seasons= [1920, 2021]
 formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
 
 for season in seasons:
@@ -602,8 +603,8 @@ for season in seasons:
             ones.sort_values(by ="points_total", inplace = True, ascending = False)
             playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", season)
             all_teams = ones["indexes"].to_list()
-            ss = Counter(flatten(all_teams)).most_common()
-            allpoints= ones['points_total'].to_list() 
+            #ss = Counter(flatten(all_teams)).most_common()
+           # allpoints= ones['points_total'].to_list() 
             
             #Take 50 best 
             if len(ones)>50:
@@ -653,3 +654,116 @@ for season in seasons:
         
         
         dfres.to_csv('results/pl/'+ str(season) +'/linperc_' +str(formation)+ '.csv')     
+        
+#%%
+#Testar Josefs checkinterval
+import helpers_calc_div
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+ 
+seasons= [1617,1718,1819,1920,2021]
+seasons = [1617]
+seasons= [1617,1718,1819,1920,2021]
+
+zvalue=3
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+useall = True  # T -> alla, F -> bara 50 bästa
+
+
+for season in seasons:
+    print(season)
+    for formation in formations: 
+        print('Preparing data', str(formation))
+        one = pd.read_csv('data_cleaned/pl/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
+        print('Done')
+    
+        if useall:
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
+        else: 
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal, Diverse)'])
+        
+        startlow =450
+        endlow =1000
+        idx=0
+        for low in range(startlow, endlow,50):
+            
+            budget = low+50
+            print('-------------------------------------')
+            print(budget)
+            ones = filter_df(one, low, budget)
+            ones.sort_values(by ="points_total", inplace = True, ascending = False)
+            playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", season)
+            all_teams = ones["indexes"].to_list()
+            #ss = Counter(flatten(all_teams)).most_common()
+            #allpoints= ones['points_total'].to_list() 
+            
+            #Take 50 best 
+            if len(ones)>50:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+            else:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
+            
+            best_div=[]
+            i=0
+            plot= False
+            for team in best_50:
+                #for plotting
+                #if plot==True:
+                #    i+=1
+                #    fig, (ax1, ax2) = plt.subplots(1, 2)
+                #    fig.suptitle(i)
+                # then add ax = ax1 in next row
+                #h = get.get_cost_team(playerspldata, team)
+                
+               # _ , ret, _ = linR2Inter(h, None, plot)
+                #print(r2)
+                #print(team)
+                each_team = helpers_calc_div.team(team,playerspldata)
+                each_team.create_int()
+                each_team.check_int()
+                #print(each_team)
+                #print(each_team.zero_count)
+                
+                if each_team.zero_count <=zvalue:
+                    
+                    best_div.append(0)
+                else: 
+                    best_div.append(1)
+                #print(best_div)
+            bnor, bdiv = calcpercent(best_div)
+            b50  = [bnor,bdiv]
+            
+            #For printing
+            #printpercent('Best 50', best_div, bnor, bdiv, bund)
+            
+            if useall: 
+                diverse=[]
+                print("Calc all teams")
+                for team_id in all_teams:
+            #        h = get.get_cost_team(playerspldata, team_id)
+            #        _, ret, _ = linR2Inter(h, None, plot)
+                    each_team = helpers_calc_div.team(team_id ,playerspldata)
+                    each_team.create_int()
+                    each_team.check_int()
+                    #print(each_team)
+                    #print(each_team.zero_count)
+                    #print(each_team.zero_count)
+                    
+                    if each_team.zero_count <=zvalue:
+                        
+                        diverse.append(0)
+                    else: 
+                        diverse.append(1) 
+                    #print(diverse)    
+                anor, adiv = calcpercent(diverse)
+                a  = [anor,adiv]
+            
+                #For printing
+                #printpercent('All', diverse, anor, adiv, aund)
+        
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,a]
+            else: 
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50]
+            idx+=1
+        
+        
+        dfres.to_csv('results/pl/'+ str(season) +'/intervalperc_' +str(formation)+ '.csv')             
