@@ -15,12 +15,12 @@ generic = lambda x: ast.literal_eval
 conv = {"n linear": generic}
 seasonss = [1617, 1718, 1819, 1920, 2021]
 for season in seasonss:
-    df = pd.read_csv(os.path.join("results","pl",str(season),"[3, 4, 3]" + "_budgets_means_raw.csv"))
+    df = pd.read_csv(os.path.join("results","pl",str(season),"[4, 5, 1]" + "_budgets_means_raw.csv"))
                  
     nlin = df['n linear'].apply(lambda s: list(ast.literal_eval(s))).to_list()
     nNonlin = df['Non linear n'].apply(lambda s: list(ast.literal_eval(s))).to_list()
     for i in range(len(nlin)):    
-        print(str(season), "[3, 4, 3]", round(100*(nNonlin[i][1]/(nlin[i][1]+nNonlin[i][1]))),
+        print(str(season), "[4, 5, 1]", round(100*(nNonlin[i][1]/(nlin[i][1]+nNonlin[i][1]))),
               round(100*(nlin[i][1]/(nlin[i][1]+nNonlin[i][1])))
               )
 

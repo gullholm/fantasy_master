@@ -81,14 +81,15 @@ def mean_of_lists(lis, r2= [0.8,0.85,0.9]):
 def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2]):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
-    cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
-    cost_div_t,points_div_t, non_cost_div_t,non_points_div_t = [],[], [],[]
-    cost_both_t,points_both_t, non_cost_both_t,non_points_both_t = [],[], [],[]
-    lin_n_t, non_lin_n_t, div_n_t, non_div_n_t, both_n_t, non_both_n_t = [],[], [],[], [],[]
+
     
 
     for season in seasons:
         print(str(season))
+        cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
+        cost_div_t,points_div_t, non_cost_div_t,non_points_div_t = [],[], [],[]
+        cost_both_t,points_both_t, non_cost_both_t,non_points_both_t = [],[], [],[]
+        lin_n_t, non_lin_n_t, div_n_t, non_div_n_t, both_n_t, non_both_n_t = [],[], [],[], [],[]
         for formation in formations:
             cost_lin,points_lin, non_cost_lin,non_points_lin= [],[], [],[]
             cost_div,points_div, non_cost_div,non_points_div = [],[], [],[]
@@ -192,14 +193,17 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
 
 #%%
 
-def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2]):
+def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2], league = "pl"):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
 
 
     for season in seasons:
-        playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
-
+        if typ=="raw":
+            if league == "pl": playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
+            elif league == "as": playerspldata = get.get_players_feature_pl(os.path.join("data","allsvenskan", "players_raw_"),season)
+        elif typ =="noexp":
+            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_noexp_0.1_"),season)
         print(str(season))
 
         
@@ -215,13 +219,17 @@ def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0
 
             print('Preparing data', str(formation))
             if typ == "raw":
-                loc =  'data_cleaned/pl/'+str(season)+'/'
-                one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
+                if league=="pl":
+                    loc =  'data_cleaned/'+ league + '/'+str(season)+'/'
+                    one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
+                if league == "as":
+                    one = pd.read_csv(os.path.join("data_cleaned",league,str(formation)+ '.csv'), converters =conv)
+                    
             elif typ == "incnew": 
                 loc = 'data_cleaned/pl/'+ typ + "/"
                 one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
             elif typ == "noexp":
-                loc = 'data_cleaned/pl/'+ "noexp_01" + "/"
+                loc = 'data_cleaned/pl/'+ "noexp" + "/"
                 one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
             del_ind = np.array([],dtype = int)
             for (i,low) in enumerate(budget_int_l):
@@ -317,5 +325,5 @@ def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0
                                   
                     })
                 
-            dest = os.path.join("results","pl",str(season), formation +"_budgets_means_" + typ + ".csv")
+            dest = os.path.join("results",league,str(season), formation +"_budgets_means_" + typ + ".csv")
             df.to_csv(dest)

@@ -39,10 +39,9 @@ def get_players_feature(full_data, list_feature = ['element_type', 'now_cost', '
         players_feature[player['id']] = case
     return players_feature  
 
-
 def get_players_feature_pl(loc, season, list_feature = ['element_type', 'now_cost', 'total_points']):
     csv_file = str(loc) + str(season) + ".csv"
-    playerspl = pd.read_csv(csv_file) 
+    playerspl = pd.read_csv(csv_file)
     playerspl = playerspl.to_dict('index')
 
     players_feature = {}
