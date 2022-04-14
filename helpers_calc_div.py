@@ -204,6 +204,8 @@ def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0
             elif league == "as": playerspldata = get.get_players_feature_pl(os.path.join("data","allsvenskan", "players_raw_"),season)
         elif typ =="noexp":
             playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_noexp_0.1_"),season)
+        elif typ == "incnew":
+            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_incnew_lin_"),season)
         print(str(season))
 
         

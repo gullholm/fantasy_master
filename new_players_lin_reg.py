@@ -13,9 +13,9 @@ import random
 import getters
 import numpy as np
 
-season = 1617
+season = 1819
 loc = "data/pl_csv/players_raw_"
-def create_new_players(loc, season,n =15):
+def create_new_players(loc, season,n =10):
     playerspldata = getters.get_players_feature_pl(loc,
                                                season, ['element_type', 'now_cost', 'total_points', 'id'])
 
