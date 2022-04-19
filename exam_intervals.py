@@ -659,8 +659,7 @@ for season in seasons:
 #Testar Josefs checkinterval
 import helpers_calc_div
 #Create df for saving results, checking linearity of all teams, linear or not according to R2
- 
-seasons= [1617,1718,1819,1920,2021]
+
 seasons = [1617]
 seasons= [1617,1718,1819,1920,2021]
 
@@ -766,4 +765,65 @@ for season in seasons:
             idx+=1
         
         
-        dfres.to_csv('results/pl/'+ str(season) +'/intervalperc_' +str(formation)+ '.csv')             
+        dfres.to_csv('results/pl/'+ str(season) +'/intervalperc_' +str(formation)+ '.csv')
+
+#%%
+seasons = [1617, 1718, 1819, 1920, 2021]
+formations= ['3-4-3', '3-5-2', '4-3-3', '4-4-2', '4-5-1', '5-3-2', '5-4-1']
+dfres = pd.DataFrame(columns=[ 'Season', 'Formation', 'Budget', 'Best total cost', 'Best total points', 'Individual costs', 'Sorted individual costs', 'Id' ])
+all_ids=[]
+#formationdf = pd.Series([])
+#seasondf =pd.Series([])
+#i = 0
+for season in seasons: 
+#    for idx in range(77):
+#        print(i)
+#        print(season)
+#        seasondf[i+idx]=season
+#    i=i+77    
+    for form in formations:
+        teams = pd.read_csv('results/pl/'+str(season)+'/'+str(form)+ '.csv', converters =conv)
+        dfres = pd.concat([dfres, teams])
+        dfres.iloc[1]['Season']=1
+        
+        #id_list = teams['Id'].tolist()
+        #all_ids.append(id_list)
+        
+#dfres.set_index([pd.Index([1,2,3]),])
+#dfres.insert(0,"Season", seasondf)
+
+dfres.to_csv('results/pl/best1Id.csv')
+
+#%%
+# Creating for the top 1 teams
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+ 
+
+
+print('Preparing data')
+one = pd.read_csv('results/pl/best1Id.csv', converters =conv)
+print('Done')
+
+dfres = pd.DataFrame(columns=['Normal','Diverse'])
+
+for cost in one['Sorted individual costs']:
+    h= ast.literal_eval(cost)
+
+    _ , ret, _ = linR2Inter(h, None, plot)
+    best_div.append(ret)
+    
+nor, div = calcpercent(best_div)
+#nordiv  = [nor, div] 
+
+dfres.loc[0]=[nor,div]    
+
+#%%
+
+print(dfres)
+dfres.to_csv('results/pl/linperc_best1.csv') 
+
+#%%
+fig, ax = plt.subplots()
+plt.pie([28,72],explode=[0.0,0.1], labels=['Normal', 'Distribution'])
+ax.set_title("Best teams for each budget and season")
+plt.show()
