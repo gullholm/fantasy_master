@@ -19,7 +19,7 @@ import random
 from random import choice
 import collections
 
-
+#%%
 
 #Random generate teams from ditribution or randomly.
 
@@ -709,7 +709,7 @@ for season in seasons:
     nallpoints, nallcosts, nalldistr=[], [],[]
     lallpoints, lallcosts, lalldistr=[], [],[]
     
-    #Bästa k för varje budget enlugt säsong 1617:
+    #Bästa k för varje budget enligt säsong 1617:
     budgets = [600, 650, 700, 750, 800, 850, 900, 950, 1000]
     bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
     #k = randint(1,10) #Trying with random k
@@ -876,3 +876,73 @@ def createPossibleCosts(theList):
         if item != None:
             possibleCosts.append(i)
     return possibleCosts    
+
+
+#%%
+season=2021
+csv_file = "results/pl/" + str(season) + "/generateRandom.csv"
+randomResult = pd.read_csv(csv_file)
+
+costlin = randomResult['Mean cost'][::2]  
+costnor = randomResult['Mean cost'][1::2]
+
+plin = randomResult['Mean points'][::2]  
+pnor = randomResult['Mean points'][1::2]
+
+blin = randomResult['Mean 50 best p'][::2]  
+bnor = randomResult['Mean 50 best p'][1::2]
+
+wlin = randomResult['Mean 50 worst p'][::2]  
+wnor = randomResult['Mean 50 worst p'][1::2]
+
+X = np.arange(9)
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, costlin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, costnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Cost')
+ax.set_title('Mean cost of team for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'cost.png', bbox_inches='tight')
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, plin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, pnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean points of team for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points1.png', bbox_inches='tight')
+
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, blin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, bnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean 50 best points for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points2.png', bbox_inches='tight')
+
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, wlin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, wnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean 50 worst points for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points3.png', bbox_inches='tight')
