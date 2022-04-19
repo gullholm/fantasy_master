@@ -36,9 +36,10 @@ class team:
         c = np.subtract(mean_y,np.multiply(m,mean_x))
 
         self.y_pr = np.add(c,np.multiply(m,self.x))
+        self.res = np.subtract(self.ind_cost, self.y_pr)
         ss_t = np.sum(np.power((self.ind_cost - mean_y),2))
         ss_r = np.sum(np.power((self.ind_cost - self.y_pr), 2))         
-
+        
         self.r2 = np.subtract(1,np.divide(ss_r,ss_t)) 
     def check_lin(self, r2lim):
         if self.r2 >= r2lim: self.linear = True
@@ -192,10 +193,63 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
 
 
 #%%
+import matplotlib.pyplot as plt
+def get_residuals(seasons, typ = "raw", league = "pl"):
+    formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
+    formations = ['[3, 4, 3]','[3, 5, 2]']
+    res = np.array([])
+
+    for season in seasons:
+        if typ=="raw":
+            if league == "pl": playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
+            elif league == "as": playerspldata = get.get_players_feature_pl(os.path.join("data","allsvenskan", "players_raw_"),season)
+        elif typ =="noexp":
+            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_noexp_0.1_"),season)
+        elif typ == "incnew":
+            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_incnew_lin_"),season)
+        print(str(season))
+
+    
+        for formation in formations:
+            if typ == "raw":
+                if league=="pl":
+                    loc =  'data_cleaned/'+ league + '/'+str(season)+'/'
+                    one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
+                if league == "as":
+                    one = pd.read_csv(os.path.join("data_cleaned",league,str(formation)+ '.csv'), converters =conv)
+                    
+            elif typ == "incnew": 
+                loc = 'data_cleaned/pl/'+ typ + "/"
+                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+            elif typ == "noexp":
+                loc = 'data_cleaned/pl/'+ "noexp" + "/"
+                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+            one = one.sample(frac=1)
+            all_teams = one["indexes"].to_list()
+            all_points = one['points_total'].to_list()
+            all_costs = one['cost'].to_list()
+            i = 0 
+            for t,p,c in zip(all_teams, all_points, all_costs):
+                each_team = team(t,playerspldata)
+                each_team.create_int()
+                
+                each_team.lin_fit()
+                if(each_team.r2 > 0.85):
+                    res = np.append(res, each_team.res)
+                    i += 1
+                    if i == 100:
+                        break
+    fig, ax = plt.subplots()
+    ax.scatter(range(len(res)), res)
+    ax.plot(0,len(res))
+    ax.set_title("Residuals of season " + str(season))
+    ax.set_ylim([-10,10])
+    plt.show()
+    return(res)
+                    
 
 def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2], league = "pl"):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
-    formations = ['[5, 3, 2]','[5, 4, 1]']
 
 
     for season in seasons:
