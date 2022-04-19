@@ -19,7 +19,7 @@ import random
 from random import choice
 import collections
 
-
+#%%
 
 #Random generate teams from ditribution or randomly.
 
@@ -510,13 +510,8 @@ def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
                 if len(templist)>0:
                     b=choice(templist)
                 else:
-                    #Var tvungen att justera här... 
-                    #print('här blir det fel', mu)
-                    #print('så mycket kvar', budget-sum(test))
                     lastcost = [j for j in possibleCosts if j < budget-sum(test)]
-                    #print(lastcost)
                     b=choice(lastcost)
-                    #b=mu
                 test.append(b)
                 binstest.append(mu+sigma+1)
                 add= mu+sigma+1+sigma*0.3125
@@ -700,14 +695,10 @@ def calcMuSigmaStep(budget):
 #Kör för att jämföra : 
     
 #FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE  
-seasons = [0]   
-#season = 1819
-#Create list of lists with points for each cost
+seasons = [0] # 0 för Allsvenskan  
+
 runs= 100000
- #budget = 1000
- #lowerbudget= budget-20
- #n=11
- #mean = budget/n
+n=11
 
 for season in seasons:  
     print('------------------------SEASON', season, '------------------')
@@ -718,31 +709,21 @@ for season in seasons:
     nallpoints, nallcosts, nalldistr=[], [],[]
     lallpoints, lallcosts, lalldistr=[], [],[]
     
-    #Bästa k för varje budget:
+    #Bästa k för varje budget enligt säsong 1617:
     budgets = [600, 650, 700, 750, 800, 850, 900, 950, 1000]
     bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
-    #Baserat på säsong 1617 är dessa de bästa k-värdena
-    #600 1 bäst
-    #650 2 ger högst för top 50, 1 ger högre för medel av alla samt worst 50
-    #700 1 ger högst mean, top 50, 2 ger högst worst 50
-    #750 1 ger högst top 50 , 5 ger högst worst 50, 4 högst mean
-    #800 3 högst top 50, 6 högst mean och worst 50
-    #850 6 bäst
-    #900 8 bäst
-    #950 7 bäst top 50 mean, 9 bäst worst 50 
-    #1000 6 ger högst mean, top 50, 1 ger högst worst 50 
     #k = randint(1,10) #Trying with random k
-    #Trying the best k
+    
     randomResults = pd.DataFrame(columns=['Budget', 'Linear/Normal', 'Mean cost', 'Mean points', 'Mean 50 best p', 'Mean 50 worst p', 'Ratio points/costs'])
     idx = 0 
     for j, budget in enumerate(budgets):
         lowerbudget= budget-20
-        n=11
         mean = budget/n
+        
         print('---------------budget: ',budget, '-------------------')
         #for k in range(1,11): #Trying with fixed k
         k = bestk[j]
-        #print('---------- k: ',k, '----------')
+        
         lallpoints, lallcosts, lalldistr=[], [],[]
         lowbin= int(mean-k*5.5)
         bins= [lowbin + i*k for i in range(12)]
@@ -750,13 +731,12 @@ for season in seasons:
             break
         
         while len(lallcosts) < runs: 
-            
             ltpoints, ltcosts, ldistr = generateRandomLinearBins(theList, mean, possibleCosts, k, bins)    
-            #print(ldistr)
             if ltcosts < budget and ltcosts > lowerbudget:
                 lallpoints.append(ltpoints)
                 lallcosts.append(ltcosts)
                 lalldistr.append(ldistr)
+        
         print('Mean of 50 worst linear', sum(sorted(lallpoints)[:50])/50) 
         print('Mean all linear', sum(lallpoints)/runs)
         print('Mean of 50 best linear', sum(sorted(lallpoints)[-50:])/50)             
@@ -770,14 +750,14 @@ for season in seasons:
                 nallpoints.append(ntpoints)
                 nallcosts.append(ntcosts)
                 nalldistr.append(ndistr)
-            
-        plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' Linear', season)      
-        plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' Normal', season)  
-        
+                    
         print('Mean of 50 worst normal', sum(sorted(nallpoints)[:50])/50) 
         print('Mean all normal', sum(nallpoints)/runs)
         print('Mean of 50 best normal', sum(sorted(nallpoints)[-50:])/50)
         
+        plotHistOfAllCostsAndPoints(lallcosts, lallpoints, budget, ' Linear', season)      
+        plotHistOfAllCostsAndPoints(nallcosts, nallpoints, budget, ' Normal', season)  
+
         randomResults.loc[idx] = ([budget, 'Linear: ' + str(k), int(sum(lallcosts)/runs), round(sum(lallpoints)/runs), round(sum(sorted(lallpoints)[-50:])/50), round(sum(sorted(lallpoints)[:50])/50), round(sum(lallpoints)/sum(lallcosts),3)])
         idx+=1
         randomResults.loc[idx] = ([budget, 'Normal' , round(sum(nallcosts)/runs), round(sum(nallpoints)/runs), round(sum(sorted(nallpoints)[-50:])/50), round(sum(sorted(nallpoints)[:50])/50), round(sum(nallpoints)/sum(nallcosts),3)])
@@ -896,3 +876,73 @@ def createPossibleCosts(theList):
         if item != None:
             possibleCosts.append(i)
     return possibleCosts    
+
+
+#%%
+season=2021
+csv_file = "results/pl/" + str(season) + "/generateRandom.csv"
+randomResult = pd.read_csv(csv_file)
+
+costlin = randomResult['Mean cost'][::2]  
+costnor = randomResult['Mean cost'][1::2]
+
+plin = randomResult['Mean points'][::2]  
+pnor = randomResult['Mean points'][1::2]
+
+blin = randomResult['Mean 50 best p'][::2]  
+bnor = randomResult['Mean 50 best p'][1::2]
+
+wlin = randomResult['Mean 50 worst p'][::2]  
+wnor = randomResult['Mean 50 worst p'][1::2]
+
+X = np.arange(9)
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, costlin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, costnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Cost')
+ax.set_title('Mean cost of team for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'cost.png', bbox_inches='tight')
+plt.show()
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, plin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, pnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean points of team for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points1.png', bbox_inches='tight')
+
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, blin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, bnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean 50 best points for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points2.png', bbox_inches='tight')
+
+
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+ax.bar(X + 0.00, wlin, color = 'b', width = 0.25)
+ax.bar(X + 0.25, wnor, color = 'g', width = 0.25)
+ax.legend(labels=['Linear', 'Normal'])
+realX= [x+0.125 for x in X ]
+ax.set_xlabel('Budget')
+ax.set_ylabel('Points')
+ax.set_title('Mean 50 worst points for each budget for season ' +str(season))
+ax.set_xticks(realX,range(600,1050, 50))
+plt.savefig('plots/randomGenerated/' + str(season) + 'points3.png', bbox_inches='tight')

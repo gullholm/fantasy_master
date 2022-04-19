@@ -127,13 +127,9 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
     df_part.sort_values(by=['now_cost','total_points'], 
                         ascending=[True, False], inplace = True)
     
-#    print(df_part.head(10))
     tot_points = df_part["total_points"].to_list()
     indexes = list(df_part.index)
     best = tot_points[:n_form]
-#    print(tot_points[:10])
-#    print(indexes[:10])
-#    print(best)
     
     ind_to_del = []
 
