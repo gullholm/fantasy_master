@@ -16,3 +16,12 @@ def plot_all_residuals(seasons= [1617,1819], league = "pl"):
         
 plot_all_residuals()
 hcd.get_residuals(21, league = "as")
+
+
+import numpy as np
+
+hej = np.array([1,2,3])
+np.savetxt("test.out", hej)
+
+
+hej2 = np.loadtxt("test.out")

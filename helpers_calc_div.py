@@ -240,7 +240,7 @@ def get_residuals(season, typ = "raw", league = "pl"):
         all_points = one['points_total'].to_list()
         all_costs = one['cost'].to_list()
         res = create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata)
-
+    np.savetxt(typ+str(season)+league + ".out", res)
     cmap = plt.get_cmap('gnuplot')
     print(len(res)/11)
     colors = [cmap(i) for i in np.linspace(0, 1, int(len(res)/11))]
