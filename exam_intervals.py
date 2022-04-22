@@ -7,14 +7,6 @@ Created on Thu Feb 17 14:38:11 2022
 """
 #%%%
 
-for i in range(10):
-    j=i
-    print(i)
-    (j + 1) if i==0 else j
-    (j - 1) if i==9 else j
-    print(j)
-#%%%
-
 import pandas as pd
 import numpy as np
 import getters as get
@@ -797,19 +789,17 @@ dfres.to_csv('results/pl/best1Id.csv')
 #%%
 # Creating for the top 1 teams
 #Create df for saving results, checking linearity of all teams, linear or not according to R2
- 
-
 
 print('Preparing data')
 one = pd.read_csv('results/pl/best1Id.csv', converters =conv)
 print('Done')
 
 dfres = pd.DataFrame(columns=['Normal','Diverse'])
-
+best_div=[]
 for cost in one['Sorted individual costs']:
     h= ast.literal_eval(cost)
 
-    _ , ret, _ = linR2Inter(h, None, plot)
+    _ , ret, _ = linR2Inter(h, None, plot=False)
     best_div.append(ret)
     
 nor, div = calcpercent(best_div)
@@ -824,6 +814,145 @@ dfres.to_csv('results/pl/linperc_best1.csv')
 
 #%%
 fig, ax = plt.subplots()
-plt.pie([28,72],explode=[0.0,0.1], labels=['Normal', 'Distribution'])
-ax.set_title("Best teams for each budget and season")
+values= [best_div.count(1), best_div.count(0)]
+def make_autopct(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = (round(pct*total/100.0))
+        return '{p:.0f}%  ({v:d})'.format(p=pct,v=val)
+    return my_autopct
+plt.pie(values,explode=[0.0,0.1], autopct=make_autopct(values) ,labels=['Not linear', 'Linear' ])
+ax.set_title("Best teams for all budgets and seasons")
 plt.show()
+
+#%%
+seasons= [1617,1718,1819, 1920,2021]
+allforms=[]
+for season in seasons: 
+    
+    print(str(season))
+    data = pd.read_csv('results/pl/'+str(season)+'/best.csv', converters =conv)
+
+    
+    seasonform = [ast.literal_eval(d) for d in data['Formation']]
+    allforms.extend(seasonform)
+
+#%%
+formations= [[3, 4, 3],[3, 5, 2],[4, 3, 3],[4, 4, 2],[4, 5, 1],[5, 3, 2],[5, 4, 1]]
+formnames= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+
+formcounts=[]    
+for form in formations:
+    formcounts.append(allforms.count(form))
+    
+fig = plt.figure()
+ax = fig.add_axes([0,0,1,1])
+
+ax.bar(formnames,formcounts)
+ax.set_ylabel('Count')
+ax.set_xlabel('Formation')
+ax.set_title('Best teams formations')
+plt.show()
+
+#%%
+budgets=range(500,1050,50)
+meanformsperbud=[]
+for budget in budgets: 
+    
+    data = pd.read_csv('results/pl/budget/'+str(budget)+'.csv', converters =conv)
+
+    seasonform = [ast.literal_eval(d) for d in data['Formation']]
+    df =  [a[0] for a in seasonform]
+    mf = [a[1] for a in seasonform]
+    fw = [a[2] for a in seasonform]
+    meandf = sum(df)/5  
+    meanmf = sum(mf)/5
+    meanfw = sum(fw)/5
+
+    meanformsperbud.append([meandf, meanmf,meanfw])
+    
+plt.plot(range(500,1050,50), meanformsperbud, '-o')  
+plt.title('Mean amount for each position in each budget')
+plt.legend(['Defenders', 'Midfielders', 'Forwards'])  
+plt.xlabel('Budget')
+plt.ylabel('Amount')
+
+#%%
+seasons=[1617,1718,1819,1920,2021]
+formnames= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+
+for season in seasons: 
+    b50nortot=np.zeros(11)
+    b50divtot=np.zeros(11)
+    allanortot=np.zeros(11)
+    alladivtot=np.zeros(11)
+    
+    rationor=np.zeros(11)
+    ratiodiv = np.zeros(11)
+    
+    for forma in formnames: 
+    
+        data = pd.read_csv('results/pl/'+str(season)+'/linperc_' +forma+'.csv', converters =conv)
+        b50 = [ast.literal_eval(d) for d in data['Best 50 (Normal,Diverse)']]
+        alla = [ast.literal_eval(d) for d in data['All (Normal,Diverse)']]
+
+        b50nortot =[b50nortot[idx]+i for idx,(i,_) in enumerate(b50)]
+
+        b50divtot =[b50divtot[idx]+j for idx,(_,j) in enumerate(b50)]
+        allanortot =[allanortot[idx]+i for idx,(i,_) in enumerate(alla)]
+        # #print(allanor)
+        alladivtot =[alladivtot[idx]+j for idx,(_,j) in enumerate(alla)]
+        
+        b50nor = [i for i,_ in b50]
+        b50div = [j for _,j in b50]
+        #print('----')
+        #print(b50div[4])
+        
+        
+        allanor = [i for i,_ in alla]
+        alladiv =[j for _,j in alla]
+        #print(alladiv[4])
+        rationor=[rationor[idx]+(a/b) if b!=0 else 1 for idx,(a,b) in enumerate(zip(b50nor,allanor))]
+        ratiodiv=[ratiodiv[idx]+(a/b) if b!=0 else 1 for idx,(a,b) in enumerate(zip(b50div,alladiv))]
+
+
+    b50nortot =[b50nortot[idx]/7 for idx in range(11)]
+    b50divtot =[b50divtot[idx]/7 for idx in range(11)]
+    allanortot =[allanortot[idx]/7 for idx in range(11)]
+    alladivtot =[alladivtot[idx]/7 for idx in range(11)]
+    
+    X = np.arange(11)
+    realX= [x+0.125 for x in X ]
+
+    
+    fig = plt.figure()
+    ax = fig.add_axes([0,0,1,1])
+    ax.bar(X + 0.00, b50nortot, color = 'b', width = 0.4, alpha=0.5)
+    ax.bar(X + 0.4, b50divtot, color = 'r', width = 0.4, alpha=0.5)
+    ax.bar(X + 0.05, allanortot, color = 'g', width = 0.2, alpha=0.5)
+    ax.bar(X + 0.405, alladivtot, color = 'y', width = 0.2, alpha=0.5)
+    ax.legend(labels=['Linear b50', 'Normalb50', 'All-Lin', 'All-nor'])
+
+    ax.set_xlabel('Budget')
+    ax.set_ylabel('Points')
+    ax.set_title('50 best points for each budget for season ' +str(season))
+    ax.set_xticks(realX,range(500,1050, 50))
+    #plt.savefig('plots/randomGenerated/' + str(season) + 'points3.png', bbox_inches='tight')
+    plt.show()
+    
+   # rationor=[a/b if b!=0 else 1 for a,b in zip(b50nor,allanor)]
+   # ratiodiv=[a/b if b!=0 else 1 for a,b in zip(b50div,alladiv)]
+    rationor = [r for r in rationor]
+    ratiodiv = [r for r in ratiodiv]
+    plt.plot(X,rationor, '-o')
+    plt.plot(X,ratiodiv, '-o')
+    plt.legend(labels=['Not linear', 'Linear'])
+    plt.title(season)
+    plt.xticks(realX,range(500,1050, 50))
+
+    plt.show()
+    
+    print(b50nortot)
+    print(allanortot)
+    print(rationor)
+        
