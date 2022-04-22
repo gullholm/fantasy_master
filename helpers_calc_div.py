@@ -83,8 +83,6 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
     
 
-    
-
     for season in seasons:
         print(str(season))
         cost_lin_t,points_lin_t, non_cost_lin_t,non_points_lin_t = [],[], [],[]
@@ -194,58 +192,79 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
 
 #%%
 import matplotlib.pyplot as plt
-def get_residuals(seasons, typ = "raw", league = "pl"):
+def create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata):
+    i = 0
+
+    for t,p,c in zip(all_teams, all_points, all_costs):
+        each_team = team(t,playerspldata)
+        each_team.create_int()    
+        each_team.lin_fit()
+        if(each_team.r2 > 0.85):
+            res = np.append(res, each_team.res)
+            i += 1
+            if i == 5:
+                return(res)
+    
+def get_residuals(season, typ = "raw", league = "pl"):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
-    formations = ['[3, 4, 3]','[3, 5, 2]']
+
     res = np.array([])
 
-    for season in seasons:
-        if typ=="raw":
-            if league == "pl": playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
-            elif league == "as": playerspldata = get.get_players_feature_pl(os.path.join("data","allsvenskan", "players_raw_"),season)
-        elif typ =="noexp":
-            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_noexp_0.1_"),season)
-        elif typ == "incnew":
-            playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_incnew_lin_"),season)
-        print(str(season))
+    if typ=="raw":
+        if league == "pl": playerspldata = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", season)
+        elif league == "as": playerspldata = get.get_players_feature_pl(os.path.join("data","allsvenskan", "players_raw_"),season)
+    elif typ =="noexp":
+        playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_noexp_0.1_"),season)
+    elif typ == "incnew":
+        playerspldata = get.get_players_feature_pl(os.path.join("data","pl_csv", "players_incnew_lin_"),season)
+    print(str(season))
 
-    
-        for formation in formations:
-            if typ == "raw":
-                if league=="pl":
-                    loc =  'data_cleaned/'+ league + '/'+str(season)+'/'
-                    one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
-                if league == "as":
-                    one = pd.read_csv(os.path.join("data_cleaned",league,str(formation)+ '.csv'), converters =conv)
-                    
-            elif typ == "incnew": 
-                loc = 'data_cleaned/pl/'+ typ + "/"
-                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
-            elif typ == "noexp":
-                loc = 'data_cleaned/pl/'+ "noexp" + "/"
-                one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
-            one = one.sample(frac=1)
-            all_teams = one["indexes"].to_list()
-            all_points = one['points_total'].to_list()
-            all_costs = one['cost'].to_list()
-            i = 0 
-            for t,p,c in zip(all_teams, all_points, all_costs):
-                each_team = team(t,playerspldata)
-                each_team.create_int()
+
+    for formation in formations:
+        if typ == "raw":
+            if league=="pl":
+                loc =  'data_cleaned/'+ league + '/'+str(season)+'/'
+                one = pd.read_csv(loc+str(formation)+ '.csv', converters =conv)
+            if league == "as":
+                one = pd.read_csv(os.path.join("data_cleaned",league,str(formation)+ '.csv'), converters =conv)
                 
-                each_team.lin_fit()
-                if(each_team.r2 > 0.85):
-                    res = np.append(res, each_team.res)
-                    i += 1
-                    if i == 100:
-                        break
+        elif typ == "incnew": 
+            loc = 'data_cleaned/pl/'+ typ + "/"
+            one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+        elif typ == "noexp":
+            loc = 'data_cleaned/pl/'+ "noexp" + "/"
+            one = pd.read_csv(loc +str(season)+'/'+str(formation)+ '.csv', converters =conv)
+
+        one = one.sample(frac=1)
+        all_teams = one["indexes"].to_list()
+        all_points = one['points_total'].to_list()
+        all_costs = one['cost'].to_list()
+        res = create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata)
+
+    cmap = plt.get_cmap('gnuplot')
+    print(len(res)/11)
+    colors = [cmap(i) for i in np.linspace(0, 1, int(len(res)/11))]
+    print(len(colors))
+    colors = np.repeat(np.array(colors),11, axis = 0)
     fig, ax = plt.subplots()
-    ax.scatter(range(len(res)), res)
+    ax.scatter(range(len(res)), res, facecolors = "none", s=0.5,c = colors, marker = 'o')
     ax.plot(0,len(res))
-    ax.set_title("Residuals of season " + str(season))
-    ax.set_ylim([-10,10])
+    ax.set_ylabel("Cost")
+    ax.set_xlabel("Individual")
+    ax.set_ylim([-20,20])
+    dirs = os.path.join("results", league, "linreg")
+    os.makedirs(dirs, exist_ok = True)
+
+    if league == "pl":
+        ax.set_title("Residuals of FPL season " + str(season))
+    else: ax.set_title("Residuals of FAS season " + str(season))
+    if typ == "noexp": ax.set_title("Residuals of FPL season  " + str(season) + " without exp. players")
+    elif typ == "incnew": ax.set_title("Residuals of FPL season " + str(season) + " with 'new' players")
+
+    plt.savefig(dirs +  "/residuals_" + str(season) + "_" + typ + ".png", bbox_inches = "tight")
+    
     plt.show()
-    return(res)
+    #return(res)
                     
 
 def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2], league = "pl"):

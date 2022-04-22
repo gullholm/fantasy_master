@@ -137,6 +137,12 @@ def get_cost_player(players, player_id):
         if (k == player_id):
             return v.get("now_cost")
     return 0
+def get_points_player(players, player_id):
+#    print(type(players)
+    for (k,v) in players.items():
+        if (k == player_id):
+            return v.get("total_points")
+    return 0
 
 def get_cost_team(playersdata, team_id): # Team is list with id's
 

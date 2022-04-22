@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import os
 
 # plot histogram of how many of each position
+
+
 def plot_per_position(positions, title):
     
     x=["gk", "df", "mf", "fw" ]
@@ -22,7 +24,7 @@ def plot_per_position(positions, title):
 
 
 # plot hist of points
-def plot_hist_of_points(pointsList, title,season, nbins = 20, dest = "results/pl/data_viz"):
+def plot_hist_of_points(pointsList, title,season, nbins = 20, dest = "results/pl/data_viz",  typ = "raw"):
     fig, ax = plt.subplots()
     ax.hist(pointsList, bins = nbins)
     #plt.hist(npscostlist)
@@ -32,7 +34,7 @@ def plot_hist_of_points(pointsList, title,season, nbins = 20, dest = "results/pl
     ax.set_xlim(xmin, xmax)
     ax.set_ylim(ymin, ymax)
     ax.set_title(title)
-    dest = os.path.join(dest, "points_hist_"+ str(season) +".png")
+    dest = os.path.join(dest, "points_hist_"+ str(season) + typ +".png")
     fig.savefig(dest, bbox_inches = "tight")
 
 # plot hist of costs

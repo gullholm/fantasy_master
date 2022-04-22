@@ -15,51 +15,50 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import getters as get
-def load_():
-    one = pd.read_csv(os.path.join("data_cleaned","pl","1819", "[4, 4, 2].csv"), converters =conv)
-    playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", 1819)
-    return(one,playerspldata)
-#%%
-season = 21
-players = pd.read_csv("data/allsvenskan/players_raw.csv")
-cost_list = players.now_cost.to_list()
-points_list= players.total_points.to_list()
 
-plot_helpers.plot_hist_of_costs(cost_list, "Cost of AF players season " +str(season), season,nbins =20)
-plot_helpers.plot_hist_of_points(points_list, "Total points of AF players season " +str(season), season,nbins =20)
+def load_cost_points(season, typ = "raw"):
+    players = get.get_players_feature_pl("data/pl_csv/players_" + typ + "_", str(season))
+    cost_list = [get.get_cost_player(players, i) for i in range(1,len(players)+1)]
+    points_list = [get.get_points_player(players, i) for i in range(1, len(players)+1)]
+    cost_list, points_list = zip(*[(x,y) for x,y in zip(cost_list, points_list) if x >0 and y >0])
 
+    return(cost_list, points_list)
 
 #%%
-
-
-inds = np.linspace(0,10,11, dtype = int)
-cost = np.linspace(45,100,11, dtype=int)
-fig,ax = plt.subplots()
-ax.plot([inds[0],inds[-1]],[cost[0],cost[-1]])
-ax.scatter(inds,cost)
-ax.set_xlabel("Individual player")
-ax.set_ylabel("Cost")
-ax.set_title("Example of ideal team")
-plt.savefig("results/pl/data_viz/example_lin.png", bbox_inches = "tight")
-plt.show()
-
-#%%
-
-one, playerspldata = load_()
-#%%
-ones = one.sample(100)
-all_teams = ones["indexes"].to_list()
-all_points = ones['points_total'].to_list()
-all_costs = ones['cost'].to_list()
-for t,p,c in zip(all_teams, all_points, all_costs):
-    each_team = hcd.team(t,playerspldata)
-    each_team.lin_fit()
-    if each_team.r2 >= 0.75:
-        fig, ax = plt.subplots()
-        ax.scatter(each_team.x, each_team.ind_cost, edgecolor = "k")    
-        ax.plot(each_team.x, each_team.y_pr)
-        ax.set_title(r'$R^2:$' + str(round(each_team.r2,2)))
-        ax.set_xlabel("Player")
-        ax.set_ylabel("Cost")
+seasons = [1617,1718,1819,1920,2021]
+for season in seasons:
+    cost_list, points_list = load_cost_points(season)
+    fig, ax = plt.subplots()
+    ax.scatter(cost_list, points_list, s = 2/3, color = "k" , marker = 'o')
+    ax.set_xlim(38,140)
+    ax.set_ylim(0,300)
+    fan = "FPL "
+    ax.set_title("Cost vs. Total points for "+ fan  + str(season))
+    ax.set_xlabel("Cost")
+    ax.set_ylabel("Total points")
+    plt.savefig("results/pl/data_viz/costvspoints/pc_" + str(season))
     
-    
+#%% AS
+players = get.get_players_feature_pl("data/allsvenskan/players_raw_", str(21))
+cost_list = [get.get_cost_player(players, i) for i in range(1,len(players)+1)]
+points_list = [get.get_points_player(players, i) for i in range(1, len(players)+1)]
+cost_list, points_list = zip(*[(x,y) for x,y in zip(cost_list, points_list) if x >0 and y >0])
+fig, ax = plt.subplots()
+ax.scatter(cost_list, points_list, s = 2/3, color = "k" , marker = 'o')
+ax.set_xlim(38,140)
+ax.set_ylim(0,300)
+fan = "AF "
+ax.set_title("Cost vs. Total points for "+ fan  + str(season))
+ax.set_xlabel("Cost")
+ax.set_ylabel("Total points")
+plt.savefig("results/as/data_viz/pc_as")
+
+#%% 
+c_l_1, p_l_1 = load_cost_points(1617, typ = "incnew_lin")
+c_l_2, p_l_2 = load_cost_points(1819, typ = "incnew_lin")
+
+plot_helpers.plot_hist_of_costs(c_l_1, "Cost of players FPL season 1617 including new players", 1617, typ ="incnew")
+plot_helpers.plot_hist_of_costs(c_l_2, "Cost of players FPL season 1617 including new players", 1819, typ ="incnew")
+
+plot_helpers.plot_hist_of_points(p_l_1, "Total points of players FPL season 1617 including new players", 1617, typ ="incnew")
+plot_helpers.plot_hist_of_points(p_l_2, "Cost of players FPL season 1617 including new players", 1819, typ ="incnew")
