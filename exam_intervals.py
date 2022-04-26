@@ -266,7 +266,6 @@ def printpercent(title, diverselist, nperc, divperc, undefperc):
 
 def calcpercent(divlist):
     if len(divlist)>0:
-        print(100*divlist.count(1)/len(divlist))
         nor = round(100*divlist.count(1)/len(divlist))
         
         div = round(100*divlist.count(0)/len(divlist))
@@ -625,15 +624,13 @@ for season in seasons:
         dfres.to_csv('results/pl/'+ str(season) +'/linperc_' +str(formation)+ '.csv')     
         
 #%%
-#Testar Josefs checkinterval
+#Kör Josefs checkinterval
 #Create df for saving results, checking linearity of all teams, linear or not according to R2
 
 seasons= [1617,1718,1819,1920,2021]
-seasons= [1920,2021]
 zvalue=3
 formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
 useall = True  # T -> alla, F -> bara 50 bästa
-
 
 for season in seasons:
     print(season)
@@ -871,7 +868,7 @@ for season in seasons:
         one = pd.read_csv('data_cleaned/pl/incnew/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
         print('Done')
     
-        useall = False  # T -> alla, F -> bara 50 bästa
+        useall = True  # T -> alla, F -> bara 50 bästa
         if useall:
             dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
         else: 
@@ -960,7 +957,7 @@ for season in seasons:
         one = pd.read_csv('data_cleaned/pl/noexp/'+str(season)+'/'+str(formation)+ '.csv', converters =conv)
         print('Done')
     
-        useall = False  # T -> alla, F -> bara 50 bästa
+        useall = True  # T -> alla, F -> bara 50 bästa
         if useall:
             dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
         else: 
@@ -1125,9 +1122,35 @@ perc = 'linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
 #%%
-#PL intervalperc
+
+#PL noexp linperc
+#Calc ratio and mean difference
 csvfile= 'results/pl/'
 seasons=[1617,1819]
+perc = 'noexp/linperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
+
+#%%
+
+#PL incnew
+#Calc ratio and mean difference
+csvfile= 'results/pl/'
+seasons=[1617,1819]
+perc = 'incnew/linperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
+
+#%%
+
+#PL noexp interval
+#Calc ratio and mean difference
+csvfile= 'results/pl/'
+seasons=[1617,1819]
+perc = 'noexp/intervalperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
+#%%
+#PL intervalperc
+csvfile= 'results/pl/'
+seasons=[1617,1718,1819,1920,2021]
 perc = 'intervalperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 #%%
@@ -1137,10 +1160,16 @@ seasons=['AS']
 perc='linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
+#%%
+#AS intervalperc
+csvfile= 'results/as/intervalperc_' 
+seasons=['AS']
+perc='intervalperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
   #%%
   
-def calcratioandmeandifferenceplotslinperc(csvfile, seasons, perc):
+def calcratioandmeandifferenceplots(csvfile, seasons, perc):
 
     formnames= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
     
@@ -1155,7 +1184,7 @@ def calcratioandmeandifferenceplotslinperc(csvfile, seasons, perc):
         
         for forma in formnames: 
             if season != 'AS':
-                data = pd.read_csv(csvfile +str(season)+'/'+ perc + '_' +forma+ '.csv', converters=conv)
+                data = pd.read_csv(csvfile +str(season)+ '/'+ perc+'_' +forma+ '.csv', converters=conv)
             else: 
                 data = pd.read_csv(csvfile + forma + '.csv', converters=conv)
 
@@ -1175,13 +1204,13 @@ def calcratioandmeandifferenceplotslinperc(csvfile, seasons, perc):
             rationor=[rationor[idx]+(a/b) if b!=0 else rationor[idx]+1 for idx,(a,b) in enumerate(zip(b50nor,allanor))]
             ratiodiv=[ratiodiv[idx]+(a/b) if b!=0 else ratiodiv[idx]+1 for idx,(a,b) in enumerate(zip(b50div,alladiv))]
             
-        diffnor = [(b-a)/7 for a,b in zip(b50nortot,allanortot)]
-        diffdiv = [(b-a)/7 for a,b in zip(b50divtot,alladivtot)]
+        diffnor = [(a-b)/7 for a,b in zip(b50nortot,allanortot)]
+        diffdiv = [(a-b)/7 for a,b in zip(b50divtot,alladivtot)]
     
-        b50nortot =[b50nortot[idx]/7 for idx in range(11)]
-        b50divtot =[b50divtot[idx]/7 for idx in range(11)]
-        allanortot =[allanortot[idx]/7 for idx in range(11)]
-        alladivtot =[alladivtot[idx]/7 for idx in range(11)]
+        #b50nortot =[b50nortot[idx]/7 for idx in range(11)]
+        #b50divtot =[b50divtot[idx]/7 for idx in range(11)]
+        #allanortot =[allanortot[idx]/7 for idx in range(11)]
+        #alladivtot =[alladivtot[idx]/7 for idx in range(11)]
         
         X = range(500,1050,50)
 
@@ -1193,20 +1222,20 @@ def calcratioandmeandifferenceplotslinperc(csvfile, seasons, perc):
         plt.title('Mean difference between percent of all and best 50: ' +str(season))
         plt.legend(labels=['Linear', 'Not linear'])
         plt.xticks(X,range(500,1050, 50))
-        plt.savefig('plots/linperc/' + str(season) + 'difference.png', bbox_inches='tight')
+        plt.savefig('plots/' + perc + '/' + str(season) + 'difference.png', bbox_inches='tight')
     
         plt.show()
         
         rationor = [r/7 for r in rationor]
         ratiodiv = [r/7 for r in ratiodiv]
-        plt.plot(X,rationor, '-o')
         plt.plot(X,ratiodiv, '-o')
-        plt.legend(labels=['Not linear', 'Linear'])
+        plt.plot(X,rationor, '-o')
+        plt.legend(labels=['Linear', 'Not linear'])
         plt.title('Mean ratio best 50 and all: '+str(season))
         plt.xticks(X,range(500,1050, 50))
         plt.xlabel('Budget')
         plt.ylabel('Ratio')
-        plt.savefig('plots/linperc/' + str(season) + 'ratio.png', bbox_inches='tight')
+        plt.savefig('plots/'+perc+'/' + str(season) + 'ratio.png', bbox_inches='tight')
     
         plt.show()
     
@@ -1214,3 +1243,248 @@ def calcratioandmeandifferenceplotslinperc(csvfile, seasons, perc):
        # print(b50nortot)
         #print(allanortot)
         #print(rationor)
+
+
+#%%
+#Intervalperc
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+
+zvalue=3
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+useall = True  # T -> alla, F -> bara 50 bästa
+
+
+for formation in formations: 
+    print('Preparing data', str(formation))
+    one = pd.read_csv('data_cleaned/as/'+str(formation)+ '.csv', converters =conv)
+    print('Done')
+
+    if useall:
+        dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
+    else: 
+        dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal, Diverse)'])
+    
+    startlow =450
+    endlow =1000
+    idx=0
+    for low in range(startlow, endlow,50):
+        
+        budget = low+50
+        print('-------------------------------------')
+        print(budget)
+        ones = filter_df(one, low, budget)
+        ones.sort_values(by ="points_total", inplace = True, ascending = False)
+        asdata= load_data.get_data()
+        playersdata=get.get_players_feature(asdata)
+        all_teams = ones["indexes"].to_list()
+        
+        #Take 50 best 
+        if len(ones)>50:
+            best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+        else:
+            best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
+        
+        best_div=[]
+        i=0
+        plot= False
+        for team in best_50:
+            each_team = helpers_calc_div.team(team,playersdata)
+            each_team.create_int()
+            each_team.check_int()
+            
+            if each_team.zero_count <=zvalue:
+                
+                best_div.append(0)
+            else: 
+                best_div.append(1)
+        bnor, bdiv = calcpercent(best_div)
+        b50  = [bnor,bdiv]
+                
+        if useall: 
+            diverse=[]
+            print("Calc all teams")
+            for team_id in all_teams:
+                each_team = helpers_calc_div.team(team_id ,playersdata)
+                each_team.create_int()
+                each_team.check_int()
+                
+                if each_team.zero_count <=zvalue:
+                    
+                    diverse.append(0)
+                else: 
+                    diverse.append(1) 
+            anor, adiv = calcpercent(diverse)
+            a  = [anor,adiv]
+   
+            dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,a]
+        else: 
+            dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50]
+        idx+=1
+    
+    
+    dfres.to_csv('results/as/intervalperc_' +str(formation)+ '.csv')
+
+
+#%%
+#Intervalperc for noexp
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+seasons=[1617,1819]
+
+zvalue=3
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+useall = True  # T -> alla, F -> bara 50 bästa
+
+for season in seasons: 
+    
+    for formation in formations: 
+        print('Preparing data', str(formation))
+        one = pd.read_csv('data_cleaned/pl/noexp/' +str(season) +'/' +str(formation)+ '.csv', converters =conv)
+        print('Done')
+    
+        if useall:
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
+        else: 
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal, Diverse)'])
+        
+        startlow =450
+        endlow =1000
+        idx=0
+        for low in range(startlow, endlow,50):
+            
+            budget = low+50
+            print('-------------------------------------')
+            print(budget)
+            ones = filter_df(one, low, budget)
+            ones.sort_values(by ="points_total", inplace = True, ascending = False)
+            playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", season)
+            all_teams = ones["indexes"].to_list()
+
+            
+            #Take 50 best 
+            if len(ones)>50:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+            else:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
+            
+            best_div=[]
+            i=0
+            plot= False
+            for team in best_50:
+                each_team = helpers_calc_div.team(team,playerspldata)
+                each_team.create_int()
+                each_team.check_int()
+                
+                if each_team.zero_count <=zvalue:
+                    
+                    best_div.append(0)
+                else: 
+                    best_div.append(1)
+            bnor, bdiv = calcpercent(best_div)
+            b50  = [bnor,bdiv]
+                    
+            if useall: 
+                diverse=[]
+                print("Calc all teams")
+                for team_id in all_teams:
+                    each_team = helpers_calc_div.team(team_id ,playerspldata)
+                    each_team.create_int()
+                    each_team.check_int()
+                    
+                    if each_team.zero_count <=zvalue:
+                        
+                        diverse.append(0)
+                    else: 
+                        diverse.append(1) 
+                anor, adiv = calcpercent(diverse)
+                a  = [anor,adiv]
+       
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,a]
+            else: 
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50]
+            idx+=1
+        
+        
+        dfres.to_csv('results/pl/'+ str(season) +'/noexp/intervalperc_' +str(formation)+ '.csv')
+
+#%%
+#Intervalperc for incnew
+#Create df for saving results, checking linearity of all teams, linear or not according to R2
+seasons=[1617,1819]
+seasons=[1819]
+
+zvalue=3
+formations= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
+formations = ['[5, 3, 2]', '[5, 4, 1]']
+useall = True  # T -> alla, F -> bara 50 bästa
+
+for season in seasons: 
+    
+    for formation in formations: 
+        print('Preparing data', str(formation))
+        one = pd.read_csv('data_cleaned/pl/incnew/' +str(season) +'/' +str(formation)+ '.csv', converters =conv)
+        print('Done')
+    
+        if useall:
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal,Diverse)', 'All (Normal,Diverse)'])
+        else: 
+            dfres = pd.DataFrame(columns=['Budget interval', 'Best 50 (Normal, Diverse)'])
+        
+        startlow =450
+        endlow =1000
+        idx=0
+        for low in range(startlow, endlow,50):
+            
+            budget = low+50
+            print('-------------------------------------')
+            print(budget)
+            ones = filter_df(one, low, budget)
+            ones.sort_values(by ="points_total", inplace = True, ascending = False)
+            playerspldata = get.get_players_feature_pl("data/pl_csv/players_raw_", season)
+            all_teams = ones["indexes"].to_list()
+
+            
+            #Take 50 best 
+            if len(ones)>50:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(50)]
+            else:
+                best_50 = [ones.iloc[i]['indexes'] for i in range(len(ones))]
+            
+            best_div=[]
+            i=0
+            plot= False
+            for team in best_50:
+                each_team = helpers_calc_div.team(team,playerspldata)
+                each_team.create_int()
+                each_team.check_int()
+                
+                if each_team.zero_count <=zvalue:
+                    
+                    best_div.append(0)
+                else: 
+                    best_div.append(1)
+            bnor, bdiv = calcpercent(best_div)
+            b50  = [bnor,bdiv]
+                    
+            if useall: 
+                diverse=[]
+                print("Calc all teams")
+                for team_id in all_teams:
+                    each_team = helpers_calc_div.team(team_id ,playerspldata)
+                    each_team.create_int()
+                    each_team.check_int()
+                    
+                    if each_team.zero_count <=zvalue:
+                        
+                        diverse.append(0)
+                    else: 
+                        diverse.append(1) 
+                anor, adiv = calcpercent(diverse)
+                a  = [anor,adiv]
+       
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50,a]
+            else: 
+                dfres.loc[idx]=[str(low) + ' to ' + str(budget), b50]
+            idx+=1
+        
+        
+        dfres.to_csv('results/pl/'+ str(season) +'/incnew/intervalperc_' +str(formation)+ '.csv')

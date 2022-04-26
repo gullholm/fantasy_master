@@ -36,7 +36,7 @@ for season in seasons:
         
         csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
         playerspl = pd.read_csv(csv_file).to_dict('index') 
-        playersdata = getters.get_players_feature_pl(playerspl)
+        playersdata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
         gk, df, mf, fw = getters.get_diff_pos(playersdata)  
         
         csv_results = "results/pl/" + str(season) + "/best.csv"
@@ -390,7 +390,7 @@ def testIfLinear(data, budget):
     plt.legend(["Linear", "Quadtratic", "Third degree polynomial", "Data"])
     plt.show()
      
-
+#%%
 
 import numpy as np
 # calculate mean of multiple lists
@@ -557,6 +557,7 @@ plotDifferentResults(budgetResults, 'Bonus points')
 plotDifferentResults(budgetResults, 'Assists')
 plotDifferentResults(budgetResults, 'Total minutes')
 plotDifferentResults(budgetResults, 'Clean Sheets')
+#plotDifferentResults(budgetResults, 'Total saves')
    
 
 #%%
