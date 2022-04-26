@@ -235,11 +235,11 @@ def linR2Inter(h, ax, plot=False):
     res = [i-I for (i,I) in zip(y,Y)]
     if r2> 0.85:
         ret = 0
-    #    norm = 'Not normal'
+    #    norm = 'Diverse'
     #    return r2, ret, res
     else:
         ret=1
-    #    norm = 'Normal'
+    #    norm = 'not diverse'
     #if plot:
     #     ax.plot(x, y, color='r', label='Regression Line')
     #     ax.scatter(X, Y, c='b', label='Data points')
@@ -798,6 +798,61 @@ ax.set_title("Best teams for all budgets and seasons")
 plt.show()
 
 #%%
+#calculate for all seasons in pl
+formations= ['3-4-3', '3-5-2', '4-3-3', '4-4-2', '4-5-1', '5-3-2', '5-4-1']
+
+div_notdiv = []
+for form in formations: 
+    csv = pd.read_csv('results/pl/all/'+str(form)+'.csv')
+    
+    for cost in csv['Sorted individual costs']:
+        print(cost)
+        h= ast.literal_eval(cost)
+
+        _ , ret, _ = linR2Inter(h, None, plot=False)
+        div_notdiv.append(ret)
+        
+fig, ax = plt.subplots()
+values= [div_notdiv.count(1), div_notdiv.count(0)]
+def make_autopct(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = (round(pct*total/100.0))
+        return '{p:.0f}%  ({v:d})'.format(p=pct,v=val)
+    return my_autopct
+plt.pie(values,explode=[0.0,0.1], autopct=make_autopct(values) ,labels=['Not diverse', 'Diverse' ])
+ax.set_title("Best teams for all budgets and seasons")
+plt.show()        
+#%%
+#calculate for positionless
+seasons=[1617,1718,1819,1920,2021]
+div_notdiv_posless = []
+
+for season in seasons:
+
+
+    csv = pd.read_csv('results/pl/'+str(season)+'/Positionless.csv')
+    
+    for cost in csv['Sorted individual costs']:
+        h= ast.literal_eval(cost)
+
+        _ , ret, _ = linR2Inter(h, None, plot=False)
+        div_notdiv_posless.append(ret)
+        
+fig, ax = plt.subplots()
+values= [div_notdiv_posless.count(1), div_notdiv_posless.count(0)]
+def make_autopct(values):
+    def my_autopct(pct):
+        total = sum(values)
+        val = (round(pct*total/100.0))
+        return '{p:.0f}%  ({v:d})'.format(p=pct,v=val)
+    return my_autopct
+plt.pie(values,explode=[0.0,0.1], autopct=make_autopct(values) ,labels=['Not diverse', 'Diverse' ])
+ax.set_title("Best teams for all budgets and seasons")
+plt.show() 
+
+
+#%%
 seasons= [1617,1718,1819, 1920,2021]
 allforms=[]
 for season in seasons: 
@@ -1121,6 +1176,12 @@ seasons=[1617,1718,1819,1920,2021]
 perc = 'linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
+#PL intervalperc
+csvfile= 'results/pl/'
+seasons=[1617,1718,1819,1920,2021]
+perc = 'intervalperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
+
 #%%
 
 #PL noexp linperc
@@ -1130,6 +1191,12 @@ seasons=[1617,1819]
 perc = 'noexp/linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
+#PL noexp interval
+#Calc ratio and mean difference
+csvfile= 'results/pl/'
+seasons=[1617,1819]
+perc = 'noexp/intervalperc'
+calcratioandmeandifferenceplots(csvfile, seasons, perc)
 #%%
 
 #PL incnew
@@ -1138,21 +1205,14 @@ csvfile= 'results/pl/'
 seasons=[1617,1819]
 perc = 'incnew/linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
-
 #%%
-
-#PL noexp interval
+#PL incnew intervalperc
 #Calc ratio and mean difference
 csvfile= 'results/pl/'
 seasons=[1617,1819]
-perc = 'noexp/intervalperc'
+perc = 'incnew/intervalperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
-#%%
-#PL intervalperc
-csvfile= 'results/pl/'
-seasons=[1617,1718,1819,1920,2021]
-perc = 'intervalperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+
 #%%
 #AS linperc
 csvfile= 'results/as/linperc_' 
@@ -1160,7 +1220,6 @@ seasons=['AS']
 perc='linperc'
 calcratioandmeandifferenceplots(csvfile, seasons, perc)
 
-#%%
 #AS intervalperc
 csvfile= 'results/as/intervalperc_' 
 seasons=['AS']

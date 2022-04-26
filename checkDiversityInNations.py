@@ -81,5 +81,19 @@ for season in seasons:
     allData.to_csv("results/pl/" + str(season) +"/nationality_diversity.csv")
     
     
+   
+#%%
+
+seasons = [1617,1718,1819,1920,2021]
+
+for season in seasons: 
+    csv_file = "data/nationalities/pl/" + str(season) + ".csv"  
+    statsnations = pd.read_csv(csv_file)   
+    totLeague  = sum([nr for nr in statsnations['# Players']])
+    statsnations['Percentage'] = [round(nr/totLeague,3) for nr in statsnations['# Players']]
     
-    
+    plt.bar(statsnations['Nation'][:10],statsnations['Percentage'][:10]*100)
+    plt.xticks(rotation='vertical')
+    plt.ylabel('Percent of league')
+    plt.title('Top 10 nations in season: ' + str(season))
+    plt.show()
