@@ -20,9 +20,8 @@ def calc_best_team_under_budget(players, max_cost, full_costs, full_points, comb
     mf_combs=combs[2]
     fw_combs=combs[3]
     
-    #print(len(costs_full))
     under_cost =  np.argwhere(full_costs <= max_cost) 
-    #print(len(under_cost))
+
     best = parsers.find_best_team(under_cost, full_points)
     sep_ids = [fw_combs['indexes'].values.tolist(),mf_combs['indexes'].values.tolist() 
                , df_combs['indexes'].values.tolist(), gk_combs['indexes'].values.tolist()]

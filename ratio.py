@@ -8,6 +8,8 @@ import pandas as pd
 import ast
 generic = lambda x: ast.literal_eval(x)
 import os
+import numpy as np
+import matplotlib.pyplot as plt
 
 def calc_perc_n(loc = "results/pl/1617/[3, 4, 3]_budgets_means_incnew.csv",
                dest= "results/pl/1617/ratio/perc/[3, 4, 3]_budgets_means_incnew_div.csv",
@@ -24,9 +26,6 @@ def calc_perc_n(loc = "results/pl/1617/[3, 4, 3]_budgets_means_incnew.csv",
     
     new_df.to_csv(dest)
     return(0)
-
-def visualize_formation_results(season = 1617, formation = "[4, 4, 2]", typ = "raw", league = "pl"):
-     return(0)    
 
 def calc_season_perc(season, league = "pl", types = ["raw"]
                       , formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]',
@@ -117,7 +116,6 @@ def calc_mean_ratio_all_form(season, typ = "raw", league = "pl",formations = ['[
     df_new.to_csv(loc + "_" + typ + "_meanRatio.csv")
     return(0)
 
-import numpy as np
 
 def calc_all_mean_ratio(seasons= [1617,1718,1819,1920,2021], league = "pl", kind = "Div"):
     for season in seasons:
@@ -145,11 +143,12 @@ def plot_mean_ratios(season, typ = "raw", league = "pl", kind = "Div"):
     ax.plot(budgets[0:cost_ratio.shape[0]], points_ratio, label = "Points", marker = 'o')
     ax.legend()
     ax.set_xlabel("Budget constraint")
+    ax.set_xticks(budgets[0:cost_ratio.shape[0]])
     ax.set_ylabel("Ratio (div/non div)")
     if league == "pl":
         if typ == "raw": ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) )
-        elif typ == "incnew":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + "inc. new players" )
-        elif typ == "noexp":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + " no exp. players")
+        elif typ == "incnew":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + " inc. new" )
+        elif typ == "noexp":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + " no exp.")
     else: ax.set_title("Ratio of div. and non div. teams AF season " + str(season) )
     ax.set_ylim(0.85,1.15)
     plt.savefig("results/" + league +"/plots/ratio/" + kind +  "/_lines_mean_"+ str(season) + typ + kind + ".png", bbox_inches = "tight")
@@ -159,10 +158,15 @@ def plot_all_mean_ratio(seasons= [1617,1718,1819,1920,2021], league = "pl", kind
             for typ in ["raw", "incnew", "noexp"]:
                 plot_mean_ratios(season,typ, kind = "Div")
         else: plot_mean_ratios(season, kind = "div")
-#%%
-import pandas as pd
-import matplotlib.pyplot as plt
-import math
 
-
-
+def check_perc(seasons, formations):
+    for season in seasons:
+        for formation in formations:
+            df = pd.read_csv(os.path.join("results","pl",str(season),"[3, 4, 3]" + "_budgets_means_raw.csv"))
+                         
+            nlin = df['n linear'].apply(lambda s: list(ast.literal_eval(s))).to_list()
+            nNonlin = df['Non linear n'].apply(lambda s: list(ast.literal_eval(s))).to_list()
+            for i in range(len(nlin)):    
+                print(str(season), formation, round(100*(nNonlin[i][1]/(nlin[i][1]+nNonlin[i][1]))),
+                      round(100*(nlin[i][1]/(nlin[i][1]+nNonlin[i][1])))
+                      )

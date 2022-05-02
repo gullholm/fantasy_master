@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Fri Jan 28 08:30:18 2022
-
-@author: jgull
-"""
-
 import numpy as np
 import calculations as calc
 import getters
@@ -12,7 +5,8 @@ import pandas as pd
 import os
 import ast
 import cleaners
-
+generic = lambda x: ast.literal_eval(x)
+conv = {'indexes': generic}
 
 def parse_formations_points_or_cost(all_combs): # Arguments is cost/points for each formation part
     """
@@ -71,7 +65,6 @@ def create_all_combs_from_cleaned_df(df_full, df_part, form_n):
 
 def worst_create_all_combs_from_cleaned_df(df_full, df_part, form_n):
     combs = np.transpose(calc.nump2(len(df_part), form_n))
-#    print(df_part.index[:10])
     combs_indexes = calc.calcIndexOld(combs, df_part.index) 
     pointsList = calc.createPointsList(df_full)
     costList = calc.createCostList(df_full)
@@ -123,7 +116,18 @@ def write_full_teams(loc):
         print(loc + str(comb) + ".csv")
         done_df.to_csv(loc + str(comb) + ".csv", index = False)
         
-
+def write_full_teams_as():
+    all_pass_combs = [[3,5,2],[3,4,3],[4,3,3], [4,4,2], [4,5,1], [5,3,2], [5,4,1]]
+    form_name = ["df", "mf", "fw"]
+    all_combs = []
+    nrows = []
+    for comb in all_pass_combs: 
+        all_combs = [pd.read_csv("data_cleaned/as/" + form + "/" + str(c) + ".csv", converters = conv) for (c,form) in zip(comb,form_name)]
+        all_combs.insert(0, pd.read_csv("data_cleaned/gk.csv"))
+        all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
+        done_df = calc_full_teams(all_combs)
+        nrows =+ len(done_df.index)
+        done_df.to_csv("data_cleaned/as/" + str(comb) + ".csv", index = False)
 
 
 def clean_all_data_and_make_positions_combs(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/", k = "0.2", clean_all = True):

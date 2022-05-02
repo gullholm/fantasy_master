@@ -9,9 +9,6 @@ import numpy as np
 import getters
 import parsers
 
-#data2 = getters.get_data()
-#players2 = getters.get_players_feature(data2)
-
 
 def nump2(n, k):
     a = np.ones((k, n-k+1), dtype=int)
@@ -60,20 +57,16 @@ def pointsPerTeam4(team, pointsList):
 def costPerTeam4(team, costList):
     return sum([costList[x-1] for x in team])  
 
-def createCostList(players, fill_out = True):
+def createCostList(players, fill_out = False):
     #Pick a larger number than largest key, some spots are missing / 0
     n = len(players)
     if(fill_out):
         n = max(10000,len(players))
 
     costList = n*[-1]
-    #print(players.keys())
     for (k,v) in players.items():
-        #costList.append(players[i]["now_cost"])
-      #  print(i)
         costList[k-1] = v.get("now_cost")
-    #for player in players:
-    #    costList.append(player["now_cost"])  
+
     costList = [i for i in costList if i != -1]
 
     return tuple(costList)
@@ -83,11 +76,7 @@ def createPointsList(players):
     n = max(10000,len(players))
     pointsList = [-1]*n
     for k,v in players.items():
-        
-        #costList.append(players[i]["total_points"])
         pointsList[k-1] = v.get("total_points")
-    #for player in players:
-    #    costList.append(player["now_cost"])   
     pointsList = [i for i in pointsList if i != -1]
     return tuple(pointsList)
 
@@ -102,15 +91,13 @@ def printSummary(teamPoints, teamCosts):
 
     print("Nr of teams: " + str(len(teamPoints)))
     print("Best index: " + str(index_max))
-    #print("Indexes for the best team: " + str(teams[index_max]))
     print("Best score: "+ str(teamPoints[index_max]))
     print("Total cost for the best team: " + str(teamCosts[index_max]))
     print("Mean cost: " + str(meanCost))
     print("Mean points: " + str(meanPoints))
     
-    #return None
     
-# calculate n max numbers of a list and append tehm to a list and print  
+# calculate n max numbers of a list and append them to a list and print  
 def Nmaxelements(list1, N):
     final_list = []
   
@@ -138,30 +125,4 @@ def calcIndexOld(indexlist, dat):
             temp.append(dat[indexlist[i][j]])
         returnlist.append(temp)
     return returnlist    
-
-def calc_from_combs(all_combs, column):
-    return [comb[column].values for comb in all_combs]
-
-def calc_best_team(all_combs, cost_limit):
-
-    all_combs[0]['indexes'] = all_combs[0]['indexes'].apply(lambda x: [x])
-
-    all_points = calc_from_combs(all_combs, "total_points")
-    all_costs = calc_from_combs(all_combs, "now_cost" )
-
-    points_full = parsers.parse_formations_points_or_cost(all_points)
-
-    costs_full = parsers.parse_formations_points_or_cost(all_costs)
-
-
-    under_cost =  np.argwhere(costs_full < cost_limit)
-    
-    best = parsers.find_best_team(under_cost, points_full)
-    sep_ids  = [combs['indexes'].values.tolist() for combs in all_combs]
-    
-
-    
-    best_team_ids = [x[under_cost[best][i]] for (i,x) in enumerate(sep_ids)]
-    
-    return under_cost, best_team_ids
     

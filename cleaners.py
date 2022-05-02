@@ -6,14 +6,14 @@ Created on Thu Feb  3 15:47:51 2022
 """
 import pandas as pd
 import getters
-#import parsers
+import os
 
-def filter_df(df, lwr, upper):
+def filter_df(df, lwr, upper): # Filter DF w.r.t cost constraints
     df = df[df['cost'] <= upper]
     df_new = df[df['cost'] >= lwr]
     return(df_new)
 
-def all_forms_as_df_cleaned(league = "allsvenskan"):
+def all_forms_as_df_cleaned(league = "allsvenskan"): # Gathers and transform players data to DF
     data2 = getters.get_data()
     players = getters.get_players_feature(data2)
 
@@ -26,7 +26,7 @@ def all_forms_as_df_cleaned(league = "allsvenskan"):
     
     return sorted_dfs
 
-def all_forms_as_df_cleaned_pl(bas, season):
+def all_forms_as_df_cleaned_pl(bas, season):  # Gathers and transform players data to DF PL
 
     playerspldata = getters.get_players_feature_pl(bas, season)
     all_form = getters.get_diff_pos(playerspldata)
@@ -37,6 +37,45 @@ def all_forms_as_df_cleaned_pl(bas, season):
     
     return sorted_dfs
 
+def del_n_zeros(df_part, n_part):
+    dfDelet = list(df_part.index[(df_part['total_points'] == 0)][n_part:] )
+    return(dropRows(df_part, dfDelet))
+
+def del_multiple_cost_per_point(sorted_df_part, n):
+    """
+    delete if there are more than 
+    n players that have the same total points
+    """
+    sorted_df_part = sorted_df_part.sort_values(by=["total_points", "now_cost"])    
+    deleteIndexes=[]    
+
+    for i in range(max(sorted_df_part['total_points'])+1):
+        if((sorted_df_part['total_points'] == i).sum() > n):
+            
+            delete = list(sorted_df_part.index[(sorted_df_part['total_points'] == i) ][n:])
+            deleteIndexes.extend(delete)
+    return(dropRows(sorted_df_part,deleteIndexes))
+
+
+
+def del_multiple_point_per_cost(sorted_df_part, n):
+    """
+    delete if there are more than 
+    n players that have the same cost
+    """
+
+    deleteIndexes=[]    
+    sorted_df_part = sorted_df_part.sort_values(by=['now_cost',"total_points"])    
+    
+    for i in range(max(sorted_df_part['now_cost'])):
+        if((sorted_df_part['now_cost'] == i).sum() > n):
+            
+            delete = list(sorted_df_part.index[(sorted_df_part['now_cost'] == i) ][:-n])
+            deleteIndexes.extend(delete)
+            
+    return(dropRows(sorted_df_part,deleteIndexes))
+
+
 def run_all_cleans(df_part, n_part):
     
     df_clean =  del_n_zeros(df_part, n_part)
@@ -44,14 +83,6 @@ def run_all_cleans(df_part, n_part):
     df_clean_2 = del_multiple_cost_per_point(df_clean_1,n_part)        
     df_clean_3 = delete_worse_points_when_increasing_cost(df_clean_2, n_part)
     return(df_clean_3)
-
-def del_n_zeros(df_part, n_part):
-    dfDelet = list(df_part.index[(df_part['total_points'] == 0)][n_part:] )
-    return(dropRows(df_part, dfDelet))
-    
-
-#def clean_for_all_combs(func, df_part):
-#    return([func(df) for df in dfs])
 
 def saveBetterPointsWhenIncreasingCost(df):
     pointsmax=0  
@@ -88,39 +119,6 @@ def del_zeros(sorted_dfs, formation): # Delete #n_part zeros from formation df
         del_sorted_dfs.append(dropRows(df, dele))
     return(del_sorted_dfs)
 
-def del_multiple_cost_per_point(sorted_df_part, n):
-    """
-    delete if there are more than 
-    n players that have the same total points
-    """
-    sorted_df_part = sorted_df_part.sort_values(by=["total_points", "now_cost"])    
-    deleteIndexes=[]    
-
-    for i in range(max(sorted_df_part['total_points'])+1):
-        if((sorted_df_part['total_points'] == i).sum() > n):
-            
-            delete = list(sorted_df_part.index[(sorted_df_part['total_points'] == i) ][n:])
-            deleteIndexes.extend(delete)
-    return(dropRows(sorted_df_part,deleteIndexes))
-
-
-
-def del_multiple_point_per_cost(sorted_df_part, n):
-    """
-    delete if there are more than 
-    n players that have the same cost
-    """
-
-    deleteIndexes=[]    
-    sorted_df_part = sorted_df_part.sort_values(by=['now_cost',"total_points"])    
-    
-    for i in range(max(sorted_df_part['now_cost'])):
-        if((sorted_df_part['now_cost'] == i).sum() > n):
-            
-            delete = list(sorted_df_part.index[(sorted_df_part['now_cost'] == i) ][:-n])
-            deleteIndexes.extend(delete)
-            
-    return(dropRows(sorted_df_part,deleteIndexes))
 
 def delete_worse_points_when_increasing_cost(df_part, n_form):
     
@@ -141,27 +139,6 @@ def delete_worse_points_when_increasing_cost(df_part, n_form):
             ind_to_del.append(ind)
             
     return(dropRows(df_part, ind_to_del))
-
-
-"""
-def delete_worse_points_when_increasing_cost(df_part, n_form):
-    
-    df_part.sort_values(by=['now_cost','total_points'], 
-                        ascending=[True, False], inplace = True)
-    
-    best = df_part.head(n_form)['total_points'].to_list()
-    ind_to_del = []
-
-    for i in range(n_form,len(df_part)):
-        if df_part.iloc[i]['total_points'] > min(best):
-            best.remove(min(best))
-            best.append(df_part.iloc[i]['total_points'])
-        else: 
-#            print(df_part.iloc[i].name)
-            ind_to_del.append(df_part.iloc[i].name)
-#    print(ind_to_del)
-    return(dropRows(df_part, ind_to_del))
-"""
 
 def cleanToWorstTeams(df_part, n_part): 
     # budget är i detta fall vad laget minst måste kosta
@@ -227,7 +204,7 @@ def delete_better_points_when_decreasing_cost(df_part, n_form):
             
     return(dropRows(df_part, ind_to_del))
 
-#%%
+
 season=1617
 budget = 950 # i detta fall vad laget minst måste kosta 
 playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
@@ -246,7 +223,7 @@ for part, df, pos in zip(formations, all_parts_but_goalie, form_name):
 
 worst3=individualCleansPerPosition
 
-#%%
+
 def cleanWorst(season):
 
     playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
@@ -275,7 +252,6 @@ def cleanWorst(season):
     
     print("Done with " + str(season))
     return individualCleansPerPosition
-#%%
 
 def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "data_cleaned/pl/worst/",  clean_all = True, ns = 3):
     
@@ -322,24 +298,21 @@ def worst_clean_all_data_pl(season, bas = "data/pl_csv/players_raw_", dest = "da
         
     print("Done with " + str(season))
 
-# #%%
-# seasons=[1617,1718,1819,1920,2021]
-# for season in seasons:
-    
-#    worst = worst_clean_all_data_pl(season)
 
-# #%%
-# for season in seasons: 
-    
-#     parsers.clean_all_data_and_make_positions_combs_worst(season)
-    
-# #%%
-#För att göra kombinationer av worst men krånglar, det är klart iaf
-# seasons=[1617,1718,1819,1920,2021]
-# import parsers
-# for season in seasons:
-#     location =  "data_cleaned/pl/worst/" + str(season)+"/"
-#     parsers.write_full_teams(location) 
+def remove_expansive(loc = "data/pl_csv/players_raw_", season = 1617, dest = "data/pl_csv/", k = 0.1):
+    full_loc = loc + str(season) + ".csv"
+    full_data = pd.read_csv(full_loc)
+    full_data.sort_values(by = "now_cost", ascending = False,inplace = True)
+    full_data.reset_index(inplace = True)
+    full_data.drop(index = range(round(len(full_data)*k)), axis = 0, inplace = True)
+    full_data.reset_index(inplace = True, drop = True)
+    lgt = range(len(full_data))
+    for i in lgt:
+        full_data.at[i, "id"] = i+1
+    os.makedirs(dest, exist_ok = True)
+    print(lgt)
+
+    full_dest = dest +"players_noexp_" + str(k) + "_" + str(season) + ".csv"
+    full_data.to_csv(full_dest, index = False)
 
 
-   

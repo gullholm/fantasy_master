@@ -13,8 +13,12 @@ import ast
 
 """
 Get all data for the current season in allsvenskan
+
+The page is now updated for the next season, 
+uncomment if we want to download the current season
+
 """
-# Uppdaterad hemsida , kommentera bort om vi vill hämta nästa 
+#
 
 # def get_data(serie = "allsvenskan", landskod = "se"):
 #     """ Retrieve the fpl player data from the hard-coded url
@@ -91,54 +95,15 @@ def parse_players(list_of_players, base_filename):
     w.writeheader()
     for player in list_of_players:
             w.writerow({k:str(v).encode('utf-8').decode('utf-8') for k, v in player.items()})
-            
-def clean_players(filename, base_filename):
-    """ Creates a file with only important data columns for each player
-    Args:
-        filename (str): Name of the file that contains the full data for each player
-    """
-    headers = ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent', 'now_cost', 'element_type']
-    fin = open(filename, 'r+', encoding='utf-8')
-    outname = base_filename + 'cleaned_players.csv'
-    os.makedirs(os.path.dirname(outname), exist_ok=True)
-    fout = open(outname, 'w+', encoding='utf-8', newline='')
-    reader = csv.DictReader(fin)
-    writer = csv.DictWriter(fout, headers, extrasaction='ignore')
-    writer.writeheader()
-    for line in reader:
-        if line['element_type'] == '1':
-            line['element_type'] = 'GK'
-        elif line['element_type'] == '2':
-            line['element_type'] = 'DEF'
-        elif line['element_type'] == '3':
-            line['element_type'] = 'MID'
-        elif line['element_type'] == '4':
-            line['element_type'] = 'FWD'
-        else:
-            print("Oh boy")
-        writer.writerow(line)
-        
-    
-def get_full_name(full_data, corr_id): # Get full name for a single player
-    players = full_data["elements"] 
-    
-    for player in players:
-        if (player['id'] == corr_id):
-            return player['first_name'] + " " + player['second_name']
-    return 0
 
-def get_full_name_team(full_data, team_id): # Team is list with id's
-    team_names = [get_full_name(full_data, player_id) for player_id in team_id]
-    return team_names
-
+"""
 def get_cost_player(players, player_id):
-#    print(type(players)
     for (k,v) in players.items():
         if (k == player_id):
             return v.get("now_cost")
     return 0
+
 def get_points_player(players, player_id):
-#    print(type(players)
     for (k,v) in players.items():
         if (k == player_id):
             return v.get("total_points")
@@ -151,8 +116,7 @@ def get_cost_team(playersdata, team_id): # Team is list with id's
 #    print(team_cost)
     team_cost.sort()
     return team_cost
-
-# PL
+"""
 
 def get_full_name_pl(full_data, corr_id): # Get full name for a single player
     for player in full_data:

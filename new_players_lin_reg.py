@@ -27,9 +27,7 @@ def create_new_players(loc, season,n =10):
     counts.update({x:0 for x in range(min(costs),max(costs)+1)})
     counts.update(costs)
 
-#    max_counts = counts.most_common(1)[0][1]
     new_players = playerspldata.copy() 
-    print(counts.most_common())
     count_list = list(counts.values()) 
     costs_np = np.array(costs).reshape(-1,1)
     points_np = np.array(points).reshape(-1,1)
@@ -52,9 +50,6 @@ def create_new_players(loc, season,n =10):
             copy_ind = random.sample(inds, 1)[0]
             perc = 0.2
             new_points = np.round(linreg.predict(np.array(k).reshape(-1,1))) + + random.randint(-round(perc*points[copy_ind]), round(perc*points[copy_ind]))   
-       
-        #print(points[copy_ind])
-     #      print(new_points)
             temp = {len(new_players)+1:{"element_type" : pos[copy_ind], "now_cost" : k, "total_points": int(new_points), "id" : len(new_players)+1}}
             new_players.update(temp)
     return(new_players)

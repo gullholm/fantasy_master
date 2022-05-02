@@ -121,9 +121,6 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
             cost_both, points_both= [[] for _ in range(3)], [[] for _ in range(3)]
             non_cost_both,non_points_both= [[] for _ in range(3)], [[] for _ in range(3)]
 
-    
-            #linear_cost_085, linear_points_085, non_cost_085, non_points_085 = [],[],[],[]
-            #linear_cost_09, linear_points_09, non_cost_09, non_points_09 = [],[],[],[]
             for t,p,c in zip(all_teams, all_points, all_costs):
                 each_team = team(t,playerspldata)
                 each_team.create_int()
@@ -189,8 +186,6 @@ def use_linreg_pl_full_seasons(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], e
         dest = os.path.join("results","pl",str(season), "all_on_all_" + typ + ".csv")
         df.to_csv(dest)
 
-
-#%%
 import matplotlib.pyplot as plt
 def create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata):
     i = 0
@@ -205,7 +200,7 @@ def create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata):
             if i == 5:
                 return(res)
     
-def get_residuals(season, typ = "raw", league = "pl"):
+def plot_residuals(season, typ = "raw", league = "pl"):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
 
     res = np.array([])
@@ -242,9 +237,7 @@ def get_residuals(season, typ = "raw", league = "pl"):
         res = create_lin_perteam(all_teams, all_points, all_costs, res, playerspldata)
     np.savetxt(typ+str(season)+league + ".out", res)
     cmap = plt.get_cmap('gnuplot')
-    print(len(res)/11)
     colors = [cmap(i) for i in np.linspace(0, 1, int(len(res)/11))]
-    print(len(colors))
     colors = np.repeat(np.array(colors),11, axis = 0)
     fig, ax = plt.subplots()
     ax.scatter(range(len(res)), res, facecolors = "none", s=0.5,c = colors, marker = 'o')
@@ -264,8 +257,14 @@ def get_residuals(season, typ = "raw", league = "pl"):
     plt.savefig(dirs +  "/residuals_" + str(season) + "_" + typ + ".png", bbox_inches = "tight")
     
     plt.show()
-    #return(res)
-                    
+
+
+def plot_all_residuals(seasons= [1617,1819], league = "pl"):
+    for season in seasons:
+        if season == 1617 or season ==1819:
+            for typ in ["incnew", "noexp"]:
+                plot_residuals(season, typ)
+        else: plot_residuals(season)                    
 
 def use_linreg_pl_full_seasons_on_budgets(seasons, typ = "raw", r2_vals = [0.8,0.85,0.9], empty_all = [4,3,2], league = "pl"):
     formations = ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]','[5, 4, 1]']
