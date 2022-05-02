@@ -170,18 +170,6 @@ def get_info_team_pl(info, full_data, team_id): # Team is list with id's
     info = [get_info_player_pl(info, full_data, player_id) for player_id in team_id]
     return info
 
-
-
-
-
-
-
-
-
-
-
-
-
 def get_cleaned_combs(base = "data_cleaned", files = ["gk", "df", "mf", "fw"]):
     # create empty list
     dataframes_list = []

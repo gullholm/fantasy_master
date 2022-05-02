@@ -26,7 +26,6 @@ def checkNationality(namelist, playerspernat):
         for i, nat in enumerate(playerspernat): 
             for pl in nat:
                 if pl==name: 
-                    #print(str(name) + ' is from ' +str(nationalitiespl['Nation'][i]))
                     nations.append(nationalitiespl['Nation'][i])
                     break
     return nations
@@ -49,8 +48,7 @@ for season in seasons:
     allData = pd.DataFrame(columns = ['Budget', 'Nation', 'Count', 'Team percentage', 'League percentage', 'Ratio', 'Amount as dist'])
     budget = 500
     for i in range(len(names)):
-        
-        #print('--------------------------------------')
+
         nations = checkNationality(names[i], plpernat)
     
         natPlayers = pd.DataFrame.from_dict(Counter(nations), orient='index').reset_index()
@@ -62,18 +60,17 @@ for season in seasons:
             idx = [nat for nat in statsnations['Nation']].index(natPlayers.iloc[i]['Nation'])
             lPercentage.append(statsnations['Percentage'][idx])
     
-        #lPercentage.append(statsnations)    
         natPlayers['League percentage'] = lPercentage
         natPlayers['Ratio'] = round(natPlayers['Team percentage']/natPlayers['League percentage'],3)
         natPlayers['Amount as dist'] = [round(lp*11,3) for lp in natPlayers['League percentage']]
         
-        test = [None]*7
+        temp = [None]*7
         for i, (columnName, columnData) in zip(range(7),natPlayers.iteritems()):
-            test[i+1] = list(columnData)
+            temp[i+1] = list(columnData)
 
-        test[0] = budget
+        temp[0] = budget
         allData_length = len(allData)
-        allData.loc[allData_length] = test
+        allData.loc[allData_length] = temp
         
         budget+=50
 
@@ -94,6 +91,20 @@ for season in seasons:
     
     plt.bar(statsnations['Nation'][:10],statsnations['Percentage'][:10]*100)
     plt.xticks(rotation='vertical')
+    plt.ylabel('Percent of league')
+    plt.title('Top 10 nations in season: ' + str(season))
+    plt.show()
+
+#%%
+
+seasons = [1617,1718,1819,1920,2021]
+
+for season in seasons: 
+    csv_file = "results/pl/" + str(season) + "/nationality_diversity.csv"  
+    res_nations = pd.read_csv(csv_file)   
+    nations = [ast.literal_eval(nat) for nat in res_nations['Nation']]
+    teamperc = [ast.literal_eval(per) for per in res_nations['Team percentage']]           
+    plt.bar(nations[0], teamperc[0])
     plt.ylabel('Percent of league')
     plt.title('Top 10 nations in season: ' + str(season))
     plt.show()

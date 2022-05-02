@@ -9,19 +9,18 @@ Created on Mon Feb 14 13:22:56 2022
 from random import *
 import pandas as pd
 import getters
-import calculations
+#import calculations
 import cleaners
 import ast
 import matplotlib.pyplot as plt
 generic = lambda x: ast.literal_eval(x)
 import numpy as np
-import random 
 from random import choice
-import collections
+#import collections
 
 #%%
 
-#Random generate teams from ditribution or randomly.
+#Random generate teams from distribution or randomly.
 
 def generateRandomTeam(allpositions, budget, formation):
         
@@ -339,15 +338,6 @@ for i in range(len(cleaned)):
         cleanedPlayers.append(cleaned[i])
 
 #%%
-#gk,df,mf,fw = getters.get_diff_pos(playerspldata)
-
-#for g in gk.items():
- #   print(g[1]['now_cost'])
-    
-#def splitDfByCost():
- #   return-    
-#%%
-
 printAndPlotSummary(allCosts, allPoints, allDynamics, budget)
 
 #%%
@@ -474,14 +464,8 @@ combined_csv.to_csv( "players_raw_all.csv", index=False, encoding='utf-8-sig')
 
 # Costs 38 to 127 in season 1617 - interval of 89, little right scew is ok
 def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
-    #mu = round(budget/11)
-    #sigma = round((mu-38)/1.645)
-    #step=round(2*sigma/5)
-    x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
-    
-    # random generate
-    test=[] 
-    #7 intervals with distr 1 1 2 3 2 1 1
+  #  x = np.linspace(mu - 3*sigma, mu + 3*sigma, 100)
+    costs=[] 
     intervals= [1, 1, 2, 3, 2, 1, 1]
     binstest=[]
     
@@ -492,27 +476,23 @@ def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
                 if j in possibleCosts:
                     templist.append(j)
             
-            #b=randint(38, mu-sigma-1)
             b=choice(templist)
             binstest.append(38)
             binstest.append(mu-1.3125*sigma)
-            test.append(b)
-            #Vet inte om denna ska vara kommenterad eller inte 
+            costs.append(b)
         elif i == 6:
-            #up to highest we can buy from 
             templist=[]
-            if budget-sum(test) > mu+sigma+1:
-                for j in range(mu+sigma+1, budget-sum(test)):
+            if budget-sum(costs) > mu+sigma+1:
+                for j in range(mu+sigma+1, budget-sum(costs)):
                     if j in possibleCosts:
                         templist.append(j)
                         
-                #b=randint(mu+sigma+1, budget-sum(test))
                 if len(templist)>0:
                     b=choice(templist)
                 else:
-                    lastcost = [j for j in possibleCosts if j < budget-sum(test)]
+                    lastcost = [j for j in possibleCosts if j < budget-sum(costs)]
                     b=choice(lastcost)
-                test.append(b)
+                costs.append(b)
                 binstest.append(mu+sigma+1)
                 add= mu+sigma+1+sigma*0.3125
 
@@ -521,12 +501,11 @@ def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
                     add+=sigma*0.3125
                 binstest.append(b+1)
             else:
-                for j in range(budget-sum(test)-12, budget-sum(test)):
+                for j in range(budget-sum(costs)-12, budget-sum(costs)):
                     if j in possibleCosts:
                         templist.append(j)
-                #b=randint(budget-sum(test)-10,budget-sum(test))
                 b=choice(templist)
-                test.append(b)
+                costs.append(b)
                 binstest.append((mu+1.3125*sigma))
                 
         else:
@@ -537,18 +516,14 @@ def generateRandomNormal(budget, mu, sigma,step, possibleCosts):
                     templist.append(j)
             a=1 
             while a <= idx :
-                
-                #b= randint((mu-sigma)+(i-1)*step, (mu-sigma-1)+(i)*step)
                 b=choice(templist)
-                test.append(b)
+                costs.append(b)
                 a+=1
         
-    #a = random.randint(75,85)
-    # test = [75, 75, 75, 85,85, 65,65, 55, 95, 105, 45]
     teampoints=0
-    for cost in test: 
+    for cost in costs: 
         teampoints += choice(theList[cost])
-    return sum(test), teampoints, test
+    return sum(costs), teampoints, costs
 #%% 
 ###DENNA KÖR MAN FÖR ATT FÅ FRAM NORMAL
 theList = createTheList(1718)  
@@ -587,16 +562,11 @@ plt.show()
 #%%
 
 def generateRandomLinearBins(theList, mean, possibleCosts, k, bins):
-   # if bins[0] + k < 38:
-    #    print('too small first bin')
-   #     return 0,0,0
+
     totalPoints, totalCost, teamDistr = 0, 0, []
     for i,b in enumerate(bins):
         if i==11:
             break
-    #    print('low, high: ' ,b, bins[i+1]-1)
-        # Testing new approach, think it works and better 
-        #lbin= b+1
         lbin = b
         hbin = bins[i+1]
         
@@ -608,21 +578,6 @@ def generateRandomLinearBins(theList, mean, possibleCosts, k, bins):
         
         cost = choice(posCosts)
         templist = theList[cost]
-        # THIS APPROACH WORKS
-    #     lbin= b+1
-    #     hbin = bins[i+1]
-    #     cost = randint(lbin, hbin)
-    #     while cost >= len(theList):
-    #           cost = randint(lbin,hbin)
-    # #    print('cost', cost)     
-    #     templist = theList[cost]
-    #     while (templist is None): 
-    #          cost=randint(lbin,hbin)
-    #          while cost >= len(theList):
-    #               cost=randint(lbin,hbin) 
-    #          print('cant find: ', cost)     
-    #          templist = theList[cost]
-        
         teamDistr.append(cost)    
         totalPoints += choice(templist) # add points
         totalCost += cost
@@ -821,36 +776,17 @@ season = 1617
 def createTheList(season):
     
     if season !=0:
-   #     csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
-  #      playerspl = pd.read_csv(csv_file) 
- #       playerspl = playerspl.to_dict('index')
-        playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
-        #gk, df, mf,fw = getters.get_diff_pos(playerspldata)
-    
+        playerspldata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)    
     if season==0:
-#        csv_file='data/allsvenskan/players_raw.csv'
         playerspldata = getters.get_players_feature_pl('data/allsvenskan/players_raw', '')
-    #allmfCost=[]
-    #for m in mf.items():
-    #    allmfCost.append(m[1]['now_cost'])
-
-    #occurrences = collections.Counter(allmfCost)
-    #print(sorted(occurrences.items()))    
-    #plt.hist(allmfCost)
 
     sortIdxByCost = sorted(playerspldata, key=lambda k: (playerspldata[k]['now_cost']))
 
     test_dictionary = { i : playerspldata[idx] for idx, i in zip(sortIdxByCost, range(len(sortIdxByCost))) }
     highcost = test_dictionary[len(test_dictionary)-1]['now_cost'] 
-    print('max',highcost) 
-
-    #for idx in sortIdxByCost:
-        #print(playerspldata[idx])
-        
-    print(playerspldata[sortIdxByCost[2]])
     
     value = -1
-    theList = [None]*(highcost+1) #127 highest value for cost
+    theList = [None]*(highcost+1)
     templist=[]
     for key in test_dictionary.values(): 
         if key['now_cost'] <= value:
@@ -867,7 +803,6 @@ def createTheList(season):
 #%%
 ASlist = createTheList(0)
 randomResults.to_csv('results/as/generateRandom.csv')
-
 
 #%%
 def createPossibleCosts(theList):
