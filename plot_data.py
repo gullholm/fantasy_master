@@ -13,44 +13,6 @@ import getters
 import calculations as calc
 import numpy as np
 import ast
-"""
-Get the data
-"""
-#PL
-seasons=[1617,1718,1819,1920,2021]
-
-for season in seasons:
-#As
-    if season == 0:
-        title = "Allsvenskan" 
-        
-        data = getters.get_data()
-        playersdata = getters.get_players_feature(data)
-        gk, df, mf, fw = getters.get_diff_pos(playersdata)
-        
-        csv_results = "results/as/best.csv"
-        results = pd.read_csv(csv_results).to_dict('index') 
-    
-    else:
-        title = "Premier league season " + str(season)
-        
-        csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
-        playerspl = pd.read_csv(csv_file).to_dict('index') 
-        playersdata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
-        gk, df, mf, fw = getters.get_diff_pos(playersdata)  
-        
-        csv_results = "results/pl/" + str(season) + "/best.csv"
-        results = pd.read_csv(csv_results).to_dict('index') 
-
-        
-    
-    positions= [len(gk), len(df), len(mf), len(fw)]
-        
-    plot_per_position(positions, title)
-    plot_hist_of_costs(playersdata, title)
-    plot_hist_of_points(playersdata, title)
-    plotIndividualCosts(results, title, degree=1, line=False)
-
 
 # In[]
 """
@@ -109,23 +71,60 @@ def plotIndividualCosts(feature_data, title, degree, line=False):
             plt.plot(x, np.polyval(poly,x))
     plt.legend()
     plt.title(title)
-    plt.show()              
+    plt.show()   
+
+#%%
+"""
+Get the data
+"""
+#PL
+seasons=[1617,1718,1819,1920,2021]
+
+for season in seasons:
+#As
+    if season == 0:
+        title = "Allsvenskan" 
+        
+        data = getters.get_data()
+        playersdata = getters.get_players_feature(data)
+        gk, df, mf, fw = getters.get_diff_pos(playersdata)
+        
+        csv_results = "results/as/best.csv"
+        results = pd.read_csv(csv_results).to_dict('index') 
+    
+    else:
+        title = "Premier league season " + str(season)
+        
+        csv_file = "data/pl_csv/players_raw_" + str(season) + ".csv"
+        playerspl = pd.read_csv(csv_file).to_dict('index') 
+        playersdata = getters.get_players_feature_pl("data/pl_csv/players_raw_", season)
+        gk, df, mf, fw = getters.get_diff_pos(playersdata)  
+        
+        csv_results = "results/pl/" + str(season) + "/best.csv"
+        results = pd.read_csv(csv_results).to_dict('index') 
+
+        
+    
+    positions= [len(gk), len(df), len(mf), len(fw)]
+        
+    plot_per_position(positions, title)
+    plot_hist_of_costs(playersdata, title)
+    plot_hist_of_points(playersdata, title)
+    plotIndividualCosts(results, title, degree=1, line=False)
+
+
+           
 
 # In[]
-# NOT DONE
-# plot results: 
-    # plot best score per budget
-    # plot cost of all players in best team per budget
+
 
 best_costs = results[7]['Individual costs']
 ind_costs = [50,53,55,55,56,57,66,96,113,119,129]
 x = list(range(1,12,1))
 y = ind_costs
+
 plt.xlabel("Player")
 plt.ylabel("Cost")
-#print(y[0])
-#for i in range(len(y)):
-#    plt.plot(x,[pt for pt in y[i]], 'o', label = '< %s'%(500+i*50))
 plt.legend()
 plt.show()  
 # In[9]
@@ -163,11 +162,6 @@ sum_best_costs = list(map(sum, best_costs))
 sum_best_points = list(map(sum, best_points))
 
 
-  
-
-# plot "score", score = points/cost
-
-
  # In[] 
 import RandomGenreateTeams
 eason=1819
@@ -185,12 +179,9 @@ for j in range(len(cleaned)):
               "innan cleaned som formation: " + titlenames[j] + 
               " season: " + str(season))
     plt.show()
-    
-    
-    
+ 
 # In[]
     
-
 def getResultsPerSeason(season):
     if season == 0: 
         csv_results = "results/as/best.csv"
@@ -200,8 +191,7 @@ def getResultsPerSeason(season):
         results = pd.read_csv(csv_results).to_dict('index') 
         
     return results 
-
-    
+ 
 # In[]        
 
 # Mean of all PL data
@@ -226,10 +216,7 @@ for k in range(11):
     meanIndCost[k] = [x/5 for x in meanIndCost[k]]   
     
 degree=3
-#x= range(11)    
-#plt.plot(x, meanIndCost, 'o')
-#poly= np.polyfit(x,meanIndCost,degree)
-#plt.plot(x, np.polyval(poly,x))
+
 x = list(range(1,12,1))
 plt.xlabel("Player")
 plt.ylabel("Cost")
@@ -374,14 +361,10 @@ def rmspe(actual, predicted):
 def testIfLinear(data, budget):
     x=range(1,12)
     print(budget)
-    low = data[0]
-    high = data[len(data)-1]
     for degree in range(1,4):
         poly= np.polyfit(x,data,degree)
         ypred = np.polyval(poly,x)
         plt.plot(x, ypred)
-        #print('RMSE deg ' + str(degree) +  ': ' + str(rmse(data,ypred)))
-        #print('RMSPE deg ' + str(degree) +  ': ' + str(rmspe(data,ypred)))
 
     plt.title("mean for: " + str(budget))
     plt.xlabel("Player")
@@ -404,18 +387,13 @@ for i in range(len(sortedCosts)):
 #%%
 i=0
 for bud in meanCostsPerBudget:
-
-    #testIfLinear([x/bud[len(bud)-1] for x in bud], 500+i) 
     testIfLinear(bud, 500+i) 
-
-    #testIfLinear([x/127.2 for x in bud], 500+i) 
     i += 50             
 
 #%%
 
 for bud in sortedCosts[0]:
     testIfLinear(bud, 500)
-
 
 #%% 
 
@@ -511,7 +489,7 @@ plt.title("Occurences of players for different budgets for seasons from 16/17 to
 
 #%%
 
-def plotDifferentResults(data, info):
+def plotDifferentResults(data, info, ylab):
     
     dataPart= []
     
@@ -541,23 +519,23 @@ def plotDifferentResults(data, info):
     plt.plot(x, hejMean, 'o', markersize=12, color='black', label="Mean")
     plt.legend()
     plt.xlabel("Budget")
-    plt.ylabel("Months")
+    plt.xticks(range(500, 1050, 50))
+    plt.ylabel(ylab)
     plt.title(info)
     plt.show()
     
 #%%    
-plotDifferentResults(budgetResults, 'Months in Dreamteam')  
-plotDifferentResults(budgetResults, 'Selected by percentage') 
-plotDifferentResults(budgetResults, 'Team position')
-plotDifferentResults(budgetResults, 'Yellow cards')
-plotDifferentResults(budgetResults, 'Red cards')
-plotDifferentResults(budgetResults, 'Goals')
-plotDifferentResults(budgetResults, 'Goals conceded')
-plotDifferentResults(budgetResults, 'Bonus points')
-plotDifferentResults(budgetResults, 'Assists')
-plotDifferentResults(budgetResults, 'Total minutes')
-plotDifferentResults(budgetResults, 'Clean Sheets')
-#plotDifferentResults(budgetResults, 'Total saves')
+plotDifferentResults(budgetResults, 'Months in Dreamteam', 'Months')  
+plotDifferentResults(budgetResults, 'Selected by percentage', 'Percentage[%]') 
+plotDifferentResults(budgetResults, 'Team position', 'Position')
+plotDifferentResults(budgetResults, 'Yellow cards', 'Amount of yellow cards')
+plotDifferentResults(budgetResults, 'Red cards', 'Amount of red cards')
+plotDifferentResults(budgetResults, 'Goals', 'Amount of goals')
+plotDifferentResults(budgetResults, 'Goals conceded', 'Amount of conceded goals')
+plotDifferentResults(budgetResults, 'Bonus points', 'Amount of bonus points')
+plotDifferentResults(budgetResults, 'Assists', 'Amount of assists')
+plotDifferentResults(budgetResults, 'Total minutes', 'Amount of minutes')
+plotDifferentResults(budgetResults, 'Clean Sheets', 'Amount of clean sheets')
    
 
 #%%
