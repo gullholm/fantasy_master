@@ -24,6 +24,21 @@ def load_cost_points(season, typ = "raw"):
 
     return(cost_list, points_list)
 
+
+
+#%% Plot example R2
+x = np.arange(0,11)
+y = 45 + 5*x
+
+fig, ax = plt.subplots()
+ax.plot(x, y)
+ax.scatter(x,y, marker = 'o', ec = "k")
+ax.set_title("Example of ideal diverse team")
+ax.set_xlabel("Player")
+ax.set_ylabel("Cost")
+plt.savefig("plots/examples/linreg_ideal.png", bboxinches ="tight")
+plt.show()
+
 #%%
 seasons = [1617,1718,1819,1920,2021]
 for season in seasons:
@@ -54,11 +69,12 @@ ax.set_ylabel("Total points")
 plt.savefig("results/as/data_viz/pc_as")
 
 #%% 
+import plot_helpers
 c_l_1, p_l_1 = load_cost_points(1617, typ = "incnew_lin")
 c_l_2, p_l_2 = load_cost_points(1819, typ = "incnew_lin")
 
 plot_helpers.plot_hist_of_costs(c_l_1, "Cost of players FPL season 1617 including new players", 1617, typ ="incnew")
-plot_helpers.plot_hist_of_costs(c_l_2, "Cost of players FPL season 1617 including new players", 1819, typ ="incnew")
+plot_helpers.plot_hist_of_costs(c_l_2, "Cost of players FPL season 1819 including new players", 1819, typ ="incnew")
 
 plot_helpers.plot_hist_of_points(p_l_1, "Total points of players FPL season 1617 including new players", 1617, typ ="incnew")
 plot_helpers.plot_hist_of_points(p_l_2, "Cost of players FPL season 1617 including new players", 1819, typ ="incnew")

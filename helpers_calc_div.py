@@ -257,7 +257,7 @@ def get_residuals(season, typ = "raw", league = "pl"):
 
     if league == "pl":
         ax.set_title("Residuals of FPL season " + str(season))
-    else: ax.set_title("Residuals of FAS season " + str(season))
+    else: ax.set_title("Residuals of AF season " + str(season))
     if typ == "noexp": ax.set_title("Residuals of FPL season  " + str(season) + " without exp. players")
     elif typ == "incnew": ax.set_title("Residuals of FPL season " + str(season) + " with 'new' players")
 

@@ -150,9 +150,9 @@ def plot_mean_ratios(season, typ = "raw", league = "pl", kind = "Div"):
         if typ == "raw": ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) )
         elif typ == "incnew":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + "inc. new players" )
         elif typ == "noexp":ax.set_title("Ratio of div. and non div. teams FPL season " + str(season) + " no exp. players")
-    else: ax.set_title("Ratio of div. and non div. teams FAS season " + str(season) )
+    else: ax.set_title("Ratio of div. and non div. teams AF season " + str(season) )
     ax.set_ylim(0.85,1.15)
-    plt.savefig("results/" + league +"/plots/ratio/" + kind +  "/_lines_mean_"+ str(season) + typ + ".png", bbox_inches = "tight")
+    plt.savefig("results/" + league +"/plots/ratio/" + kind +  "/_lines_mean_"+ str(season) + typ + kind + ".png", bbox_inches = "tight")
 def plot_all_mean_ratio(seasons= [1617,1718,1819,1920,2021], league = "pl", kind = "Div"):
     for season in seasons:
         if season == 1617 or season ==1819:
@@ -166,4 +166,3 @@ import math
 
 
 
-plot_all_mean_ratio()
