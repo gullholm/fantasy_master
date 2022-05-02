@@ -184,3 +184,42 @@ data_cleaned/pl/incnew/1617/df/5.csv
 data_cleaned/pl/incnew/1617/df/4.csv
 data_cleaned/pl/incnew/1617/df/3.csv
 *.png
+results/pl/data_viz/cost_hist_1617raw.png
+results/pl/1819/\[3, 4, 3\]_budgets_means_raw.csv
+results/pl/1718/\[5, 4, 1\]_budgets_means_raw.csv
+results/pl/1718/\[5, 3, 2\]_budgets_means_raw.csv
+results/pl/1718/\[4, 5, 1\]_budgets_means_raw.csv
+results/pl/1718/\[4, 4, 2\]_budgets_means_raw.csv
+results/pl/1718/\[4, 3, 3\]_budgets_means_raw.csv
+results/pl/1718/\[3, 5, 2\]_budgets_means_raw.csv
+results/pl/1718/\[3, 4, 3\]_budgets_means_raw.csv
+results/pl/1617/linvsnonlin_raw.csv
+results/pl/1617/\[5, 4, 1\]_budgets_means_raw.csv
+results/pl/1617/\[5, 3, 2\]_budgets_means_raw.csv
+results/pl/1617/\[4, 5, 1\]_budgets_means_raw.csv
+results/pl/1617/\[4, 4, 2\]_budgets_means_raw.csv
+results/pl/1617/\[4, 3, 3\]_budgets_means_raw.csv
+results/pl/1617/\[3, 5, 2\]_budgets_means_raw.csv
+results/pl/1617/\[3, 4, 3\]_budgets_means_raw.csv
+raw21as.out
+noexp1819pl.out
+noexp1617pl.out
+incnew1819pl.out
+incnew1617pl.out
+data_cleaned/pl/noexp/0.1/1819/mf/5.csv
+data_cleaned/pl/noexp/0.1/1819/mf/4.csv
+data_cleaned/pl/noexp/0.1/1819/mf/3.csv
+data_cleaned/pl/noexp/0.1/1819/gk.csv
+data_cleaned/pl/noexp/0.1/1819/fw/3.csv
+data_cleaned/pl/noexp/0.1/1819/fw/2.csv
+data_cleaned/pl/noexp/0.1/1819/fw/1.csv
+data_cleaned/pl/noexp/0.1/1819/df/5.csv
+data_cleaned/pl/noexp/0.1/1819/df/4.csv
+data_cleaned/pl/noexp/0.1/1819/df/3.csv
+data_cleaned/pl/noexp/0.1/1819/\[5, 4, 1\].csv
+data_cleaned/pl/noexp/0.1/1819/\[5, 3, 2\].csv
+data_cleaned/pl/noexp/0.1/1819/\[4, 5, 1\].csv
+data_cleaned/pl/noexp/0.1/1819/\[4, 4, 2\].csv
+data_cleaned/pl/noexp/0.1/1819/\[4, 3, 3\].csv
+data_cleaned/pl/noexp/0.1/1819/\[3, 5, 2\].csv
+data_cleaned/pl/noexp/0.1/1819/\[3, 4, 3\].csv
