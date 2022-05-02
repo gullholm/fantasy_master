@@ -74,7 +74,6 @@ def create_nested_lists(lis):
 def mean_of_lists(lis, r2= [0.8,0.85,0.9]):
     new  = {}
     for x,r in zip(lis, r2):
-        #print(np.mean(x),r)
         new[r]  = np.round(np.mean(x))
         
     return(new)
