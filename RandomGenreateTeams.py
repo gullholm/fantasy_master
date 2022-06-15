@@ -647,11 +647,11 @@ def calcMuSigmaStep(budget):
     return mu, sigma, step
 
 #%%
-#Kör för att jämföra : 
+#Kör för att jämföra :
     
 #FOR NORMAL, MAYBE NOT START WITH 38 ? CHECK MORE  
 seasons = [0] # 0 för Allsvenskan  
-
+seasons =[2021]
 runs= 100000
 n=11
 
@@ -669,6 +669,10 @@ for season in seasons:
     bestk = [    1,   1,   1,   4,   6,   6,   8,   7,    6]
     #k = randint(1,10) #Trying with random k
     
+    #För att ändra plot till rätt 
+    budgets=[750]
+    bestk=[4]
+    
     randomResults = pd.DataFrame(columns=['Budget', 'Linear/Normal', 'Mean cost', 'Mean points', 'Mean 50 best p', 'Mean 50 worst p', 'Ratio points/costs'])
     idx = 0 
     for j, budget in enumerate(budgets):
@@ -682,6 +686,7 @@ for season in seasons:
         lallpoints, lallcosts, lalldistr=[], [],[]
         lowbin= int(mean-k*5.5)
         bins= [lowbin + i*k for i in range(12)]
+        bins[11]=128
         if bins[0]+k<38:
             break
         
@@ -724,14 +729,14 @@ for season in seasons:
     
     randomResults.to_csv('results/pl/' + str(season) + '/generateRandom.csv')
 
-
-#%%
 #%%
 def plotDistr(distr, title, budget, season):
     #plot the different distributions
     print('Plotting')
     flat_distr = [item for sublist in distr for item in sublist]
 
+    #För att få sista rätt
+    #binsnew=[46, 50, 54, 58, 62, 66, 70, 74, 78, 82, 86, 128]
     plt.hist(flat_distr, range=(38,128), bins=bins)
     plt.title("Individual costs with distr: " + title+ ', Season: ' + str(season) + ',Budget: ' +str(budget) )
     plt.show()

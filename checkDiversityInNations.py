@@ -92,7 +92,7 @@ for season in seasons:
     plt.bar(statsnations['Nation'][:10],statsnations['Percentage'][:10]*100)
     plt.xticks(rotation='vertical')
     plt.ylabel('Percent of league')
-    plt.title('Top 10 nations in season: ' + str(season))
+    plt.title('Top 10 nations in PL season: ' + str(season))
     plt.show()
 
 #%%

@@ -951,7 +951,7 @@ for formation in formations:
 
 #%%
   
-def calcratioandmeandifferenceplots(csvfile, seasons, perc):
+def calcratioandmeandifferenceplots(csvfile, seasons, perc, title):
 
     formnames= ['[3, 4, 3]','[3, 5, 2]','[4, 3, 3]','[4, 4, 2]','[4, 5, 1]','[5, 3, 2]', '[5, 4, 1]']
     
@@ -1001,7 +1001,10 @@ def calcratioandmeandifferenceplots(csvfile, seasons, perc):
         plt.plot(X, np.zeros(11)) 
         plt.xlabel('Budget')
         plt.ylabel('Difference')
-        plt.title('Mean difference between percent of all and best 50: ' +str(season))
+        if season== 'AS':
+            plt.title('Mean difference between best 50 and all teams: AF 2021')
+        else:
+            plt.title('Mean difference between best 50 and all teams: ' + title + str(season))
         plt.legend(labels=['Diverse', 'Not diverse'])
         plt.xticks(X,range(500,1050, 50))
         plt.savefig('plots/' + perc + '/' + str(season) + 'difference.png', bbox_inches='tight')
@@ -1013,11 +1016,14 @@ def calcratioandmeandifferenceplots(csvfile, seasons, perc):
         plt.plot(X,ratiodiv, '-o')
         plt.plot(X,rationor, '-o')
         plt.legend(labels=['Diverse', 'Not diverse'])
-        plt.title('Mean ratio best 50 and all: '+str(season))
+        if season=='AS':
+            plt.title('Mean ratio between best 50 and all teams: AF 2021')
+        else:
+            plt.title('Mean ratio between best 50 and all teams: '+ title + str(season))
         plt.xticks(X,range(500,1050, 50))
         plt.xlabel('Budget')
         plt.ylabel('Ratio')
-        plt.savefig('plots/'+perc+'/' + str(season) + 'ratio.png', bbox_inches='tight')
+        plt.savefig('plots/'+ perc +'/' + str(season) + 'ratio.png', bbox_inches='tight')
     
         plt.show()
 #%%
@@ -1026,13 +1032,13 @@ def calcratioandmeandifferenceplots(csvfile, seasons, perc):
 csvfile= 'results/pl/'
 seasons=[1617,1718,1819,1920,2021]
 perc = 'linperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, 'FPL ')
 
 #PL intervalperc
 csvfile= 'results/pl/'
 seasons=[1617,1718,1819,1920,2021]
 perc = 'intervalperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc,'FPL ' )
 
 #%%
 
@@ -1041,14 +1047,14 @@ calcratioandmeandifferenceplots(csvfile, seasons, perc)
 csvfile= 'results/pl/'
 seasons=[1617,1819]
 perc = 'noexp/linperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, 'no exp. ')
 
 #PL noexp interval
 #Calc ratio and mean difference
 csvfile= 'results/pl/'
 seasons=[1617,1819]
 perc = 'noexp/intervalperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, 'no exp. ')
 #%%
 
 #PL incnew
@@ -1056,27 +1062,27 @@ calcratioandmeandifferenceplots(csvfile, seasons, perc)
 csvfile= 'results/pl/'
 seasons=[1617,1819]
 perc = 'incnew/linperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
-#%%
+calcratioandmeandifferenceplots(csvfile, seasons, perc, 'inc. new ')
+
 #PL incnew intervalperc
 #Calc ratio and mean difference
 csvfile= 'results/pl/'
 seasons=[1617,1819]
 perc = 'incnew/intervalperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, 'inc. new ')
 
 #%%
 #AS linperc
 csvfile= 'results/as/linperc_' 
 seasons=['AS']
 perc='linperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, '')
 
 #AS intervalperc
 csvfile= 'results/as/intervalperc_' 
 seasons=['AS']
 perc='intervalperc'
-calcratioandmeandifferenceplots(csvfile, seasons, perc)
+calcratioandmeandifferenceplots(csvfile, seasons, perc, '')
 
 
 
